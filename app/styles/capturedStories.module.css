@@ -1,0 +1,230 @@
+/* ============================= */
+/* CLIENTS/STORIES CAPTURED SECTION */
+/* ============================= */
+
+/* Section Background and Layout */
+.our-clients {
+    background: linear-gradient(to right, #f8f9fa, #ffffff);
+    /* Subtle light gradient */
+    padding: 30px 0;
+    /* Vertical padding for spacing */
+    position: relative;
+    /* For decorative elements */
+    overflow: hidden;
+    /* Prevent overflow of elements */
+    font-family: 'Oswald', sans-serif;
+    /* Consistent typography */
+}
+
+/* Decorative gradient lines */
+.our-clients::before,
+.our-clients::after {
+    content: '';
+    /* Empty pseudo-elements for decoration */
+    position: absolute;
+    background: rgba(255, 215, 0, 0.1);
+    /* Subtle golden color */
+    transform: rotate(-3deg);
+    /* Slight rotation for aesthetic */
+    z-index: 1;
+    /* Behind main content */
+    left: -50px;
+    right: -50px;
+    height: 100px;
+    /* Height of the decorative lines */
+}
+
+.our-clients::before {
+    top: -50px;
+    /* Positioned at the top */
+}
+
+.our-clients::after {
+    bottom: -50px;
+    /* Positioned at the bottom */
+}
+
+/* Section Container */
+.our-clients .container {
+    position: relative;
+    z-index: 2;
+    /* Ensure content is above decorative elements */
+    text-align: center;
+    /* Center-align content */
+    max-width: 1200px;
+    /* Limit width for better readability */
+    margin: 0 auto;
+    /* Center-align container */
+    padding: 20px 20px;
+    /* Horizontal padding */
+}
+
+/* Section Heading with Underline */
+.our-clients h2 {
+    margin-top: -30px;
+    font-size: 3rem;
+    /* Large heading font size */
+    color: #333333;
+    /* Neutral dark color */
+    margin-bottom: 10px;
+    /* Space below heading */
+    letter-spacing: 1.5px;
+    /* Add spacing between letters */
+    position: relative;
+    /* For decorative underline */
+}
+
+.our-clients h2::after {
+    content: '';
+    /* Decorative underline */
+    position: absolute;
+    bottom: -5px;
+    /* Position below heading */
+    left: 50%;
+    /* Center-align underline */
+    transform: translateX(-50%);
+    /* Center visually */
+    width: 100px;
+    /* Width of underline */
+    height: 3px;
+    /* Thickness of underline */
+    background: rgba(255, 215, 0, 0.5);
+    /* Subtle golden color */
+}
+
+/* Section Description */
+.our-clients p {
+    font-size: 1rem;
+    /* Standard paragraph font size */
+    color: #555555;
+    /* Subtle dark text */
+    margin-bottom: 40px;
+    /* Space below description */
+    max-width: 700px;
+    /* Limit width for readability */
+    margin: 0 auto 40px;
+    /* Center-align and add spacing */
+}
+
+/* Card Grid Layout */
+.client-grid {
+    display: grid;
+    /* Grid layout for cards */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    /* Responsive grid */
+    gap: 30px;
+    /* Space between cards */
+    justify-items: center;
+    /* Center-align items in the grid */
+    padding: 0 20px;
+    /* Horizontal padding */
+}
+
+/* Individual Card Styling */
+.client-card {
+    position: relative;
+    width: 100%;
+    /* Full width within the grid */
+    max-width: 300px;
+    /* Limit card size */
+    height: 300px;
+    /* Fixed height for uniformity */
+    border-radius: 15px;
+    /* Rounded corners */
+    overflow: hidden;
+    /* Prevent content overflow */
+    background: #ffffff;
+    /* White background for contrast */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Smooth hover effects */
+}
+
+.client-card:hover {
+    transform: scale(1.05) rotateX(5deg);
+    /* border: 0.5px solid #FFC300; Highlight the card with a golden border */
+    box-shadow: 8px 4px 20px rgba(255, 215, 0, 0.5); /* Add a glowing shadow */
+}
+
+/* Logo and Video Sections */
+.client-logo {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(247, 247, 247, 0.9);
+    transition: opacity 0.5s ease;
+    z-index: 2;
+}
+
+.client-logo img {
+    max-width: 70%;
+    height: auto;
+    object-fit: contain;
+    opacity: 0.8;
+}
+
+/* Logo Overlays */
+.logo-overlay {
+    position: absolute;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.logo-overlay img {
+    max-width: 30%;
+}
+
+/* Specific overlay opacities */
+.logo-overlay-longhorns img {
+    opacity: 0.5;
+}
+
+.logo-overlay-ten img {
+    opacity: 0.2;
+}
+
+.logo-overlay-mozarts img {
+    opacity: 1;
+}
+
+/* Video Styling */
+.client-video {
+    position: absolute;
+    inset: 0;
+    /* Fill the card */
+    z-index: 1;
+    /* Below logo */
+    opacity: 0;
+    /* Hidden by default */
+    transition: opacity 0.5s ease;
+    /* Smooth fade effect */
+}
+
+.client-video video {
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    object-fit: cover;
+    /* Maintain aspect ratio */
+    border-radius: 15px;
+    /* Match card radius */
+}
+
+/* Hover Effects: Show Video, Hide Logo */
+.client-card:hover .client-logo {
+    opacity: 0;
+    /* Hide logo on hover */
+}
+
+.client-card:hover .client-video {
+    opacity: 1;
+    /* Show video on hover */
+}

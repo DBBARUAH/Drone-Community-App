@@ -1,21 +1,58 @@
+/* All @import rules must come first */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto+Flex:wght@100..1000&display=swap');
+@import url('@fortawesome/fontawesome-free/css/all.min.css');
+
+@import url('@/styles/container.css');
+@import url('@/styles/footer.css'); 
+@import url('@/styles/navbar.css'); 
+@import url('@/styles/connect.css');
+@import url('@/styles/blog.css');
+
+/* Then include Tailwind directives */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Global Box-Sizing Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Global Font Styles */
+body, html {
+  font-family: 'Oswald', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #fff;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Oswald', sans-serif;
+}
+
+p, button, select, textarea, input {
+  font-family: 'Playfair Display', serif;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Reusable Typography Classes */
+.font-oswald {
+  font-family: 'Oswald', sans-serif;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Base Layer Overrides */
+@layer base {
+  body {
+    /* @apply bg-background text-foreground; */
   }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
 }

@@ -1,0 +1,68 @@
+/* =============================
+   Call-to-Action Styles
+============================= */
+
+.ctaContainer {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 50px;
+  }
+  
+  /* Base style for a CTA button */
+  .ctaButton {
+    font-family: 'Playfair Display', serif;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  /* Primary Button Style */
+  .primary {
+    background: #ffd700;
+    color: #000;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .primary:hover {
+    transform: scale(1.05);
+    background: #ffc300;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Secondary Button Style */
+  .secondary {
+    background: transparent;
+    color: #ffd700;
+    border: 2px solid #ffd700;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .secondary:hover {
+    transform: scale(1.05);
+    background: rgba(255, 215, 0, 0.1);
+  }
+  
+  /* Active Button Style */
+  .ctaButton:active {
+    transform: scale(0.95);
+  }
+  
+  @media (max-width: 768px) {
+    .ctaContainer {
+      flex-direction: column;
+      gap: 15px;
+    }
+  
+    .ctaButton {
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 1rem;
+    }
+  }
