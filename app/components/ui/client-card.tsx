@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useVideoPlayer } from "@hooks/video-player-context";
 import { useIntersectionObserver } from "@hooks/user-interaction-observer";
 import styles from "@styles/capturedStories.module.css";
+import Image from 'next/image';
 
 interface ClientCardProps {
   logoSrc: string;
@@ -40,7 +41,7 @@ const ClientCard: React.FC<ClientCardProps> = ({
   // For toggling overlay (could also do this purely in CSS if you like)
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
 
-  // 1) Lazy-load the video src once it’s in view
+  // 1) Lazy-load the video src once it's in view
   useEffect(() => {
     if (!loadedSrc && isInView) {
       // The user "data-src" concept was to store videoSrc in an attribute.
@@ -102,7 +103,15 @@ const ClientCard: React.FC<ClientCardProps> = ({
       onClick={handleClick}
     >
       <div className={styles["client-logo"]}>
-        <img src={logoSrc} alt={logoAlt} />
+        <Image
+          src={logoSrc}
+          alt={logoAlt}
+          width={200}
+          height={200}
+          className="object-contain w-auto h-auto"
+          priority
+          unoptimized={false}
+        />
       </div>
 
       <div className={styles["client-video"]}>
@@ -122,7 +131,14 @@ const ClientCard: React.FC<ClientCardProps> = ({
         className={`${styles["logo-overlay"]} ${overlayClassName}`}
         style={{ display: showOverlay ? "flex" : "none" }}
       >
-        <img src={logoSrc} alt={`${logoAlt} Overlay`} />
+        <Image
+          src={logoSrc}
+          alt={`${logoAlt} Overlay`}
+          width={100}
+          height={100}
+          className="object-contain w-auto h-auto"
+          unoptimized={false}
+        />
       </div>
     </div>
   );

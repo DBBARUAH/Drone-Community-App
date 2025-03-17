@@ -55,18 +55,18 @@
     /* Limit width for better readability */
     margin: 0 auto;
     /* Center-align container */
-    padding: 20px 20px;
+    padding: 30px 20px;
     /* Horizontal padding */
 }
 
 /* Section Heading with Underline */
 .our-clients h2 {
-    margin-top: -30px;
+    margin-top: 0px;
     font-size: 3rem;
     /* Large heading font size */
     color: #333333;
     /* Neutral dark color */
-    margin-bottom: 10px;
+    /* margin-bottom: 30px; */
     /* Space below heading */
     letter-spacing: 1.5px;
     /* Add spacing between letters */

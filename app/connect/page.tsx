@@ -1,5 +1,7 @@
 "use client"; // If you're in Next.js 13 App Router and need client-side code
 
+import Image from 'next/image';
+
 export default function Connect() {
   return (
     <section id="contactus" className="contactus">
@@ -79,7 +81,13 @@ export default function Connect() {
 
           <div className="connect-blog-grid">
             <div className="connect-blog-card">
-              <img src="/images/blog1.jpg" alt="Blog 1" />
+              <Image
+                src="/images/blog1.jpg"
+                alt="Blog 1"
+                width={400}
+                height={300}
+                className="object-cover w-full h-full"
+              />
               <div className="connect-blog-content">
                 <h3>How Drones Are Transforming Industries</h3>
                 <p>

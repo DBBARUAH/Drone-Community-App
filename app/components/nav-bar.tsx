@@ -3,6 +3,7 @@
 import React from "react";
 import Head from "next/head"; // For injecting tags into the <head>
 import Link from "next/link";
+import Image from "next/image";
 
 // Simple example: mailto handler
 function handleEmailClick(e: React.MouseEvent<HTMLAnchorElement>) {
@@ -26,9 +27,13 @@ export default function Navbar() {
         <div className="logo">
           {/* Use Link from Next.js for client-side transitions */}
           <Link href="/">
-            <img
+            <Image
               src="/images/logo_color.jpg"
               alt="Travellers Beats Logo"
+              width={150}
+              height={50}
+              priority
+              className="w-auto h-auto"
             />
           </Link>
         </div>

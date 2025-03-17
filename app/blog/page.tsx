@@ -1,4 +1,5 @@
 import React from "react";
+import Image from 'next/image';
 
 export default function BlogPage() {
   return (
@@ -10,7 +11,13 @@ export default function BlogPage() {
         <div className="blog-grid">
           {/* Blog Card #1 */}
           <div className="blog-card">
-            <img src="/images/blog1.jpg" alt="Blog 1" />
+            <Image
+              src="/images/blog1.jpg"
+              alt="Blog 1"
+              width={400}
+              height={300}
+              className="object-cover"
+            />
             <div className="blog-content">
               <h3>How Drones Are Transforming Industries</h3>
               <p>Discover how drones are revolutionizing photography, logistics, and more.</p>

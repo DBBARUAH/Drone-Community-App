@@ -29,10 +29,43 @@ body, html {
   line-height: 1.6;
 }
 
+/* Unified Typography System */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Oswald', sans-serif;
 }
 
+/* Section Headers */
+h2 {
+  font-size: 3rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+/* Section Descriptions */
+.section-description {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 2.5rem;
+  color: #ccc;
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  h2 {
+    font-size: 2.5rem;
+  }
+  
+  .section-description {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}
+
+/* Existing styles... */
 p, button, select, textarea, input {
   font-family: 'Playfair Display', serif;
 }

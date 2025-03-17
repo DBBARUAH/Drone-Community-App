@@ -5,9 +5,10 @@ import tailwindcssAnimate from "tailwindcss-animate";
 const tailwindConfig: Config = {
   darkMode: ["class"],
   content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/styles/**/*.{css}",
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/styles/**/*.css',
     "./globals.css",
     "./lib/**/*.{js,ts}",
   ],
@@ -19,7 +20,8 @@ const tailwindConfig: Config = {
       animation: {
         // 'shimmer-slide': 'shimmer-slide var(--speed) ease-in-out infinite alternate',
         // 'spin-around': 'spin-around calc(var(--speed) * 2) infinite linear',
-          marquee: 'marquee var(--duration) linear infinite',
+        'marquee-slower': 'marquee var(--duration) linear infinite',
+        'marquee': 'marquee var(--duration) linear infinite',
       },
       keyframes: {
         // 'spin-around': {
