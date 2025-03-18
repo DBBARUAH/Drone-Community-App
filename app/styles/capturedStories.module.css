@@ -120,43 +120,39 @@
     /* Horizontal padding */
 }
 
-/* Individual Card Styling */
+/* Client Card Base Styles */
 .client-card {
     position: relative;
     width: 100%;
-    /* Full width within the grid */
     max-width: 300px;
-    /* Limit card size */
-    height: 300px;
-    /* Fixed height for uniformity */
+    aspect-ratio: 1;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
     border-radius: 15px;
-    /* Rounded corners */
     overflow: hidden;
-    /* Prevent content overflow */
     background: #ffffff;
-    /* White background for contrast */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    /* Subtle shadow */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    /* Smooth hover effects */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
 }
 
-.client-card:hover {
-    transform: scale(1.05) rotateX(5deg);
-    /* border: 0.5px solid #FFC300; Highlight the card with a golden border */
-    box-shadow: 8px 4px 20px rgba(255, 215, 0, 0.5); /* Add a glowing shadow */
-}
-
-/* Logo and Video Sections */
+/* Logo Styling */
 .client-logo {
     position: absolute;
     inset: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(247, 247, 247, 0.9);
-    transition: opacity 0.5s ease;
+    background: rgba(247, 247, 247, 0.7);
     z-index: 2;
+    transition: opacity 0.3s ease;
+}
+
+.client-logo.hidden {
+    opacity: 0;
 }
 
 .client-logo img {
@@ -166,65 +162,131 @@
     opacity: 0.8;
 }
 
-/* Logo Overlays */
+/* Video Container */
+.client-video {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.client-video.visible {
+    opacity: 1;
+    z-index: 2;
+}
+
+.client-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Overlay Styling */
 .logo-overlay {
     position: absolute;
     inset: 0;
-    display: none;
+    display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 3;
     background: rgba(0, 0, 0, 0.2);
+    z-index: 3;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .logo-overlay img {
     max-width: 30%;
 }
 
-/* Specific overlay opacities */
+/* Client-specific logo opacities */
 .logo-overlay-longhorns img {
-    opacity: 0.5;
+    opacity: 0.4;
 }
 
 .logo-overlay-ten img {
-    opacity: 0.2;
+    opacity: 0.15;
 }
 
 .logo-overlay-mozarts img {
-    opacity: 1;
+    opacity: 0.8;
 }
 
-/* Video Styling */
-.client-video {
-    position: absolute;
-    inset: 0;
-    /* Fill the card */
-    z-index: 1;
-    /* Below logo */
-    opacity: 0;
-    /* Hidden by default */
-    transition: opacity 0.5s ease;
-    /* Smooth fade effect */
+/* Mobile styles */
+@media (max-width: 768px) {
+    .client-card {
+        max-width: 100%;
+    }
+
+    .play-indicator {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.15);
+    }
+
+    .play-icon {
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 15px 0 15px 25px;
+        border-color: transparent transparent transparent #ffffff;
+        opacity: 0.9;
+    }
+
+    /* Simple touch feedback */
+    .card-inner:active {
+        transform: scale(0.98);
+    }
+
+    .mobile-overlay {
+        display: flex !important;
+        opacity: 0.7 !important;
+        visibility: visible !important;
+        z-index: 3;
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    .client-video.visible {
+        opacity: 1;
+        z-index: 2;
+    }
+
+    /* Ensure both video and overlay are visible */
+    .client-card[data-playing="true"] .client-video,
+    .client-card[data-playing="true"] .logo-overlay {
+        opacity: 1;
+        visibility: visible;
+    }
 }
 
-.client-video video {
-    width: 100%;
-    /* Full width */
-    height: 100%;
-    /* Full height */
-    object-fit: cover;
-    /* Maintain aspect ratio */
-    border-radius: 15px;
-    /* Match card radius */
+/* Desktop hover effects */
+@media (min-width: 769px) {
+    .card-inner:hover {
+        transform: scale(1.02);
+    }
+
+    .card-inner:hover .client-logo {
+        opacity: 0;
+    }
+
+    .card-inner:hover .client-video {
+        opacity: 1;
+    }
 }
 
-/* Hover Effects: Show Video, Hide Logo */
-.client-card:hover .client-logo {
-    opacity: 0;
-    /* Hide logo on hover */
+/* Desktop overlay */
+.desktop-overlay {
+    opacity: 0.7;
+    visibility: visible;
 }
 
-.client-card:hover .client-video {
-    opacity: 1;
-    /* Show video on hover */
+/* Mobile overlay */
+.mobile-overlay {
+    opacity: 0.7;
+    visibility: visible;
+    background: rgba(0, 0, 0, 0.4);
 }

@@ -1,147 +1,161 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { useVideoPlayer } from "@hooks/video-player-context";
-import { useIntersectionObserver } from "@hooks/user-interaction-observer";
+import { useVideoPlayer } from "@/hooks/use-video-player";
+import { useIntersectionObserver } from "@/hooks/user-interaction-observer";
+import { cn } from "@/lib/utils";
 import styles from "@styles/capturedStories.module.css";
-import Image from 'next/image';
+import Image from "next/image";
 
 interface ClientCardProps {
   logoSrc: string;
   logoAlt: string;
-  videoSrc: string;          // The real URL to the video
-  overlayClassName: string;  // Additional overlay styling
+  videoSrc: string;
+  overlayClassName?: string;
 }
 
-/**
- * A single "client card" that lazy loads and auto-plays on hover/click.
- */
-const ClientCard: React.FC<ClientCardProps> = ({
+export function ClientCard({
   logoSrc,
   logoAlt,
   videoSrc,
   overlayClassName,
-}) => {
-  const { setCurrentlyPlaying } = useVideoPlayer();
-
-  // Refs to the video and the overlay DOM elements
+}: ClientCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
+  
+  const [isMobile, setIsMobile] = useState(false);
+  const [loadedSrc, setLoadedSrc] = useState("");
 
-  // Intersection Observer: watch the card or the video element (whichever you prefer).
-  // We'll watch the video element so we only load it when that element is in view.
-  const intersectionEntry = useIntersectionObserver(videoRef, {
-    threshold: 0.5, // 50% of the video in view
+  // Improved video player hook usage
+  const { isPlaying, isLoading, error, play, pause } = useVideoPlayer({
+    videoRef,
+    onPlay: () => console.log("Video started playing"),
+    onPause: () => console.log("Video paused"),
   });
-  const isInView = !!intersectionEntry?.isIntersecting;
 
-  // We'll store the "loadedSrc" in state, so once we've loaded it, it stays set.
-  const [loadedSrc, setLoadedSrc] = useState<string>("");
+  // Improved intersection observer usage
+  const entry = useIntersectionObserver(cardRef, {
+    threshold: 0.5,
+    freezeOnceVisible: false,
+  });
 
-  // For toggling overlay (could also do this purely in CSS if you like)
-  const [showOverlay, setShowOverlay] = useState<boolean>(false);
+  const isInView = entry?.isIntersecting;
 
-  // 1) Lazy-load the video src once it's in view
+  // Mobile detection
   useEffect(() => {
-    if (!loadedSrc && isInView) {
-      // The user "data-src" concept was to store videoSrc in an attribute.
-      // In React, we can just do it in state.
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Load video when in view
+  useEffect(() => {
+    if (isInView && !loadedSrc) {
       setLoadedSrc(videoSrc);
     }
   }, [isInView, loadedSrc, videoSrc]);
 
-  // 2) Function to actually play the video
-  const playVideo = () => {
-    const videoEl = videoRef.current;
-    if (!videoEl) return;
-
-    // Pause any other playing video
-    setCurrentlyPlaying(videoEl);
-
-    // Attempt to play
-    videoEl
-      .play()
-      .then(() => setShowOverlay(true))
-      .catch((err) => console.error("Video play error:", err));
-  };
-
-  // 3) Function to pause the video
-  const pauseVideo = () => {
-    const videoEl = videoRef.current;
-    if (!videoEl) return;
-
-    videoEl.pause();
-    setShowOverlay(false);
-  };
-
-  // 4) Mouse/touch events
-  const handleMouseEnter = () => {
-    // Only do hover play if desktop
-    if (window.innerWidth > 768) {
-      playVideo();
+  // Auto-pause when out of view on mobile
+  useEffect(() => {
+    if (isMobile && !isInView && isPlaying) {
+      pause();
     }
+  }, [isMobile, isInView, isPlaying, pause]);
+
+  // Event handlers
+  const handleMouseEnter = () => {
+    if (!isMobile) play();
   };
 
   const handleMouseLeave = () => {
-    if (window.innerWidth > 768) {
-      pauseVideo();
-    }
+    if (!isMobile) pause();
   };
 
   const handleClick = () => {
-    // On mobile, user taps to play
-    if (window.innerWidth <= 768) {
-      playVideo();
-    }
+    if (!isMobile) return;
+    isPlaying ? pause() : play();
   };
 
   return (
-    <div
-      className={styles["client-card"]}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={handleClick}
-    >
-      <div className={styles["client-logo"]}>
-        <Image
-          src={logoSrc}
-          alt={logoAlt}
-          width={200}
-          height={200}
-          className="object-contain w-auto h-auto"
-          priority
-          unoptimized={false}
-        />
-      </div>
-
-      <div className={styles["client-video"]}>
-        <video
-          ref={videoRef}
-          // Only set src once we decide to lazy-load it
-          src={loadedSrc || undefined}
-          muted
-          loop
-          playsInline
-        />
-      </div>
-
-      {/* The overlay that shows when video is playing */}
+    <div className={styles["client-card"]} ref={cardRef}>
       <div
-        ref={overlayRef}
-        className={`${styles["logo-overlay"]} ${overlayClassName}`}
-        style={{ display: showOverlay ? "flex" : "none" }}
+        className={cn(styles["card-inner"], {
+          [styles["loading"]]: isLoading,
+          [styles["error"]]: error,
+        })}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
       >
-        <Image
-          src={logoSrc}
-          alt={`${logoAlt} Overlay`}
-          width={100}
-          height={100}
-          className="object-contain w-auto h-auto"
-          unoptimized={false}
-        />
+        <div
+          className={cn(styles["client-logo"], {
+            [styles["hidden"]]: isPlaying
+          })}
+        >
+          <Image
+            src={logoSrc}
+            alt={logoAlt}
+            width={200}
+            height={200}
+            className="object-contain w-auto h-auto"
+            priority
+          />
+          {isMobile && !isPlaying && (
+            <div className={styles["play-indicator"]}>
+              <span className={styles["play-icon"]} />
+            </div>
+          )}
+        </div>
+
+        <div
+          className={cn(styles["client-video"], {
+            [styles["visible"]]: isPlaying,
+          })}
+        >
+          <video
+            ref={videoRef}
+            src={loadedSrc || undefined}
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {isPlaying && (
+          <div 
+            className={cn(
+              styles["logo-overlay"], 
+              overlayClassName,
+              {
+                [styles["mobile-overlay"]]: isMobile,
+                [styles["desktop-overlay"]]: !isMobile
+              }
+            )}
+          >
+            <Image
+              src={logoSrc}
+              alt={`${logoAlt} Overlay`}
+              width={100}
+              height={100}
+              className="object-contain w-auto h-auto"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
-};
+}
 
-export default ClientCard;
+// Utility function for resize debouncing
+function debounce<T extends (...args: any[]) => any>(
+  fn: T,
+  delay: number
+): (...args: Parameters<T>) => void {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
+}

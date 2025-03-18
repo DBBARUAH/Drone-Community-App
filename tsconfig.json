@@ -24,8 +24,10 @@
       "@hooks/*": ["./app/components/hooks/*"],
       "@styles/*": ["./app/styles/*"],
       "@lib/*": ["./app/lib/*"],
-      "@public/*": ["./app/public/*"]
-    }
+      "@public/*": ["./app/public/*"],
+      "@utils/*": ["./app/utils/*"]
+    },
+    "baseUrl": "."
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

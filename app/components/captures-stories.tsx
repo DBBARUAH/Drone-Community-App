@@ -2,7 +2,7 @@
 
 import React from "react";
 import { VideoPlayerProvider } from "@hooks/video-player-context";
-import ClientCard from "@/components/ui/client-card";
+import { ClientCard } from "@/components/ui/client-card";
 import styles from "@styles/capturedStories.module.css";
 import Image from 'next/image';
 

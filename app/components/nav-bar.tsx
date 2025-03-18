@@ -1,17 +1,25 @@
 "use client"; // Only if you're in the new app/ directory and need client-side code.
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head"; // For injecting tags into the <head>
 import Link from "next/link";
 import Image from "next/image";
 
 // Simple example: mailto handler
-function handleEmailClick(e: React.MouseEvent<HTMLAnchorElement>) {
+const handleEmailClick = (e: React.MouseEvent) => {
   e.preventDefault();
   window.location.href = "mailto:contact@travellersbeats.com";
-}
+};
 
 export default function Navbar() {
+  // Add client-side only state
+  const [mounted, setMounted] = useState(false);
+
+  // Only render after component is mounted on client
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <>
       {/* Head section with Font Awesome */}
@@ -34,6 +42,9 @@ export default function Navbar() {
               height={50}
               priority
               className="w-auto h-auto"
+              style={{ 
+                color: "transparent"
+              }}
             />
           </Link>
         </div>
@@ -55,10 +66,10 @@ export default function Navbar() {
 
         {/* Contact Email */}
         <div className="contact-email">
-          <a href="#" className="email-link" onClick={handleEmailClick}>
+          <button className="email-link" onClick={handleEmailClick}>
             <i className="far fa-envelope" aria-hidden="true"></i>
             <span className="email-text">Email Us</span>
-          </a>
+          </button>
         </div>
       </nav>
     </>

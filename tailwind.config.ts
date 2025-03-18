@@ -45,7 +45,10 @@ const tailwindConfig: Config = {
       },
     },
   },
-  plugins: [tailwindcssAnimate],
+  plugins: [
+    tailwindcssAnimate,
+    require("@tailwindcss/typography"),
+  ],
 };
 
 export default tailwindConfig;
