@@ -11,20 +11,25 @@ interface Blog8Props {
 }
 
 const Blog8 = ({
-  heading = "Drone Photography Blog",
-  description = "Expert insights and guides for drone photography professionals",
+  heading = "BLOG",
+  description = "Revolutionary drone techniques that are reshaping the industry: Cutting-edge insights for businesses and creators who want to stay ahead",
   posts,
 }: Blog8Props) => {
   return (
-    <section className="py-12 md:py-20">
-      <div className="container flex flex-col items-center gap-16">
-        <div className="text-center">
-          <h2 className="mx-auto mb-6 text-pretty text-3xl font-semibold md:text-4xl lg:max-w-3xl text-white">
-            {heading}
-          </h2>
-          <p className="mx-auto max-w-2xl text-white/90 md:text-lg">
-            {description}
-          </p>
+    <section className="pt-4 pb-12 md:pt-6 md:pb-16 lg:pt-8 lg:pb-20">
+      <div className="container flex flex-col items-center gap-8 md:gap-12">
+        <div className="text-center max-w-[900px] mx-auto px-4">
+          <div className="flex flex-col items-center">
+            <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight 
+              text-white uppercase mb-0 leading-none">
+              {heading}
+            </h2>
+            <div className="mt-4 h-px w-40 bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+            <p className="mt-4 text-base md:text-lg text-white/70 max-w-2xl leading-relaxed
+              font-light tracking-wide">
+              {description}
+            </p>
+          </div>
         </div>
 
         <div className="grid gap-y-10 sm:grid-cols-12 sm:gap-y-12 md:gap-y-16 lg:gap-y-20">

@@ -1,13 +1,23 @@
-import { getPost } from '@lib/blog';
+import { getPost, getAllPosts } from '@lib/blog';
 import { notFound } from 'next/navigation';
 import { Badge } from '@components/ui/badge';
 import { ResponsiveImage } from '@components/ui/image';
 import { Metadata } from 'next';
+import styles from './blog.module.css';
+import MDXContent from './mdx-content';
+import { BackButton } from '@/components/ui/back-button';
 
 interface BlogPostPageProps {
   params: {
     slug: string;
   };
+}
+
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
@@ -33,40 +43,48 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  // Include the label in the tags for the blog post page
   const allTags = [post.label, ...post.tags];
 
   return (
-    <article className="container mx-auto px-4 py-12 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
-        
-        {/* Tags after heading */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {allTags.map((tag) => (
-            <Badge key={tag} variant="outline" className="text-xs">
-              {tag}
-            </Badge>
-          ))}
+    <main className="relative min-h-screen bg-black">
+      <BackButton />
+      <div className="container mx-auto px-4 py-8 sm:py-12 max-w-4xl">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl font-bold mb-3 sm:mb-4 font-oswald uppercase tracking-[1.5px]">
+            {post.title}
+          </h1>
+          
+          <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
+            {allTags.map((tag) => (
+              <Badge 
+                key={tag} 
+                variant="outline" 
+                className="text-xs sm:text-sm font-medium text-muted-foreground 
+                  hover:text-foreground transition-colors"
+              >
+                {tag}
+              </Badge>
+            ))}
+          </div>
+          
+          <div className="flex items-center justify-between mb-6 sm:mb-8 text-muted-foreground">
+            <span className="text-xs sm:text-base font-medium">{post.author}</span>
+            <time className="text-xs sm:text-base">{post.published}</time>
+          </div>
         </div>
-        
-        <div className="flex items-center justify-between text-gray-600 dark:text-gray-300 mb-8">
-          <span className="text-lg">{post.author}</span>
-          <time className="text-sm">{post.published}</time>
-        </div>
-      </div>
 
-      <div className="relative h-[400px] w-full mb-12 rounded-lg overflow-hidden">
-        <ResponsiveImage
-          src={post.image}
-          alt={post.title}
-          className="h-full w-full"
-        />
-      </div>
+        {post.image && (
+          <div className="relative h-[400px] w-full mb-12 rounded-lg overflow-hidden">
+            <ResponsiveImage
+              src={post.image}
+              alt={post.title}
+              className="h-full w-full"
+            />
+          </div>
+        )}
 
-      <div className="prose prose-lg dark:prose-invert max-w-none">
-        {post.content}
+        <MDXContent source={post.content} />
       </div>
-    </article>
+    </main>
   );
 } 

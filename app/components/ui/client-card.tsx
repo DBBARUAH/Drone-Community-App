@@ -59,7 +59,12 @@ export function ClientCard({
   // Auto-pause when out of view on mobile
   useEffect(() => {
     if (isMobile && !isInView && isPlaying) {
-      pause();
+      // Add a small delay before pausing to avoid race conditions
+      const timeoutId = setTimeout(() => {
+        pause();
+      }, 50);
+      
+      return () => clearTimeout(timeoutId);
     }
   }, [isMobile, isInView, isPlaying, pause]);
 
@@ -69,7 +74,12 @@ export function ClientCard({
   };
 
   const handleMouseLeave = () => {
-    if (!isMobile) pause();
+    if (!isMobile && isPlaying) {
+      // Add a small delay before pausing
+      setTimeout(() => {
+        pause();
+      }, 50);
+    }
   };
 
   const handleClick = () => {

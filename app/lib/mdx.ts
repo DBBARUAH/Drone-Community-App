@@ -1,3 +1,16 @@
+import { compileMDX } from 'next-mdx-remote/rsc'
+import rehypeHighlight from 'rehype-highlight'
+import rehypeSlug from 'rehype-slug'
+import remarkGfm from 'remark-gfm'
+
+// MDX compilation options
+const options = {
+  mdxOptions: {
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [rehypeHighlight, rehypeSlug],
+  }
+}
+
 // import { serialize } from 'next-mdx-remote/serialize';
 // import fs from 'fs';
 // import path from 'path';

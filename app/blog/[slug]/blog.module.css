@@ -1,0 +1,26 @@
+.blogPost {
+  width: 100%;
+}
+
+.tableContainer {
+  overflow-x: auto;
+  margin: 2rem 0;
+}
+
+.tableContainer table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableContainer th,
+.tableContainer td {
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+}
+
+.blockquote {
+  border-left: 4px solid #e2e8f0;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+} 

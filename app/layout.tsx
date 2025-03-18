@@ -1,9 +1,9 @@
 // app/layout.tsx
 import type { Metadata } from "next";
-import "@/globals.css"; // Make sure this file includes @tailwind directives
+import "./globals.css";
 import Navbar from "@/components/nav-bar";
 import Footer from "@/components/footer";
-import { AuthProvider } from "@/providers/AuthProvider"; // Adjust the path if needed
+import { AuthProvider } from "@/providers/AuthProvider";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://travellersbeats.com'),

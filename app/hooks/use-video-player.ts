@@ -18,9 +18,16 @@ export function useVideoPlayer({ videoRef, onPlay, onPause }: UseVideoPlayerProp
     try {
       setIsLoading(true);
       setError(null);
-      await videoEl.play();
-      setIsPlaying(true);
-      onPlay?.();
+      
+      // Store the play promise so we can check it before pausing
+      const playPromise = videoEl.play();
+      
+      // Make sure we wait for the promise to resolve before considering the video as playing
+      if (playPromise !== undefined) {
+        await playPromise;
+        setIsPlaying(true);
+        onPlay?.();
+      }
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to play video'));
       console.error('Video play error:', err);
@@ -33,12 +40,15 @@ export function useVideoPlayer({ videoRef, onPlay, onPause }: UseVideoPlayerProp
     const videoEl = videoRef.current;
     if (!videoEl) return;
 
-    try {
-      videoEl.pause();
-      setIsPlaying(false);
-      onPause?.();
-    } catch (err) {
-      console.error('Video pause error:', err);
+    // Only pause if the video is actually playing
+    if (!videoEl.paused) {
+      try {
+        videoEl.pause();
+        setIsPlaying(false);
+        onPause?.();
+      } catch (err) {
+        console.error('Video pause error:', err);
+      }
     }
   }, [videoRef, onPause]);
 

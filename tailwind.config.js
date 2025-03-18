@@ -8,6 +8,7 @@ module.exports = {
     './app/styles/**/*.css',
     "./globals.css",
     "./lib/**/*.{js,ts}",
+    './app/blog/content/**/*.mdx',
   ],
   theme: {
     container: {

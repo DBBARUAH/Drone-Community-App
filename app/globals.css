@@ -89,3 +89,14 @@ p, button, select, textarea, input {
     /* @apply bg-background text-foreground; */
   }
 }
+
+/* Add this to your existing globals.css */
+@layer utilities {
+  .back-button-hover {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  .back-button-hover:hover {
+    @apply -translate-x-1;
+  }
+}

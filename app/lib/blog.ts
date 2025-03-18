@@ -3,23 +3,34 @@ import path from 'path';
 import matter from 'gray-matter';
 import { serialize } from 'next-mdx-remote/serialize';
 import { cache } from 'react';
+import { MDXRemote } from 'next-mdx-remote';
+import remarkGfm from 'remark-gfm'
+import rehypeHighlight from 'rehype-highlight'
+import rehypeSlug from 'rehype-slug'
 
-const rootDirectory = path.join(process.cwd(), 'content/blogs');
+const BLOG_DIRECTORY = path.join(process.cwd(), 'app/blog/content');
+
+interface MDXError extends Error {
+  message: string;
+  position?: {
+    start: { line: number; column: number };
+    end: { line: number; column: number };
+  };
+  reason?: string;
+}
 
 export interface BlogPost {
   id: string;
   slug: string;
   title: string;
   summary: string;
-  excerpt: string;
-  date: string;
-  image: string;
   label: string;        // Primary category
   author: string;
   published: string;    // Date in "DD MMM YYYY" format
+  image: string;
   url: string;         // URL path: /blog/slug
   tags: string[];      // Array of related topics
-  content?: string;    // MDX content (optional for list views)
+  content?: any; // MDX serialized content
 }
 
 // Add error handling type
@@ -45,68 +56,101 @@ function handleBlogError(error: unknown): null {
 
 // Cache the getAllPosts function
 export const getAllPosts = cache(async (): Promise<BlogPost[]> => {
-  // Get MDX posts
   let mdxPosts: BlogPost[] = [];
   try {
     // Check if directory exists
-    if (fs.existsSync(rootDirectory)) {
-      const files = fs.readdirSync(rootDirectory);
-      const postsPromises = files
-        .filter(filename => filename.endsWith('.mdx'))
-        .map(async (filename) => {
-          const slug = filename.replace('.mdx', '');
-          const post = await getPost(slug);
-          return post;
-        });
-      
-      const resolvedPosts = await Promise.all(postsPromises);
-      mdxPosts = resolvedPosts.filter((post): post is BlogPost => post !== null);
+    if (!fs.existsSync(BLOG_DIRECTORY)) {
+      console.error(`Blog directory not found: ${BLOG_DIRECTORY}`);
+      return [];
     }
+
+    const files = fs.readdirSync(BLOG_DIRECTORY);
+    console.log('Found blog files:', files); // Debug log
+
+    const postsPromises = files
+      .filter(filename => filename.endsWith('.mdx'))
+      .map(async (filename) => {
+        const slug = filename.replace('.mdx', '');
+        try {
+          const post = await getPost(slug);
+          if (!post) {
+            console.error(`Failed to load post: ${slug}`);
+          }
+          return post;
+        } catch (error) {
+          console.error(`Error processing post ${slug}:`, error);
+          return null;
+        }
+      });
+    
+    const resolvedPosts = await Promise.all(postsPromises);
+    mdxPosts = resolvedPosts.filter((post): post is BlogPost => post !== null);
+    console.log('Loaded posts:', mdxPosts.map(p => p.slug)); // Debug log
   } catch (error) {
-    console.log('No MDX posts found or error reading them:', error);
+    console.error('Error loading blog posts:', error);
+    return [];
   }
 
-  // Deduplicate posts by URL to avoid same content showing twice
-  const urlMap = new Map<string, BlogPost>();
-  
-  // Add all MDX posts to the map
-  mdxPosts.forEach(mdxPost => {
-    urlMap.set(mdxPost.url, mdxPost);
-  });
-  
-  // Convert map back to array and sort by date (newest first)
-  return Array.from(urlMap.values()).sort((a, b) => {
-    return new Date(b.published).getTime() - new Date(a.published).getTime();
-  });
+  return mdxPosts.sort((a, b) => 
+    new Date(b.published).getTime() - new Date(a.published).getTime()
+  );
 });
 
 // Cache the getPost function
-export const getPost = cache(async (slug: string): Promise<BlogPost | null> => {
-  try {
-    // Reads the MDX file based on the slug
-    const filePath = path.join(rootDirectory, `${slug}.mdx`);
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-    
-    // Uses gray-matter to parse the frontmatter and content
-    const { data, content } = matter(fileContent);
-    
-    return {
-      id: data.id,
-      slug: data.slug,
-      title: data.title,
-      summary: data.summary,
-      excerpt: data.excerpt,
-      date: data.date,
-      image: data.image,
-      label: data.label,
-      author: data.author,
-      published: data.published,
-      url: `/blog/${slug}`,
-      tags: data.tags,
-      content: content, // The actual MDX content
-    } as BlogPost;
-  } catch (error) {
-    console.error(`Error getting post ${slug}:`, error);
+export async function getPost(slug: string): Promise<BlogPost | null> {
+  if (!slug) {
+    console.error('No slug provided to getPost');
     return null;
   }
-}); 
+
+  try {
+    const filePath = path.join(BLOG_DIRECTORY, `${slug}.mdx`);
+    
+    if (!fs.existsSync(filePath)) {
+      console.error(`Blog post file not found: ${filePath}`);
+      return null;
+    }
+
+    const fileContent = fs.readFileSync(filePath, 'utf8');
+    console.log(`Reading content for ${slug}, length:`, fileContent.length);
+
+    const { data, content } = matter(fileContent);
+
+    // Validate required frontmatter
+    if (!validateFrontmatter(data)) {
+      console.error(`Invalid frontmatter in post ${slug}:`, data);
+      return null;
+    }
+
+    try {
+      // Serialize the MDX content
+      const mdxSource = await serialize(content, {
+        mdxOptions: {
+          remarkPlugins: [remarkGfm],
+          rehypePlugins: [rehypeHighlight, rehypeSlug],
+        },
+        parseFrontmatter: false,
+      });
+
+      return {
+        id: data.id,
+        slug: slug,
+        title: data.title,
+        summary: data.summary,
+        label: data.label,
+        author: data.author,
+        published: data.published,
+        image: data.image,
+        tags: data.tags,
+        content: mdxSource,
+        url: `/blog/${slug}`,
+      };
+    } catch (error) {
+      console.error(`Error processing MDX for ${slug}:`, error);
+      return null;
+    }
+  } catch (error) {
+    console.error(`Error reading post ${slug}:`, error);
+    return null;
+  }
+} 
