@@ -30,14 +30,16 @@ const clientData = [
 const CapturedStories: React.FC = () => {
   return (
     <VideoPlayerProvider>
-      <section className="section-wrapper">
+      <section className="section-wrapper py-12 md:py-16">
         <div className="section-content">
           <div className={styles["our-clients"]}>
             <div className={styles["container"]}>
-              <h2 className={styles["ourClientsH2"]}>CAPTURED STORIES</h2>
-              <p className={styles["ourClientsP"]}>
-                Discover the Stories We've Captured and the Moments We've Elevated Through Aerial Creativity
-              </p>
+              <div className="flex flex-col items-center gap-6 mb-10">
+                <h2 className="section-header light">CAPTURED STORIES</h2>
+                <p className="section-description text-theme-light font-playfair text-base md:text-lg lg:text-[1.1rem] leading-[1.8] max-w-2xl">
+                  Discover the Stories We've Captured and the Moments We've Elevated Through Aerial Creativity
+                </p>
+              </div>
 
               <div className={styles["client-grid"]}>
                 {clientData.map((client, index) => (

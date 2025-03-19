@@ -29,13 +29,13 @@ export function TestimonialCard({
         // 3D Border Effect with aerial photography theme colors
         "relative before:absolute before:inset-0 before:-z-10",
         "before:rounded-xl before:p-[2px]",
-        "before:bg-gradient-to-r before:from-sky-500/50 before:via-indigo-500/50 before:to-purple-500/50",
+        "before:bg-gradient-to-r before:from-neutral-900/50 before:via-neutral-900/50 before:to-neutral-800/50",
         "after:absolute after:inset-[1px] after:-z-10 after:rounded-xl",
-        "after:bg-gradient-to-br after:from-black/90 after:to-[#0f172a]/90",
+        "after:bg-gradient-to-br after:from-black/90 after:to-neutral-900/90",
         
         // Main Card Styling
         "flex flex-col rounded-xl",
-        "bg-gradient-to-br from-[#0f1729]/95 via-[#0f172a]/95 to-[#0a0f1f]/95",
+        "bg-gradient-to-br from-black/95 via-neutral-900/95 to-black/95",
         "backdrop-blur-xl backdrop-saturate-200",
         "p-6 text-start",
         
@@ -43,13 +43,13 @@ export function TestimonialCard({
         "h-[260px] w-[320px]",
         "flex flex-col gap-3",
         
-        // Aerial photography inspired glow
-        "shadow-lg shadow-sky-500/10",
-        "hover:shadow-xl hover:shadow-sky-500/20",
+        // Dark theme glow
+        "shadow-lg shadow-black/20",
+        "hover:shadow-xl hover:shadow-black/30",
         
         // Enhanced 3D hover effect
         "hover:scale-[1.08] hover:-translate-y-2 hover:rotate-[0.5deg]",
-        "hover:before:from-sky-400/50 hover:before:via-indigo-400/50 hover:before:to-purple-400/50",
+        "hover:before:from-neutral-800/50 hover:before:via-neutral-800/50 hover:before:to-neutral-700/50",
         
         // Card transitions
         "transition-all duration-300 ease-out",
@@ -63,17 +63,17 @@ export function TestimonialCard({
           <AvatarImage src={author.avatar} alt={author.name} />
         </Avatar>
         <div className="flex flex-col items-start">
-          <h3 className="text-md font-semibold leading-none text-sky-100">
+          <h3 className="text-white/80 text-sm font-medium">
             {author.name}
           </h3>
-          <p className="text-sm text-sky-300/80">
+          <p className="text-xs text-white/50 font-light tracking-wide">
             {author.handle}
           </p>
         </div>
       </div>
 
       {/* Testimonial Text */}
-      <p className="text-sm leading-relaxed text-sky-100/90 line-clamp-6 text-justify hyphens-auto">
+      <p className="text-white/90 text-sm leading-relaxed line-clamp-6 text-justify hyphens-auto font-playfair">
         {text}
       </p>
     </Card>

@@ -5,6 +5,15 @@ import Image from 'next/image';
 const testimonials = [
   {
     author: {
+      name: "John Smith",
+      handle: "@dronemaster",
+      avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&h=150&fit=crop&crop=face"
+    },
+    text: "The platform has been a game-changer for my drone photography business. The community is incredibly supportive, and I've landed several high-profile gigs through the network.",
+    href: "https://twitter.com/dronemaster"
+  },
+  {
+    author: {
       name: "Sarah Chen",
       handle: "@luxuryrealestate",
       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face"
@@ -52,7 +61,7 @@ const testimonials = [
 export function ReviewSection() {
   return (
     <TestimonialsMarquee
-      title="Trusted by The Community"
+      title="TRUSTED BY THE COMMUNITY"
       description="Discover how creators and businesses are leveraging aerial perspectives across real estate, automotive, and event photography."
       testimonials={testimonials}
     />

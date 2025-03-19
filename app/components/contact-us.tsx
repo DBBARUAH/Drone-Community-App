@@ -6,12 +6,12 @@ export default function ContactUs() {
             <div className="container">
                 {/* Left Column: Text */}
                 <div className="contact-text">
-                    <h2>Connect with Us</h2>
-                    <p>Whether you're looking to enhance your aerial photography skills or connect with professionals for aerial services, this is the place for you. Sign up to connect with a community of enthusiasts and professionals.</p>
+                    <h2 className="section-header">CONNECT WITH US</h2>
+                    <p className="text-base md:text-lg lg:text-[1.1rem] leading-[1.8] text-[#ccc] font-playfair mb-8">Whether you're looking to enhance your aerial photography skills or connect with professionals for aerial services, this is the place for you. Sign up to connect with a community of enthusiasts and professionals.</p>
 
                     {/* Follow Our Journey */}
                     <div className="follow-journey">
-                        <strong>Follow Our Journey</strong>
+                        <strong className="text-lg md:text-xl font-semibold">Follow Our Journey</strong>
                         <a href="https://instagram.com/travellers.beats" target="_blank">
                             <i className="fab fa-instagram"></i>
                         </a>

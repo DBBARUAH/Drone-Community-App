@@ -24,14 +24,16 @@ export function TestimonialsSection({
   return (
     <section className={cn(
       "bg-background text-foreground",
-      "py-32",
+      "py-12 md:py-16",
       "px-0",
       className
     )}>
-      <div className="mx-auto flex max-w-container flex-col items-center gap-8 text-center">
+      <div className="mx-auto flex max-w-container flex-col items-center gap-10 text-center">
         <div className="flex flex-col items-center gap-6 px-4">
-          <h2 className="mb-4">{title}</h2>
-          <p className="section-description max-w-3xl">
+          <h2 className="section-header font-oswald">
+            {title}
+          </h2>
+          <p className="section-description text-theme-dark font-playfair text-base md:text-lg lg:text-[1.1rem] leading-[1.8] max-w-2xl">
             {description}
           </p>
         </div>

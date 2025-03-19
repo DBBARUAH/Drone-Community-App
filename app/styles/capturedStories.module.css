@@ -5,105 +5,73 @@
 /* Section Background and Layout */
 .our-clients {
     background: linear-gradient(to right, #f8f9fa, #ffffff);
-    /* Subtle light gradient */
     padding: 30px 0;
-    /* Vertical padding for spacing */
     position: relative;
-    /* For decorative elements */
     overflow: hidden;
-    /* Prevent overflow of elements */
     font-family: 'Oswald', sans-serif;
-    /* Consistent typography */
 }
 
 /* Decorative gradient lines */
 .our-clients::before,
 .our-clients::after {
     content: '';
-    /* Empty pseudo-elements for decoration */
     position: absolute;
     background: rgba(255, 215, 0, 0.1);
-    /* Subtle golden color */
     transform: rotate(-3deg);
-    /* Slight rotation for aesthetic */
     z-index: 1;
-    /* Behind main content */
     left: -50px;
     right: -50px;
     height: 100px;
-    /* Height of the decorative lines */
 }
 
 .our-clients::before {
     top: -50px;
-    /* Positioned at the top */
 }
 
 .our-clients::after {
     bottom: -50px;
-    /* Positioned at the bottom */
 }
 
 /* Section Container */
 .our-clients .container {
     position: relative;
     z-index: 2;
-    /* Ensure content is above decorative elements */
     text-align: center;
-    /* Center-align content */
     max-width: 1200px;
-    /* Limit width for better readability */
     margin: 0 auto;
-    /* Center-align container */
     padding: 30px 20px;
-    /* Horizontal padding */
 }
+
+/* Remove conflicting h2 styles */
+/* Remove conflicting p styles */
 
 /* Section Heading with Underline */
 .our-clients h2 {
-    margin-top: 0px;
+    margin: 0;
     font-size: 3rem;
-    /* Large heading font size */
     color: #333333;
-    /* Neutral dark color */
-    /* margin-bottom: 30px; */
-    /* Space below heading */
     letter-spacing: 1.5px;
-    /* Add spacing between letters */
     position: relative;
-    /* For decorative underline */
 }
 
 .our-clients h2::after {
     content: '';
-    /* Decorative underline */
     position: absolute;
-    bottom: -5px;
-    /* Position below heading */
+    top: calc(100% + 1rem);
     left: 50%;
-    /* Center-align underline */
     transform: translateX(-50%);
-    /* Center visually */
     width: 100px;
-    /* Width of underline */
     height: 3px;
-    /* Thickness of underline */
     background: rgba(255, 215, 0, 0.5);
-    /* Subtle golden color */
 }
 
 /* Section Description */
-.our-clients p {
-    font-size: 1rem;
-    /* Standard paragraph font size */
-    color: #555555;
-    /* Subtle dark text */
-    margin-bottom: 40px;
-    /* Space below description */
-    max-width: 700px;
-    /* Limit width for readability */
-    margin: 0 auto 40px;
-    /* Center-align and add spacing */
+.description {
+    composes: font-playfair from global;
+    color: #000000;
+    margin: 1.5rem auto 2rem !important;
+    max-width: 42rem;
+    text-align: center;
 }
 
 /* Card Grid Layout */

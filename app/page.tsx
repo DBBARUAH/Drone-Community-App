@@ -4,6 +4,7 @@ import Hero from "@/components/hero";
 import CapturedStories from "@/components/captures-stories";
 import ContactUs from '@/components/contact-us';
 import { ReviewSection } from './components/testimonials-section';
+import { FeatureSection } from './components/feature-section';
 
 export default function Home() {
     return (
@@ -15,6 +16,7 @@ export default function Home() {
             </Head>
             {/* <Navbar /> */}
             <Hero />
+            <FeatureSection />
             <CapturedStories />
             {/* <Clients />
             <AboutUs />

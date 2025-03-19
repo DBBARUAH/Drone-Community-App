@@ -34,34 +34,101 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Oswald', sans-serif;
 }
 
-/* Section Headers */
+/* Remove default h2 styles */
 h2 {
-  font-size: 3rem;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  line-height: 1.2;
-  margin-bottom: 1.5rem;
-  text-transform: uppercase;
+  margin: 0;
+  padding: 0;
 }
 
-/* Section Descriptions */
-.section-description {
+/* Global Section Header Style */
+.section-header {
+  @apply text-3xl md:text-4xl lg:text-5xl font-bold mb-0 text-center uppercase tracking-wider;
+  font-family: 'Oswald', sans-serif;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Add the gradient underline for all sections except captured stories */
+.section-header:not(.light)::after {
+  content: '';
+  margin-top: 1rem;
+  height: 1px;
+  width: 10rem;
+  background: linear-gradient(to right, transparent, #ffffff33, transparent);
+}
+
+/* Dark theme header (default) */
+.section-header:not(.light) {
+  color: #fff;
+}
+
+/* Light theme header */
+.section-header.light {
+  color: #333333;
+}
+
+/* Remove gradient underline for captured stories section */
+.our-clients .section-header::after {
+  display: none;
+}
+
+/* Section Descriptions - Standardized style matching blog section */
+.section-description,
+section p:not(.our-clients p):not(.contactus p):not([class*='text-white']),
+.contactus p,
+.our-clients p {
   font-family: 'Playfair Display', serif;
-  font-size: 1.1rem;
+  font-size: 1rem; /* text-base */
   line-height: 1.8;
-  margin-bottom: 2.5rem;
-  color: #ccc;
+  margin: 1.5rem auto 2rem !important; /* gap-6 to match testimonials */
+  max-width: 42rem; /* max-w-2xl equivalent */
+  font-weight: 300; /* font-light */
+  letter-spacing: 0.025em; /* tracking-wide */
+  text-align: center;
+}
+
+/* Theme-based text colors */
+.text-theme-light {
+  color: #080808 !important;
+}
+
+.text-theme-dark {
+  color: #ccc !important;
+}
+
+/* Dark sections description color */
+.section-description,
+section p:not(.our-clients p):not(.contactus p):not([class*='text-white']),
+.contactus p {
+  @apply text-theme-dark;
+}
+
+/* Light section (captured stories) description color */
+.our-clients p {
+  @apply text-theme-light;
+}
+
+/* Remove any conflicting margin overrides */
+.our-clients .container p,
+.contactus .container p {
+  margin: 1.5rem auto 2rem !important;
+}
+
+@media (min-width: 768px) {
+  .section-description,
+  section p:not(.our-clients p):not(.contactus p):not([class*='text-white']),
+  .contactus p,
+  .our-clients p {
+    font-size: 1.125rem; /* text-lg */
+  }
 }
 
 /* Responsive Typography */
 @media (max-width: 768px) {
-  h2 {
-    font-size: 2.5rem;
-  }
-  
-  .section-description {
-    font-size: 1rem;
-    line-height: 1.6;
+  .section-header {
+    @apply text-2xl md:text-3xl !important;
   }
 }
 
