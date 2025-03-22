@@ -1,6 +1,6 @@
 import * as React from "react"
 import { motion, PanInfo } from "framer-motion"
-import { cn } from "@/utils"
+import { cn } from "@/lib/utils"
 
 interface Testimonial {
   id: number | string
