@@ -1,7 +1,7 @@
 /* Global Navbar Styles */
 
 .navbar {
-    font-family: "Oswald", sans-serif;
+    font-family: var(--font-oswald);
     position: fixed;
     top: 0;
     width: 100%;
@@ -71,7 +71,7 @@
   }
   
   .email-text {
-    font-family: "Playfair Display", serif;
+    font-family: var(--font-playfair);
     font-size: 14px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
     transition: color 0.2s ease;

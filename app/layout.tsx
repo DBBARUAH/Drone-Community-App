@@ -3,7 +3,29 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/nav-bar";
 import Footer from "@/components/footer";
-import { AuthProvider } from "@/providers/AuthProvider";
+import { Inter, Playfair_Display, Oswald } from 'next/font/google';
+import { Providers } from './providers'
+// import { AuthProvider } from "@/providers/AuthProvider";
+
+// Configure your fonts
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const playfair = Playfair_Display({ 
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-playfair',
+  adjustFontFallback: false
+});
+
+const oswald = Oswald({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-oswald',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://travellersbeats.com'),
@@ -45,13 +67,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${playfair.variable} ${oswald.variable}`}>
       <body>
-        <AuthProvider>
+        <Providers>
           <Navbar />
           <main>{children}</main>
           <Footer />
-        </AuthProvider>
+        </Providers>
       </body>
     </html>
   );

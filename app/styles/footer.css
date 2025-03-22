@@ -3,7 +3,7 @@
     color: #ffffff;
     text-align: center;
     padding: 20px 20px;  /* Reduced padding */
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--font-oswald);
     font-size: 1rem;
     letter-spacing: 1px;
   }

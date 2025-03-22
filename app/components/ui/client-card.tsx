@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { useVideoPlayer } from "@/hooks/use-video-player";
-import { useIntersectionObserver } from "@/hooks/user-interaction-observer";
-import { cn } from "@/lib/utils";
-import styles from "@styles/capturedStories.module.css";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { useMediaPlayer } from "@hooks/use-media-player";
+import { useIntersectionObserver } from "@hooks/use-intersection-observer";
+import styles from "@/styles/capturedStories.module.css";
+import type { ClientData } from "@/types/client";
 
-interface ClientCardProps {
+interface ClientCardProps extends Partial<ClientData> {
   logoSrc: string;
   logoAlt: string;
   videoSrc: string;
@@ -25,15 +26,21 @@ export function ClientCard({
   
   const [isMobile, setIsMobile] = useState(false);
   const [loadedSrc, setLoadedSrc] = useState("");
+  const [hasInteracted, setHasInteracted] = useState(() => {
+    // Check if user has interacted before
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('hasInteractedWithCard') === 'true';
+    }
+    return false;
+  });
 
-  // Improved video player hook usage
-  const { isPlaying, isLoading, error, play, pause } = useVideoPlayer({
+  const { isPlaying, isLoading, error, play, pause } = useMediaPlayer({
     videoRef,
+    videoSrc,
     onPlay: () => console.log("Video started playing"),
     onPause: () => console.log("Video paused"),
   });
 
-  // Improved intersection observer usage
   const entry = useIntersectionObserver(cardRef, {
     threshold: 0.5,
     freezeOnceVisible: false,
@@ -41,12 +48,15 @@ export function ClientCard({
 
   const isInView = entry?.isIntersecting;
 
-  // Mobile detection
+  // Mobile detection with debounced resize handler
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const handleResize = debounce(() => {
+      setIsMobile(window.innerWidth <= 768);
+    }, 100);
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // Load video when in view
@@ -59,32 +69,24 @@ export function ClientCard({
   // Auto-pause when out of view on mobile
   useEffect(() => {
     if (isMobile && !isInView && isPlaying) {
-      // Add a small delay before pausing to avoid race conditions
-      const timeoutId = setTimeout(() => {
-        pause();
-      }, 50);
-      
-      return () => clearTimeout(timeoutId);
+      pause();
     }
   }, [isMobile, isInView, isPlaying, pause]);
 
-  // Event handlers
-  const handleMouseEnter = () => {
-    if (!isMobile) play();
-  };
-
-  const handleMouseLeave = () => {
-    if (!isMobile && isPlaying) {
-      // Add a small delay before pausing
-      setTimeout(() => {
-        pause();
-      }, 50);
+  const handleMouseEnter = () => !isMobile && play();
+  const handleMouseLeave = () => !isMobile && isPlaying && setTimeout(pause, 50);
+  const handleFirstInteraction = () => {
+    if (!hasInteracted) {
+      setHasInteracted(true);
+      localStorage.setItem('hasInteractedWithCard', 'true');
     }
   };
 
   const handleClick = () => {
-    if (!isMobile) return;
-    isPlaying ? pause() : play();
+    if (isMobile) {
+      handleFirstInteraction();
+      isPlaying ? pause() : play();
+    }
   };
 
   return (
@@ -93,6 +95,7 @@ export function ClientCard({
         className={cn(styles["card-inner"], {
           [styles["loading"]]: isLoading,
           [styles["error"]]: error,
+          [styles["not-interacted"]]: !hasInteracted && isMobile,
         })}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -111,11 +114,6 @@ export function ClientCard({
             className="object-contain w-auto h-auto"
             priority
           />
-          {isMobile && !isPlaying && (
-            <div className={styles["play-indicator"]}>
-              <span className={styles["play-icon"]} />
-            </div>
-          )}
         </div>
 
         <div

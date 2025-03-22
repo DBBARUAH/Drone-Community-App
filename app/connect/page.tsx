@@ -5,15 +5,16 @@ import Image from 'next/image';
 export default function Connect() {
   return (
     <section id="contactus" className="contactus">
-      <div className="container">
+      <div className="container p-0">
         {/* Left Column: Text */}
-        <div className="contact-text">
-          <h2>Connect with Us</h2>
-          <p>
-            Whether you're looking to enhance your aerial photography skills or
-            connect with professionals for aerial services, this is the place for
-            you. Sign up to connect with a community of enthusiasts and
-            professionals.
+        <div className="page-header-container">
+          <div className="flex flex-col items-center">
+            <h2 className="page-title">Contact Us</h2>
+            <div className="page-title-underline"></div>
+          </div>
+          <p className="page-description">
+            Whether you're interested in learning drone photography, exploring our
+            resources, or hiring our services, we'd love to hear from you.
           </p>
 
           {/* Follow Our Journey */}
@@ -58,9 +59,7 @@ export default function Connect() {
             <div>
               <label htmlFor="interests">Your Interests:</label>
               <select name="interests" id="interests">
-                <option value="learning">
-                  Learning Drone Photography/Videography
-                </option>
+                <option value="learning">Learning Drone Photography/Videography</option>
                 <option value="services">Exploring LUTs and Editing Resources</option>
                 <option value="community">Connecting with Drone Enthusiasts</option>
                 <option value="client">Hiring Professional Drone Services</option>
@@ -72,53 +71,6 @@ export default function Connect() {
           </form>
         </div>
       </div>
-
-      {/* Blog Highlights Section (Renamed classes) */}
-      <section className="connect-blog-highlights">
-        <div className="connect-blog-container">
-          <h2>BLOGS</h2>
-          <p>Stay updated with the latest insights and stories from Travellers Beats.</p>
-
-          <div className="connect-blog-grid">
-            <div className="connect-blog-card">
-              <Image
-                src="/images/blog1.jpg"
-                alt="Blog 1"
-                width={400}
-                height={300}
-                className="object-cover w-full h-full"
-              />
-              <div className="connect-blog-content">
-                <h3>How Drones Are Transforming Industries</h3>
-                <p>
-                  Discover how drones are revolutionizing photography, logistics,
-                  and more.
-                </p>
-              </div>
-            </div>
-
-            <div className="connect-blog-card">
-              <img src="/images/blog2.jpg" alt="Blog 2" />
-              <div className="connect-blog-content">
-                <h3>Tips for Capturing Stunning Aerial Shots</h3>
-                <p>Learn expert tips and tricks to take breathtaking drone photos.</p>
-              </div>
-            </div>
-
-            <div className="connect-blog-card">
-              <img src="/images/blog3.jpg" alt="Blog 3" />
-              <div className="connect-blog-content">
-                <h3>The Future of Drone Technology</h3>
-                <p>Explore the latest advancements shaping the future of drones.</p>
-              </div>
-            </div>
-          </div>
-
-          <a href="/blog" className="connect-more-blogs">
-            View More Blogs
-          </a>
-        </div>
-      </section>
     </section>
   );
 }

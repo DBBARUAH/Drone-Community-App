@@ -1,12 +1,10 @@
 /* All @import rules must come first */
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto+Flex:wght@100..1000&display=swap');
 @import url('@fortawesome/fontawesome-free/css/all.min.css');
-
 @import url('@/styles/container.css');
 @import url('@/styles/footer.css'); 
 @import url('@/styles/navbar.css'); 
 @import url('@/styles/connect.css');
-@import url('@/styles/blog.css');
 
 /* Then include Tailwind directives */
 
@@ -15,18 +13,18 @@
 @tailwind utilities;
 
 /* Global Box-Sizing Reset */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
 
 /* Global Font Styles */
-body, html {
-  font-family: 'Oswald', sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #000;
-  color: #fff;
-  line-height: 1.6;
+  body, html {
+    font-family: 'Oswald', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #000;
+    color: #fff;
+    line-height: 1.6;
 }
 
 /* Unified Typography System */
@@ -41,7 +39,7 @@ h2 {
 }
 
 /* Global Section Header Style */
-.section-header {
+  .section-header {
   @apply text-3xl md:text-4xl lg:text-5xl font-bold mb-0 text-center uppercase tracking-wider;
   font-family: 'Oswald', sans-serif;
   position: relative;
@@ -130,6 +128,13 @@ section p:not(.our-clients p):not(.contactus p):not([class*='text-white']),
   .section-header {
     @apply text-2xl md:text-3xl !important;
   }
+
+  input::placeholder,
+  textarea::placeholder,
+  select::placeholder {
+    font-size: 11px !important;
+    opacity: 1 !important;
+  }
 }
 
 /* Existing styles... */
@@ -157,13 +162,33 @@ p, button, select, textarea, input {
   }
 }
 
-/* Add this to your existing globals.css */
-@layer utilities {
-  .back-button-hover {
-    @apply transition-all duration-200 ease-in-out;
+/* Global placeholder styles */
+::placeholder {
+  font-family: var(--font-playfair);
+}
+
+:root {
+  --font-inter: var(--font-inter);
+  --font-playfair: var(--font-playfair);
+  --font-oswald: var(--font-oswald);
+}
+
+@layer components {
+  .page-header-container {
+    @apply text-center max-w-[900px] mx-auto px-4;
   }
-  
-  .back-button-hover:hover {
-    @apply -translate-x-1;
+
+  .page-title {
+    @apply text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight 
+      text-white uppercase mb-0 leading-none font-oswald;
+  }
+
+  .page-title-underline {
+    @apply mt-4 h-px w-40 bg-gradient-to-r from-transparent via-white/30 to-transparent;
+  }
+
+  .page-description {
+    @apply mt-4 text-base md:text-lg text-white/70 max-w-2xl leading-relaxed
+      font-light tracking-wide font-playfair text-center;
   }
 }

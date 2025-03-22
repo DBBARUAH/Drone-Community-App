@@ -62,7 +62,7 @@
   
   /* Main heading */
   .heroTitle {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--font-oswald);
     color: #fdfdfd;
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     font-size: 3.2rem;
@@ -75,7 +75,7 @@
   
   /* Subtitle text */
   .heroSubtitle {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-playfair);
     font-size: 1.1rem;
     font-weight: 300;
     line-height: 1.8;

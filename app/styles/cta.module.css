@@ -11,7 +11,7 @@
   
   /* Base style for a CTA button */
   .ctaButton {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-playfair);
     padding: 15px 30px;
     font-size: 1.1rem;
     font-weight: 500;

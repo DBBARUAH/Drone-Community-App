@@ -7,4 +7,5 @@ export interface ClientData {
   videoSrc: string;
   logoSrc: string;
   logoAlt: string;
+  overlayClassName?: string;
 } 

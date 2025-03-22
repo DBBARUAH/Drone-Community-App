@@ -68,7 +68,7 @@
   }
   
   .brandTitle {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--font-oswald);
     color: #fdfdfd;
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     font-size: 3.2rem;
@@ -80,7 +80,7 @@
   }
   
   .brandSubtitle {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-playfair);
     font-size: 1.1rem;
     font-weight: 300;
     line-height: 1.8;
@@ -111,7 +111,7 @@
   
   /* Input Styles */
   .inputLabel {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-playfair);
     display: block;
     font-size: 0.875rem;
     font-weight: 500;
@@ -139,7 +139,7 @@
     border: 1px solid rgba(75, 85, 99, 0.8);
     border-radius: 0.5rem;
     color: #fdfdfd;
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-playfair);
     font-size: 1rem;
     transition: all 0.3s ease;
   }
@@ -155,7 +155,7 @@
     width: 100%;
     background: #ffd700;
     color: #000;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--font-oswald);
     font-size: 1.1rem;
     font-weight: 500;
     padding: 0.75rem 1.5rem;
@@ -213,7 +213,7 @@
   }
   
   .dividerText {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-playfair);
     display: inline-block;
     padding: 0 1rem;
     color: #fdfdfd;
@@ -239,7 +239,7 @@
     border-radius: 0.5rem;
     background-color: rgba(55, 65, 81, 0.8);
     color: #fdfdfd;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--font-oswald);
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -264,7 +264,7 @@
     text-align: center;
     margin-top: 2rem;
     color: #fdfdfd;
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-playfair);
     font-size: 1rem;
   }
   

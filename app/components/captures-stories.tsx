@@ -1,25 +1,28 @@
 "use client";
 
 import React from "react";
-import { VideoPlayerProvider } from "@hooks/video-player-context";
-import { ClientCard } from "@/components/ui/client-card";
-import styles from "@styles/capturedStories.module.css";
-import Image from 'next/image';
+import { ClientCard } from "./ui/client-card";
+import { MediaPlayerProvider } from "./hooks/use-media-player";
+import styles from "@/styles/capturedStories.module.css";
+import type { ClientData } from "@/types/client";
 
-const clientData = [
+const clientData: Partial<ClientData>[] = [
   {
+    id: 1,
     logoSrc: "/images/texas_longhorns_1974-2004_a.png",
     logoAlt: "University of Texas Longhorns",
     videoSrc: "/videos/client1_UT_stadium.mp4",
     overlayClassName: styles["logo-overlay-longhorns"]
   },
   {
+    id: 2,
     logoSrc: "/images/Mozart_s_Logo_maroon_49a6a0a6-0b92-45e3-b8d7-06daa912d48e_300x300.png.avif",
     logoAlt: "Mozart's Coffee",
     videoSrc: "/videos/client2_mozarts.mp4",
     overlayClassName: styles["logo-overlay-mozarts"]
   },
   {
+    id: 3,
     logoSrc: "/images/tenlogo.webp",
     logoAlt: "TEN",
     videoSrc: "/videos/client3_TEN.mp4",
@@ -29,7 +32,7 @@ const clientData = [
 
 const CapturedStories: React.FC = () => {
   return (
-    <VideoPlayerProvider>
+    <MediaPlayerProvider>
       <section className="section-wrapper py-12 md:py-16">
         <div className="section-content">
           <div className={styles["our-clients"]}>
@@ -42,12 +45,12 @@ const CapturedStories: React.FC = () => {
               </div>
 
               <div className={styles["client-grid"]}>
-                {clientData.map((client, index) => (
+                {clientData.map((client) => (
                   <ClientCard
-                    key={index}
-                    logoSrc={client.logoSrc}
-                    logoAlt={client.logoAlt}
-                    videoSrc={client.videoSrc}
+                    key={client.id}
+                    logoSrc={client.logoSrc!}
+                    logoAlt={client.logoAlt!}
+                    videoSrc={client.videoSrc!}
                     overlayClassName={client.overlayClassName}
                   />
                 ))}
@@ -56,7 +59,7 @@ const CapturedStories: React.FC = () => {
           </div>
         </div>
       </section>
-    </VideoPlayerProvider>
+    </MediaPlayerProvider>
   );
 };
 
