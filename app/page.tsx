@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Hero from "@/components/hero";
 import CapturedStories from "@/components/captures-stories";
 import ContactUs from '@/components/contact-us';
-import { ReviewSection } from './components/testimonials-section';
+import { CommunityTestimonials } from './components/testimonials-section';
 import { FeatureSection } from './components/feature-section';
 
 export default function Home() {
@@ -24,7 +24,7 @@ export default function Home() {
             */
             // <Footer /> 
             }
-            <ReviewSection />
+            <CommunityTestimonials />
             <ContactUs />
         </>
     );

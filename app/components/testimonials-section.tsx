@@ -1,6 +1,4 @@
-import { TestimonialsSection as TestimonialsMarquee } from "@/components/ui/testimonials-with-marquee"
-import Image from 'next/image';
-
+import { TestimonialsMarquee } from "@/components/ui/testimonials-with-marquee"
 
 const testimonials = [
   {
@@ -58,7 +56,7 @@ const testimonials = [
   }
 ]
 
-export function ReviewSection() {
+export function CommunityTestimonials() {
   return (
     <TestimonialsMarquee
       title="TRUSTED BY THE COMMUNITY"
@@ -66,19 +64,4 @@ export function ReviewSection() {
       testimonials={testimonials}
     />
   )
-}
-
-export function TestimonialsSection() {
-  return (
-    <div>
-      <Image
-        src="/testimonial-user.jpg"
-        alt="Testimonial user"
-        width={64}
-        height={64}
-        className="rounded-full"
-      />
-      {/* Testimonial content */}
-    </div>
-  );
 }

@@ -1,3 +1,4 @@
+/* File: app/blog/[slug]/error.tsx */
 'use client';
 
 import { useEffect } from 'react';

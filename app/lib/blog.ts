@@ -1,3 +1,4 @@
+/* File: app/lib/blog.ts */
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -7,6 +8,7 @@ import { MDXRemote } from 'next-mdx-remote';
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeSlug from 'rehype-slug'
+import type { BlogPost, MDXFrontmatter } from '@/types/blog';
 
 const BLOG_DIRECTORY = path.join(process.cwd(), 'app/blog/content');
 
@@ -19,28 +21,14 @@ interface MDXError extends Error {
   reason?: string;
 }
 
-export interface BlogPost {
-  id: string;
-  slug: string;
-  title: string;
-  summary: string;
-  label: string;        // Primary category
-  author: string;
-  published: string;    // Date in "DD MMM YYYY" format
-  image: string;
-  url: string;         // URL path: /blog/slug
-  tags: string[];      // Array of related topics
-  content?: any; // MDX serialized content
-}
-
 // Add error handling type
 interface BlogError extends Error {
   code: string;
 }
 
 // Add validation for MDX frontmatter
-function validateFrontmatter(data: any): data is BlogPost {
-  const required = ['id', 'title', 'summary', 'author', 'published', 'image', 'tags'];
+function validateFrontmatter(data: any): data is MDXFrontmatter {
+  const required = ['id', 'title', 'published', 'author', 'summary', 'image', 'tags', 'label'];
   return required.every(field => data[field]);
 }
 
@@ -134,16 +122,16 @@ export async function getPost(slug: string): Promise<BlogPost | null> {
 
       return {
         id: data.id,
-        slug: slug,
         title: data.title,
+        published: data.published,
+        author: data.author,
         summary: data.summary,
         label: data.label,
-        author: data.author,
-        published: data.published,
         image: data.image,
         tags: data.tags,
-        content: mdxSource,
+        slug: slug,
         url: `/blog/${slug}`,
+        content: mdxSource,
       };
     } catch (error) {
       console.error(`Error processing MDX for ${slug}:`, error);
@@ -153,4 +141,4 @@ export async function getPost(slug: string): Promise<BlogPost | null> {
     console.error(`Error reading post ${slug}:`, error);
     return null;
   }
-} 
+}

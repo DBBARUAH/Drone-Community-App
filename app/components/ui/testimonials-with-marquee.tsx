@@ -15,7 +15,7 @@ interface TestimonialsMarqueeProps {
   className?: string; // Add back the className prop
 }
 
-export function TestimonialsSection({ 
+export function TestimonialsMarquee({ 
   title,
   description,
   testimonials,

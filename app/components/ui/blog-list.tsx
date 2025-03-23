@@ -1,27 +1,27 @@
+// file: app/components/ui/blog-list.tsx
 import { ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import type { BlogPost, BlogListProps } from "@/types/blog";
 import Link from "next/link";
 import { ResponsiveImage } from "@/components/ui/image";
-import { Badge } from "@/components/ui/badge";
 
-export function BlogList({
+const BlogList = ({
   heading = "BLOG",
   description = "Revolutionary drone techniques that are reshaping the industry: Cutting-edge insights for businesses and creators who want to stay ahead",
   posts,
-}: BlogListProps) {
+}: BlogListProps) => {
   return (
     <section className="pt-4 pb-12 md:pt-6 md:pb-16 lg:pt-8 lg:pb-20">
       <div className="container flex flex-col items-center gap-8 md:gap-12">
-        <header className="page-header-container">
+        <div className="page-header-container">
           <div className="flex flex-col items-center">
-            <h1 className="page-title">{heading}</h1>
+            <h2 className="page-title">{heading}</h2>
             <div className="page-title-underline"></div>
           </div>
           <p className="page-description">
             {description}
           </p>
-        </header>
+        </div>
 
         <div className="grid gap-y-10 sm:grid-cols-12 sm:gap-y-12 md:gap-y-16 lg:gap-y-20">
           {posts.map((post) => {
@@ -35,44 +35,42 @@ export function BlogList({
                 <div className="grid gap-y-6 sm:grid-cols-10 sm:gap-x-5 sm:gap-y-0 md:items-center md:gap-x-8 lg:gap-x-12 p-4 sm:p-6">
                   <div className="sm:col-span-5">
                     <div className="mb-4 md:mb-6">
-                      <div className="flex flex-wrap gap-2" role="list" aria-label="Post categories">
+                      <div className="flex flex-wrap gap-3 text-xs uppercase tracking-wider text-white/80 md:gap-5 lg:gap-6">
                         {allTags.map((tag) => (
-                          <Badge 
-                            key={tag}
-                            variant="outline"
-                            className="text-xs text-white/80 hover:text-white transition-colors"
+                          <span 
+                            key={tag} 
+                            className="hover:text-white transition-colors"
                           >
                             {tag}
-                          </Badge>
+                          </span>
                         ))}
                       </div>
                     </div>
-                    <h2 className="text-xl font-semibold md:text-2xl lg:text-3xl text-white">
+                    <h3 className="text-xl font-semibold md:text-2xl lg:text-3xl text-white">
                       <Link
                         href={post.url}
                         className="hover:underline decoration-1 underline-offset-4"
                       >
                         {post.title}
                       </Link>
-                    </h2>
+                    </h3>
                     <p className="mt-4 text-white/90 md:mt-5">
                       {post.summary}
                     </p>
                     <div className="mt-6 flex items-center space-x-4 text-sm md:mt-8">
                       <span className="text-white/80">{post.author}</span>
-                      <span className="text-white/80" aria-hidden="true">•</span>
-                      <time dateTime={post.published} className="text-white/80">
+                      <span className="text-white/80">•</span>
+                      <span className="text-white/80">
                         {post.published}
-                      </time>
+                      </span>
                     </div>
                     <div className="mt-6 flex items-center space-x-2 md:mt-8">
                       <Link
                         href={post.url}
                         className="inline-flex items-center font-semibold text-white hover:underline decoration-1 underline-offset-4 md:text-base group"
-                        aria-label={`Read more about ${post.title}`}
                       >
                         <span>Read more</span>
-                        <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                        <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
                       </Link>
                     </div>
                   </div>
@@ -81,7 +79,7 @@ export function BlogList({
                       <div className="aspect-[16/9] overflow-hidden rounded-lg border border-white/10 transition-all duration-300 hover:shadow-md">
                         <ResponsiveImage
                           src={post.image}
-                          alt={`Featured image for ${post.title}`}
+                          alt={post.title}
                           className="h-full w-full object-cover transition-all duration-500 hover:scale-105 hover:opacity-90"
                         />
                       </div>
@@ -95,4 +93,6 @@ export function BlogList({
       </div>
     </section>
   );
-} 
+};
+
+export { BlogList };
