@@ -1,12 +1,41 @@
+import createMDX from '@next/mdx'
+import remarkGfm from 'remark-gfm'
+import rehypeHighlight from 'rehype-highlight'
+import rehypeSlug from 'rehype-slug'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Add this to support MDX
-  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
-  
+  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   images: {
     domains: ['images.unsplash.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**', 
+      },
+    ],
   },
-  // ... other configurations
-};
+  experimental: {
+    serverComponentsExternalPackages: ['next-mdx-remote']
+  },
+  webpack: (config) => {
+    config.resolve.extensionAlias = {
+      '.js': ['.js', '.ts', '.tsx'],
+      '.jsx': ['.jsx', '.tsx'],
+    }
+    return config
+  },
+}
 
-export default nextConfig; 
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [rehypeHighlight, rehypeSlug],
+  },
+})
+
+export default withMDX(nextConfig)

@@ -88,12 +88,12 @@ export default async function BlogPostPage({
               src={post.image}
               alt={`A drone shot for ${post.title}`}
               className="h-full w-full object-cover"
-              style={{ objectFit: 'cover' }}
+              unoptimized={post.image.includes('unsplash.com')}
             />
           </figure>
         )}
 
-        <MDXRenderer source={post.content} />
+        {post.content && <MDXRenderer source={post.content} />}
       </div>
     </main>
   );

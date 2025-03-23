@@ -2,7 +2,6 @@
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { MDXComponents } from '@/components/mdx/components';
 
@@ -20,14 +19,28 @@ const LoadingSpinner = () => (
   </div>
 );
 
-// Import MDXRemote component only on the client side
-const MDXRemoteClient = dynamic(
-  () => import('next-mdx-remote').then(mod => mod.MDXRemote),
-  {
-    loading: LoadingSpinner,
-    ssr: false
+// Use a more reliable pattern for importing ESM modules
+// We create a wrapper component that does the dynamic import internally
+const MDXContent = ({ source }: { source: MDXRemoteSerializeResult }) => {
+  const [MDXRemote, setMDXRemote] = useState<React.ComponentType<any> | null>(null);
+
+  useEffect(() => {
+    // Import the MDXRemote component on the client side
+    import('next-mdx-remote')
+      .then((mod) => {
+        setMDXRemote(() => mod.MDXRemote);
+      })
+      .catch(err => {
+        console.error('Failed to load MDXRemote component:', err);
+      });
+  }, []);
+
+  if (!MDXRemote) {
+    return <LoadingSpinner />;
   }
-);
+
+  return <MDXRemote {...source} components={MDXComponents} />;
+};
 
 export default function MDXRenderer({ source }: MDXRendererProps) {
   const [isMounted, setIsMounted] = useState(false);
@@ -59,12 +72,7 @@ export default function MDXRenderer({ source }: MDXRendererProps) {
       prose-li:font-playfair prose-li:text-[1.1rem] prose-li:leading-[1.8] prose-li:text-[#ccc]
       [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
       <Suspense fallback={<LoadingSpinner />}>
-        {isMounted && (
-          <MDXRemoteClient 
-            {...source} 
-            components={MDXComponents}
-          />
-        )}
+        <MDXContent source={source} />
       </Suspense>
     </article>
   );
