@@ -1,8 +1,7 @@
 /* File: app/components/mdx/renderer.tsx */
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
+import { useState, useEffect } from 'react';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { MDXComponents } from '@/components/mdx/components';
 
@@ -10,7 +9,7 @@ interface MDXRendererProps {
   source: MDXRemoteSerializeResult;
 }
 
-// Create a simple loading component
+// Simple loading spinner component
 const LoadingSpinner = () => (
   <div className="text-center p-4" aria-label="Loading content">
     <div className="animate-pulse">
@@ -20,31 +19,25 @@ const LoadingSpinner = () => (
   </div>
 );
 
-// Import MDXRemote component only on the client side
-const MDXRemoteClient = dynamic(
-  () => import('next-mdx-remote').then(mod => mod.MDXRemote),
-  {
-    loading: LoadingSpinner,
-    ssr: false
-  }
-);
-
 export default function MDXRenderer({ source }: MDXRendererProps) {
-  const [isMounted, setIsMounted] = useState(false);
+  const [Component, setComponent] = useState<React.ComponentType<any> | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    setMounted(true);
+    // Import using dynamic import in useEffect
+    import('next-mdx-remote').then(mod => {
+      setComponent(() => mod.MDXRemote);
+    }).catch(err => {
+      console.error('Failed to load MDXRemote component:', err);
+    });
   }, []);
 
   if (!source) {
-    return (
-      <div className="text-center text-red-500" role="alert">
-        No content available
-      </div>
-    );
+    return null;
   }
 
-  if (!isMounted) {
+  if (!mounted || !Component) {
     return <LoadingSpinner />;
   }
 
@@ -58,14 +51,7 @@ export default function MDXRenderer({ source }: MDXRendererProps) {
       prose-ul:font-playfair prose-ul:text-[1.1rem] prose-ul:leading-[1.8] prose-ul:text-[#ccc]
       prose-li:font-playfair prose-li:text-[1.1rem] prose-li:leading-[1.8] prose-li:text-[#ccc]
       [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-      <Suspense fallback={<LoadingSpinner />}>
-        {isMounted && (
-          <MDXRemoteClient 
-            {...source} 
-            components={MDXComponents}
-          />
-        )}
-      </Suspense>
+      <Component {...source} components={MDXComponents} />
     </article>
   );
 } 

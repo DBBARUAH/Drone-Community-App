@@ -1,12 +1,37 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Add this to support MDX
-  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
-  
+  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   images: {
-    domains: ['images.unsplash.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**',
+        pathname: '**',
+      },
+    ],
   },
-  // ... other configurations
-};
+  webpack: (config) => {
+    // Fix for "Can't resolve 'fs'" error
+    config.resolve.fallback = { 
+      ...config.resolve.fallback,
+      fs: false,
+      path: false
+    };
+    
+    // Fix extension resolution
+    config.resolve.extensionAlias = {
+      '.js': ['.js', '.ts', '.tsx'],
+      '.jsx': ['.jsx', '.tsx'],
+    };
 
-export default nextConfig; 
+    return config;
+  },
+}
+
+// For development with Turbopack, use a simple configuration
+export default nextConfig
