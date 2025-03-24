@@ -9,7 +9,7 @@ interface MDXRendererProps {
   source: MDXRemoteSerializeResult;
 }
 
-// Create a simple loading component
+// A simple loading spinner component
 const LoadingSpinner = () => (
   <div className="text-center p-4" aria-label="Loading content">
     <div className="animate-pulse">
@@ -19,13 +19,15 @@ const LoadingSpinner = () => (
   </div>
 );
 
-// Use a more reliable pattern for importing ESM modules
-// We create a wrapper component that does the dynamic import internally
+/*
+  MDXContent dynamically imports the MDXRemote component.
+  We explicitly type MDXRemote as React.ComponentType<any>.
+  If next-mdx-remote updates its export types, make sure to update this type accordingly.
+*/
 const MDXContent = ({ source }: { source: MDXRemoteSerializeResult }) => {
   const [MDXRemote, setMDXRemote] = useState<React.ComponentType<any> | null>(null);
 
   useEffect(() => {
-    // Import the MDXRemote component on the client side
     import('next-mdx-remote')
       .then((mod) => {
         setMDXRemote(() => mod.MDXRemote);
@@ -76,4 +78,4 @@ export default function MDXRenderer({ source }: MDXRendererProps) {
       </Suspense>
     </article>
   );
-} 
+}

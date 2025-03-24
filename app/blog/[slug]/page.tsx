@@ -20,11 +20,12 @@ export async function generateStaticParams() {
 }
 
 // Generate metadata for the page
-export async function generateMetadata(props: {
-  params: Promise<{ slug: string }>;
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
 }): Promise<Metadata> {
-  const { slug } = await props.params;
-  const post = await getPost(slug);
+  const post = await getPost(params.slug);
   
   if (!post) {
     return {
@@ -32,6 +33,7 @@ export async function generateMetadata(props: {
       description: 'The requested blog post is missing or unavailable.',
     };
   }
+  
   return {
     title: `${post.title} | Drone Photography Blog`,
     description: post.summary,
@@ -39,11 +41,7 @@ export async function generateMetadata(props: {
 }
 
 // The page component
-export default async function BlogPostPage({
-  params
-}: {
-  params: { slug: string }
-}) {
+export default async function BlogPostPage({ params }) {
   const post = await getPost(params.slug);
   
   if (!post) {

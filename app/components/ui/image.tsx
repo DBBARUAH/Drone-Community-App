@@ -1,9 +1,10 @@
+/* File: app/components/ui/image.tsx */
 'use client';
 
 import Image from 'next/image';
 import { useState } from 'react';
 
-// Make sure this path exists in your public folder
+// Path to a local fallback image in your public folder
 const fallbackImage = '/images/placeholder.jpg';
 
 export interface ResponsiveImageProps {
@@ -27,14 +28,14 @@ export function ResponsiveImage({
 }: ResponsiveImageProps) {
   const [isError, setIsError] = useState(false);
 
-  // Always use unoptimized for external domains to bypass domain configuration issues
-  const isExternalDomain = src.startsWith('http') && !src.includes(window.location.hostname);
+  // Safely determine if the image source is from an external domain.
+  // We check if 'window' is defined before accessing it.
+  const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+  const isExternalDomain = src.startsWith('http') && (hostname ? !src.includes(hostname) : true);
   const shouldUseUnoptimized = unoptimized || isExternalDomain;
 
-  // Check if we need to use fill or explicit dimensions
+  // Decide whether to use fill mode (if width/height are not provided)
   const useFill = !width || !height;
-
-  // Use a local fallback if there's an error
   const imageSrc = isError ? fallbackImage : src;
 
   return (
@@ -63,4 +64,4 @@ export function ResponsiveImage({
       )}
     </div>
   );
-} 
+}
