@@ -1,7 +1,7 @@
 /* File: app/components/mdx/renderer.tsx */
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { MDXComponents } from '@/components/mdx/components';
 
@@ -9,7 +9,7 @@ interface MDXRendererProps {
   source: MDXRemoteSerializeResult;
 }
 
-// A simple loading spinner component
+// Simple loading spinner component
 const LoadingSpinner = () => (
   <div className="text-center p-4" aria-label="Loading content">
     <div className="animate-pulse">
@@ -19,47 +19,25 @@ const LoadingSpinner = () => (
   </div>
 );
 
-/*
-  MDXContent dynamically imports the MDXRemote component.
-  We explicitly type MDXRemote as React.ComponentType<any>.
-  If next-mdx-remote updates its export types, make sure to update this type accordingly.
-*/
-const MDXContent = ({ source }: { source: MDXRemoteSerializeResult }) => {
-  const [MDXRemote, setMDXRemote] = useState<React.ComponentType<any> | null>(null);
-
-  useEffect(() => {
-    import('next-mdx-remote')
-      .then((mod) => {
-        setMDXRemote(() => mod.MDXRemote);
-      })
-      .catch(err => {
-        console.error('Failed to load MDXRemote component:', err);
-      });
-  }, []);
-
-  if (!MDXRemote) {
-    return <LoadingSpinner />;
-  }
-
-  return <MDXRemote {...source} components={MDXComponents} />;
-};
-
 export default function MDXRenderer({ source }: MDXRendererProps) {
-  const [isMounted, setIsMounted] = useState(false);
+  const [Component, setComponent] = useState<React.ComponentType<any> | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    setMounted(true);
+    // Import using dynamic import in useEffect
+    import('next-mdx-remote').then(mod => {
+      setComponent(() => mod.MDXRemote);
+    }).catch(err => {
+      console.error('Failed to load MDXRemote component:', err);
+    });
   }, []);
 
   if (!source) {
-    return (
-      <div className="text-center text-red-500" role="alert">
-        No content available
-      </div>
-    );
+    return null;
   }
 
-  if (!isMounted) {
+  if (!mounted || !Component) {
     return <LoadingSpinner />;
   }
 
@@ -73,9 +51,7 @@ export default function MDXRenderer({ source }: MDXRendererProps) {
       prose-ul:font-playfair prose-ul:text-[1.1rem] prose-ul:leading-[1.8] prose-ul:text-[#ccc]
       prose-li:font-playfair prose-li:text-[1.1rem] prose-li:leading-[1.8] prose-li:text-[#ccc]
       [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-      <Suspense fallback={<LoadingSpinner />}>
-        <MDXContent source={source} />
-      </Suspense>
+      <Component {...source} components={MDXComponents} />
     </article>
   );
-}
+} 

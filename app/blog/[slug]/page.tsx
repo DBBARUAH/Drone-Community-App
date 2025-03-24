@@ -1,8 +1,7 @@
-/* File: app/blog/[slug]/page.tsx */
 import { notFound } from 'next/navigation';
-import { getAllPosts, getPost } from '@lib/blog';
-import { Badge } from '@components/ui/badge';
-import { ResponsiveImage } from '@components/ui/image';
+import { getAllPosts, getPost } from '@/lib/blog';
+import { Badge } from '@/components/ui/badge';
+import { ResponsiveImage } from '@/components/ui/image';
 import { BackButton } from '@/components/ui/back-button';
 import MDXRenderer from '@/components/mdx/renderer';
 import type { Metadata } from 'next';
@@ -20,29 +19,38 @@ export async function generateStaticParams() {
 }
 
 // Generate metadata for the page
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
-  const post = await getPost(params.slug);
-  
-  if (!post) {
+export async function generateMetadata(props: any): Promise<Metadata> {
+  try {
+    const post = await getPost(props.params.slug);
+    
+    if (!post) {
+      return {
+        title: 'Post Not Found',
+        description: 'The requested blog post is missing or unavailable.',
+      };
+    }
+
     return {
-      title: 'Post Not Found',
-      description: 'The requested blog post is missing or unavailable.',
+      title: `${post.title} | Drone Photography Blog`,
+      description: post.summary,
+      openGraph: {
+        title: post.title,
+        description: post.summary,
+        images: [post.image],
+      },
+    };
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+    return {
+      title: 'Error',
+      description: 'There was an error loading this blog post.',
     };
   }
-  
-  return {
-    title: `${post.title} | Drone Photography Blog`,
-    description: post.summary,
-  };
 }
 
 // The page component
-export default async function BlogPostPage({ params }) {
-  const post = await getPost(params.slug);
+export default async function BlogPostPage(props: any) {
+  const post = await getPost(props.params.slug);
   
   if (!post) {
     notFound();
