@@ -5,6 +5,7 @@ import Navbar from "@/components/nav-bar";
 import Footer from "@/components/footer";
 import { Inter, Playfair_Display, Oswald } from 'next/font/google';
 import { Providers } from './providers'
+import { Analytics } from "@vercel/analytics/react"
 // import { AuthProvider } from "@/providers/AuthProvider";
 
 // Configure your fonts
@@ -74,6 +75,7 @@ export default function RootLayout({
           <main>{children}</main>
           <Footer />
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
