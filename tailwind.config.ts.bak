@@ -26,6 +26,8 @@ const tailwindConfig: Config = {
         container: "1280px",
       },
       animation: {
+        'accordion-down': 'accordion-down 0.2s ease-out',
+  			'accordion-up': 'accordion-up 0.2s ease-out',
         'shimmer-slide': 'shimmer-slide var(--speed) ease-in-out infinite alternate',
         'spin-around': 'spin-around calc(var(--speed) * 2) infinite linear',
         'marquee-slower': 'marquee var(--duration) linear infinite',
@@ -34,6 +36,22 @@ const tailwindConfig: Config = {
         "fade-down": "fade-down 0.5s ease-out forwards",
       },
       keyframes: {
+        'accordion-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-accordion-content-height)'
+  				}
+  			},
+  			'accordion-up': {
+  				from: {
+  					height: 'var(--radix-accordion-content-height)'
+  				},
+  				to: {
+  					height: '0'
+  				}
+  			},
         'spin-around': {
           '0%': { transform: 'translateZ(0) rotate(0)' },
           '15%, 35%': { transform: 'translateZ(0) rotate(90deg)' },
@@ -69,8 +87,8 @@ const tailwindConfig: Config = {
         },
       },
       colors: {
-        background: "#000000",       // or whatever main background you want
-        foreground: "#ffffff",       // or your main text color
+        background: 'hsl(var(--background))',
+  			foreground: 'hsl(var(--foreground))',
         "muted-foreground": "#fafafa",  // for secondary or muted text
         border: "hsl(var(--border))",        // Added from JS config
         input: "hsl(var(--input))",          // Added from JS config
@@ -103,6 +121,23 @@ const tailwindConfig: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        chart: {
+  				'1': 'hsl(var(--chart-1))',
+  				'2': 'hsl(var(--chart-2))',
+  				'3': 'hsl(var(--chart-3))',
+  				'4': 'hsl(var(--chart-4))',
+  				'5': 'hsl(var(--chart-5))'
+  			},
+  			sidebar: {
+  				DEFAULT: 'hsl(var(--sidebar-background))',
+  				foreground: 'hsl(var(--sidebar-foreground))',
+  				primary: 'hsl(var(--sidebar-primary))',
+  				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+  				accent: 'hsl(var(--sidebar-accent))',
+  				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+  				border: 'hsl(var(--sidebar-border))',
+  				ring: 'hsl(var(--sidebar-ring))'
+  			}
       },
       borderRadius: {                        // Added from JS config
         lg: "var(--radius)",

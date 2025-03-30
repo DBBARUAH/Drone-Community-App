@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription } from "./blog-card";
 import type { BlogPost, BlogListProps } from "@/types/blog";
 import Link from "next/link";
 import { ResponsiveImage } from "@/components/ui/image";

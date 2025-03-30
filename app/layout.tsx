@@ -1,7 +1,8 @@
 // app/layout.tsx
+import type React from "react"
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/components/nav-bar";
+import { Navbar } from "@/components/navbar"
 import Footer from "@/components/footer";
 import { Inter, Playfair_Display, Oswald } from 'next/font/google';
 import { Providers } from './providers'
@@ -10,10 +11,11 @@ import { Analytics } from "@vercel/analytics/react"
 
 // Configure your fonts
 const inter = Inter({ 
-  subsets: ['latin'],
-  display: 'swap',
+  subsets: ["latin"],
   variable: '--font-inter',
-});
+  display: 'swap',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+})
 
 const playfair = Playfair_Display({ 
   subsets: ['latin'],
@@ -32,12 +34,12 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://travellersbeats.com'),
   title: {
     default: 'Travellers Beats',
-    template: '%s | Travellers Beats'
+    template: '%s | Travellers Beats Drone Community'
   },
-  description: 'Drone Photography and Videography Community',
+  description: "Connect with passionate drone creators, explore our signature presets, inspire through your aerial artistry",
   openGraph: {
     title: 'Travellers Beats',
-    description: 'Drone Photography and Videography Community',
+    description: 'Connect with passionate drone creators, explore our signature presets, inspire through your aerial artistry',
     siteName: 'Travellers Beats',
     locale: 'en_US',
     type: 'website',
@@ -69,6 +71,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${oswald.variable} dark`} suppressHydrationWarning>
+      <head>
+        <style>
+          {`
+            :root {
+              --font-sans: var(--font-inter);
+            }
+          `}
+        </style>
+      </head>
       <body className="min-h-screen bg-black">
         <Providers>
           <Navbar />
