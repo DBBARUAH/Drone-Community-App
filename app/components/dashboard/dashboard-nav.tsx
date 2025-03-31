@@ -66,12 +66,14 @@ export function DashboardNav({ className, userRole = "client" }: DashboardNavPro
           key={item.href}
           href={item.href}
           className={cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-accent font-sans",
+            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-accent",
             pathname === item.href ? "bg-accent" : "transparent",
+            "font-sans tracking-tight",
+            "text-foreground/80 hover:text-foreground"
           )}
         >
           <item.icon className="h-4 w-4" />
-          <span className="font-sans">{item.title}</span>
+          <span>{item.title}</span>
         </Link>
       ))}
     </nav>

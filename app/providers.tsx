@@ -1,22 +1,22 @@
 'use client'
 
-import { ThemeProvider as NextThemesProvider } from 'next-themes'
+import { UserProvider } from '@auth0/nextjs-auth0/client'
+import { ThemeProvider } from 'next-themes'
 import { NextUIProvider } from '@nextui-org/react'
-import { FontProvider } from '@/components/font'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <NextThemesProvider
-      attribute="class"
-      defaultTheme="dark"
-      enableSystem={false}
-      disableTransitionOnChange
-    >
-      <FontProvider>
+    <UserProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="dark"
+        enableSystem={false}
+        disableTransitionOnChange
+      >
         <NextUIProvider>
           {children}
         </NextUIProvider>
-      </FontProvider>
-    </NextThemesProvider>
+      </ThemeProvider>
+    </UserProvider>
   )
 } 

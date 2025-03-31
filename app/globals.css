@@ -29,7 +29,13 @@
 }
 
 /* Dashboard-specific override - ensure Inter font */
-.dashboard-fonts body,
+.dashboard-fonts,
+.dashboard-fonts * {
+  font-family: var(--font-inter, 'Inter', system-ui, sans-serif) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .dashboard-fonts button,
 .dashboard-fonts input,
 .dashboard-fonts select,
@@ -43,7 +49,13 @@
 .dashboard-fonts p,
 .dashboard-fonts div,
 .dashboard-fonts span,
-.dashboard-fonts a {
+.dashboard-fonts a,
+.dashboard-fonts li,
+.dashboard-fonts ul,
+.dashboard-fonts table,
+.dashboard-fonts tr,
+.dashboard-fonts td,
+.dashboard-fonts th {
   font-family: var(--font-inter, 'Inter', system-ui, sans-serif) !important;
 }
 

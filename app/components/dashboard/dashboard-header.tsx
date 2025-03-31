@@ -22,12 +22,16 @@ export function DashboardHeader() {
               placeholder="Search..."
               startContent={<Search className="h-4 w-4 text-foreground-400" />}
               className="w-full font-sans"
+              classNames={{
+                input: "font-sans",
+                inputWrapper: "font-sans",
+              }}
             />
           </div>
           <ThemeToggle />
           <Button isIconOnly variant="flat" size="sm" className="relative">
             <Bell className="h-4 w-4" />
-            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-sans text-primary-foreground">
               3
             </span>
           </Button>
