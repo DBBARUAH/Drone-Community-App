@@ -1,10 +1,10 @@
 // pages/index.js (Home Page)
 import Head from 'next/head';
-import Hero from "@/components/hero";
-import CapturedStories from "@/components/captures-stories";
+import Hero from "@/components/home/hero";
+import CapturedStories from "@/components/home/captures-stories";
 import ContactUs from '@/components/contact-us';
-import { CommunityTestimonials } from './components/testimonials-section';
-import { FeatureSection } from './components/feature-section';
+import { CommunityTestimonials } from './components/home/testimonials-section';
+import { DroneFeatureSection } from './components/home/feature-section';
 
 export default function Home() {
     return (
@@ -16,7 +16,7 @@ export default function Home() {
             </Head>
             {/* <Navbar /> */}
             <Hero />
-            <FeatureSection />
+            <DroneFeatureSection />
             <CapturedStories />
             {/* <Clients />
             <AboutUs />

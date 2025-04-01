@@ -1,6 +1,6 @@
 // app/components/Hero.tsx
-import CtaButtons from './cta-buttons';
-import styles from '../styles/hero.module.css';
+import CtaButtons from '@components/cta-buttons';
+import styles from '@styles/hero.module.css';
 
 export default function Hero() {
   return (

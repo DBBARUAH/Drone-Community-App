@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { ClientCard } from "./ui/client-card";
-import { MediaPlayerProvider } from "./hooks/use-media-player";
-import styles from "@/styles/capturedStories.module.css";
+import { ClientCard } from "@components/ui/client-card";
+import { MediaPlayerProvider } from "@hooks/use-media-player";
+import styles from "@styles/capturedStories.module.css";
 import type { ClientData } from "@/types/client";
 
 const clientData: Partial<ClientData>[] = [
