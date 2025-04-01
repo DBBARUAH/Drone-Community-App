@@ -157,7 +157,7 @@ export function EnhancedFeatureSection({
                           </Badge>
                         )}
                       </div>
-                      <p className="feature-description text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
+                      <p className="feature-description">{feature.description}</p>
                       {feature.cta && (
                         <Button variant="link" className="p-0 h-auto text-primary" asChild>
                           <a href={feature.cta.href}>
