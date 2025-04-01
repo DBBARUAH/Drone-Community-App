@@ -12,19 +12,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LogOut, Settings, User, Camera } from "lucide-react"
+import { LogOut, Settings, User, Camera, Home } from "lucide-react"
 import Link from "next/link"
 import { useAuth } from "@/hooks/useAuth"
+import { usePathname } from "next/navigation"
 
-export function UserNav() {
+interface UserNavProps {
+  showHomeLink?: boolean;
+}
+
+export function UserNav({ showHomeLink }: UserNavProps) {
   const { user, isAuthenticated, isLoading, isPhotographer, isClient } = useAuth()
+  const pathname = usePathname()
+  const isDashboard = pathname?.startsWith("/dashboard")
   
   // Fallback for loading state
   if (isLoading) {
     return (
-      <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-        <Avatar className="h-8 w-8">
-          <AvatarFallback>...</AvatarFallback>
+      <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+        <Avatar className="h-9 w-9 border border-primary/10">
+          <AvatarFallback className="bg-muted">...</AvatarFallback>
         </Avatar>
       </Button>
     )
@@ -33,9 +40,9 @@ export function UserNav() {
   // Fallback if not authenticated
   if (!isAuthenticated || !user) {
     return (
-      <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-        <Avatar className="h-8 w-8">
-          <AvatarFallback>?</AvatarFallback>
+      <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+        <Avatar className="h-9 w-9 border border-primary/10">
+          <AvatarFallback className="bg-muted">?</AvatarFallback>
         </Avatar>
       </Button>
     )
@@ -48,10 +55,10 @@ export function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0">
+          <Avatar className="h-9 w-9 border border-primary/10">
             <AvatarImage src={user.picture || "/placeholder-user.jpg"} alt={user.name || "User"} />
-            <AvatarFallback>
+            <AvatarFallback className="text-xs font-medium">
               {user.name
                 ? user.name
                     .split(" ")
@@ -90,27 +97,37 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          {showHomeLink && (
+            <DropdownMenuItem asChild>
+              <Link href="/" className="w-full cursor-pointer">
+                <Home className="mr-2 h-4 w-4" />
+                <span>Back to Home</span>
+              </Link>
+            </DropdownMenuItem>
+          )}
+          {!isDashboard && (
+            <DropdownMenuItem asChild>
+              <Link href="/dashboard" className="w-full cursor-pointer">
+                <User className="mr-2 h-4 w-4" />
+                <span>Dashboard</span>
+              </Link>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem asChild>
-            <Link href="/dashboard" className="w-full">
-              <User className="mr-2 h-4 w-4" />
-              <span>Dashboard</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href="/dashboard/profile" className="w-full">
+            <Link href="/dashboard/profile" className="w-full cursor-pointer">
               <User className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/dashboard/settings" className="w-full">
+            <Link href="/dashboard/settings" className="w-full cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleLogout} className="w-full">
+        <DropdownMenuItem onClick={handleLogout} className="w-full cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>

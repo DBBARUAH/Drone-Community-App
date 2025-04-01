@@ -18,6 +18,7 @@ export function DashboardNav({ className, userRole = "client" }: DashboardNavPro
       title: "Overview",
       href: "/dashboard",
       icon: LayoutDashboard,
+      exactMatch: true,
     },
     {
       title: "Bookings",
@@ -60,22 +61,36 @@ export function DashboardNav({ className, userRole = "client" }: DashboardNavPro
     : baseNavItems;
 
   return (
-    <nav className={cn("flex flex-col space-y-1 py-4 font-sans", className)}>
-      {navItems.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className={cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-accent",
-            pathname === item.href ? "bg-accent" : "transparent",
-            "font-sans tracking-tight",
-            "text-foreground/80 hover:text-foreground"
-          )}
-        >
-          <item.icon className="h-4 w-4" />
-          <span>{item.title}</span>
-        </Link>
-      ))}
+    <nav className={cn("flex flex-col space-y-2 py-4 font-sans", className)}>
+      {navItems.map((item) => {
+        // For the dashboard overview page, only highlight if paths match exactly
+        // For all other pages, check if current pathname starts with the nav item's href
+        // This prevents the Dashboard (overview) from being highlighted when in other sections
+        const isActive = item.exactMatch 
+          ? pathname === item.href 
+          : pathname === item.href || (pathname?.startsWith(`${item.href}/`) && item.href !== "/dashboard");
+        
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={cn(
+              "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all",
+              isActive 
+                ? "bg-primary/10 text-primary" 
+                : "text-foreground/70 hover:bg-accent hover:text-foreground",
+              "font-sans tracking-tight"
+            )}
+          >
+            <item.icon className={cn("h-4 w-4", isActive ? "text-primary" : "opacity-70")} />
+            <span>{item.title}</span>
+            
+            {isActive && (
+              <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary"></div>
+            )}
+          </Link>
+        )
+      })}
     </nav>
   )
 }

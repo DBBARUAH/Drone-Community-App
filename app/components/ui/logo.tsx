@@ -1,9 +1,14 @@
 import Image from "next/image"
 import Link from "next/link"
+import { cn } from "@/lib/utils"
 
-export function Logo() {
+interface LogoProps {
+  className?: string
+}
+
+export function Logo({ className }: LogoProps) {
   return (
-    <Link href="/" className="flex items-center gap-2">
+    <Link href="/" className={cn("flex items-center gap-2", className)}>
       <Image
         src="/images/logo_color.jpg"
         alt="Travellers Beats Logo"

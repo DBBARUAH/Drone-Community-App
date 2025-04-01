@@ -2,7 +2,9 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { LogOut, Menu, User, Camera } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 import { Logo } from "@/components/ui/logo"
 import { Button } from "@/components/ui/button"
@@ -20,14 +22,20 @@ import { useAuth } from "@/hooks/useAuth"
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const { user, isAuthenticated, isLoading, isPhotographer } = useAuth()
+  const pathname = usePathname()
 
   // Handle Auth0 logout
   const handleLogout = () => {
     window.location.href = "/api/auth/logout"
   }
 
+  const isDashboard = pathname?.startsWith("/dashboard")
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b">
+    <header className={cn(
+      "fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b",
+      isDashboard ? "md:flex hidden" : "flex"
+    )}>
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}

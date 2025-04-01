@@ -130,4 +130,28 @@
   font-variation-settings: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dashboard layout styles */
+.dashboard {
+  min-height: 100vh;
+  padding-top: 4rem; /* Space for fixed header */
+}
+
+/* Ensure content doesn't get hidden under fixed elements */
+.dashboard main {
+  position: relative;
+  z-index: 1;
+}
+
+/* Prevent content from being hidden under fixed header */
+.dashboard-content {
+  padding-top: 1rem;
+}
+
+/* Ensure proper spacing for mobile navigation */
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding-bottom: 4rem; /* Space for mobile navigation */
+  }
 } 
