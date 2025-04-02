@@ -84,7 +84,7 @@ export function EnhancedFeatureSection({
       ref={sectionRef}
       className={cn(
         "relative py-20 overflow-hidden",
-        darkMode ? "bg-slate-900 text-white" : "bg-background",
+        darkMode ? "bg-slate-900 text-white" : "bg-background text-foreground",
         className,
       )}
     >

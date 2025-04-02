@@ -150,6 +150,11 @@ section p:not(.our-clients p):not(.contactus p):not([class*='text-white']),
   max-width: none !important;
   font-weight: 400 !important;
   letter-spacing: 0 !important;
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+/* Dark theme specific feature description */
+.dark .feature-description {
   color: rgba(255, 255, 255, 0.9) !important;
 }
 

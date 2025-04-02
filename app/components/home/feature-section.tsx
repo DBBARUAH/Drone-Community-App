@@ -58,6 +58,7 @@ export function DroneFeatureSection() {
       subtitle="Aerial Excellence"
       features={droneFeatures}
       autoPlayInterval={6000}
+      darkMode={false}
     />
   )
 }
