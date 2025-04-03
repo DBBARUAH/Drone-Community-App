@@ -80,13 +80,13 @@ export function Navbar() {
   return (
     <header 
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        "bg-background/95 backdrop-blur-md",
+        "fixed top-0 left-0 right-0 z-[100] transition-all duration-300",
+        "bg-background/98 backdrop-blur-md",
         scrolled ? "shadow-md" : "border-b border-border/10",
         isDashboard ? "md:flex hidden" : "flex"
       )}
     >
-      <div className="container mx-auto px-4 py-3">
+      <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">

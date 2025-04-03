@@ -166,7 +166,7 @@ export default function Hero() {
   }
 
   return (
-    <section className="relative w-full min-h-[90vh] flex flex-col items-center justify-center overflow-hidden bg-black pt-20">
+    <section className="relative w-full min-h-[90vh] flex flex-col items-center justify-center overflow-hidden bg-black pt-28">
       {/* Decorative elements */}
       <div className={styles.noisePattern}></div>
       <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[100px] z-0"></div>
