@@ -1,21 +1,17 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/useAuth"
 import { Separator } from "@/components/ui/separator"
 import Image from "next/image"
 
-// Component to handle searchParams related logic
-function SignInForm() {
-  const searchParams = useSearchParams();
-  const initialRole = (searchParams?.get('role') || 'client') as 'client' | 'photographer';
-  const hideOtherRoles = searchParams?.get('hideOtherRoles') === 'true';
-  const [role, setRole] = useState<'client' | 'photographer'>(initialRole);
+export default function SignInPage() {
+  const [role, setRole] = useState<'client' | 'photographer'>('client');
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
@@ -80,77 +76,27 @@ function SignInForm() {
     );
   }
 
-  // Custom heading based on role
-  const getSignInHeading = () => {
-    if (hideOtherRoles) {
-      if (role === 'client') {
-        return "Sign In as Client";
-      } else {
-        return "Sign In as Photographer";
-      }
-    }
-    return "Sign In";
-  };
-
-  // Custom description based on role
-  const getSignInDescription = () => {
-    if (hideOtherRoles) {
-      if (role === 'client') {
-        return "Find and connect with aerial photographers";
-      } else {
-        return "Join our community of aerial creators";
-      }
-    }
-    return "Choose your role and sign in method";
-  };
-
   return (
     <div className="container flex h-screen items-center justify-center">
       <Card className="mx-auto max-w-sm w-full">
         <CardHeader>
-          <CardTitle className="text-2xl">{getSignInHeading()}</CardTitle>
-          <CardDescription>{getSignInDescription()}</CardDescription>
+          <CardTitle className="text-2xl">Sign In</CardTitle>
+          <CardDescription>Choose your role and sign in method</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {!hideOtherRoles ? (
-            <RadioGroup
-              defaultValue={role}
-              onValueChange={(value) => setRole(value as 'client' | 'photographer')}
-            >
-              <div className="flex items-center space-x-2 border rounded-md p-4">
-                <RadioGroupItem value="client" id="client" />
-                <label htmlFor="client">I'm a Client</label>
-              </div>
-              <div className="flex items-center space-x-2 border rounded-md p-4">
-                <RadioGroupItem value="photographer" id="photographer" />
-                <label htmlFor="photographer">I'm a Photographer</label>
-              </div>
-            </RadioGroup>
-          ) : (
-            <div className="border rounded-md p-4 bg-muted/30">
-              {role === 'client' ? (
-                <div className="flex items-center justify-between">
-                  <span>Signing in as Client</span>
-                  <Link 
-                    href="/signin" 
-                    className="text-xs text-primary hover:underline"
-                  >
-                    Change role
-                  </Link>
-                </div>
-              ) : (
-                <div className="flex items-center justify-between">
-                  <span>Signing in as Photographer</span>
-                  <Link 
-                    href="/signin" 
-                    className="text-xs text-primary hover:underline"
-                  >
-                    Change role
-                  </Link>
-                </div>
-              )}
+          <RadioGroup
+            defaultValue="client"
+            onValueChange={(value) => setRole(value as 'client' | 'photographer')}
+          >
+            <div className="flex items-center space-x-2 border rounded-md p-4">
+              <RadioGroupItem value="client" id="client" />
+              <label htmlFor="client">I'm a Client</label>
             </div>
-          )}
+            <div className="flex items-center space-x-2 border rounded-md p-4">
+              <RadioGroupItem value="photographer" id="photographer" />
+              <label htmlFor="photographer">I'm a Photographer</label>
+            </div>
+          </RadioGroup>
           
           <div className="space-y-2 pt-2">
             <Button 
@@ -208,7 +154,7 @@ function SignInForm() {
         <CardFooter className="text-sm text-center text-muted-foreground">
           Don't have an account?{" "}
           <Link 
-            href={hideOtherRoles ? `/signup?role=${role}&hideOtherRoles=true` : "/signup"} 
+            href="/signup" 
             className="text-primary hover:underline ml-1"
           >
             Sign up
@@ -217,14 +163,5 @@ function SignInForm() {
       </Card>
     </div>
   )
-}
-
-// Main component with Suspense
-export default function SignInPage() {
-  return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><p>Loading...</p></div>}>
-      <SignInForm />
-    </Suspense>
-  );
 }
 

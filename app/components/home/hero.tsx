@@ -90,13 +90,13 @@ export default function Hero() {
         // If already a client, go to client dashboard
         router.push('/dashboard/client')
       } else if (isPhotographer) {
-        // If photographer trying to access client features,
-        // direct to role-specific signin page
-        router.push('/signin?role=client&hideOtherRoles=true')
+        // If photographer, ask if they want to switch roles or go to their dashboard
+        setUserRole('client')
+        router.push('/dashboard/client')
       }
     } else {
       // If not authenticated, go to auth page with client role preselected
-      router.push('/signin?role=client&hideOtherRoles=true')
+      router.push('/auth/signin?role=client')
     }
   }
 
@@ -108,13 +108,13 @@ export default function Hero() {
         // If already a photographer, go to photographer dashboard
         router.push('/dashboard/photographer')
       } else if (isClient) {
-        // If client trying to access photographer features,
-        // direct to role-specific signin page
-        router.push('/signin?role=photographer&hideOtherRoles=true')
+        // If client, ask if they want to switch roles or go to their dashboard
+        setUserRole('photographer')
+        router.push('/dashboard/photographer')
       }
     } else {
       // If not authenticated, go to auth page with photographer role preselected
-      router.push('/signin?role=photographer&hideOtherRoles=true')
+      router.push('/auth/signin?role=photographer')
     }
   }
 
@@ -166,7 +166,7 @@ export default function Hero() {
   }
 
   return (
-    <section className="relative w-full min-h-[90vh] flex flex-col items-center justify-center overflow-hidden bg-black pt-28">
+    <section className="relative w-full min-h-[90vh] flex flex-col items-center justify-center overflow-hidden bg-black pt-20">
       {/* Decorative elements */}
       <div className={styles.noisePattern}></div>
       <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[100px] z-0"></div>
@@ -203,7 +203,7 @@ export default function Hero() {
           initial="hidden"
           animate="visible"
           variants={containerVariants}
-          className="text-center max-w-4xl mx-auto space-y-8 mt-12"
+          className="text-center max-w-4xl mx-auto space-y-8 -mt-16"
         >
           {/* Main heading with gradient */}
           <motion.h1 
