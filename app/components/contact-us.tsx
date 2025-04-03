@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+import { motion, useAnimation } from "framer-motion"
 import { useForm } from "react-hook-form"
 import { CheckCircle2, Send } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
@@ -48,6 +48,16 @@ export default function ContactUs() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [animationLoaded, setAnimationLoaded] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+  const controls = useAnimation()
+
+  useEffect(() => {
+    setIsMounted(true)
+    // Only start animations after component is mounted
+    if (isMounted) {
+      controls.start("visible")
+    }
+  }, [isMounted, controls])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -121,7 +131,7 @@ export default function ContactUs() {
       <div className="container px-4 md:px-6">
         <motion.div
           initial="hidden"
-          whileInView="visible"
+          animate={controls}
           viewport={{ once: true, amount: 0.2 }}
           variants={containerVariants}
           className="flex flex-col items-center text-center mb-12"
@@ -142,7 +152,7 @@ export default function ContactUs() {
           {/* Left Column: Text and Social Links */}
           <motion.div
             initial="hidden"
-            whileInView="visible"
+            animate={controls}
             viewport={{ once: true, amount: 0.2 }}
             variants={containerVariants}
             className="flex flex-col justify-center"
@@ -231,7 +241,7 @@ export default function ContactUs() {
           {/* Right Column: Form */}
           <motion.div
             initial="hidden"
-            whileInView="visible"
+            animate={controls}
             viewport={{ once: true, amount: 0.2 }}
             variants={containerVariants}
             className="relative"
