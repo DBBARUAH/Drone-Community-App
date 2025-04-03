@@ -1,29 +1,68 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LogOut, Menu, User, Camera } from "lucide-react"
+import { 
+  LogOut, Menu, User, Camera, ChevronDown, 
+  Home, Feather, Star, Store, MapPin, 
+  Users, Palette, HelpCircle, X
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 
 import { Logo } from "@/components/ui/logo"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useAuth } from "@/hooks/useAuth"
 import { ThemeToggle } from "@/components/dashboard/theme-toggle"
 
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+import { ScrollArea } from "@/components/ui/scroll-area"
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const { user, isAuthenticated, isLoading, isPhotographer, logout } = useAuth()
   const pathname = usePathname()
+  const [scrolled, setScrolled] = useState(false)
+
+  // Add scroll listener for transparent to solid effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const offset = window.scrollY
+      if (offset > 50) {
+        setScrolled(true)
+      } else {
+        setScrolled(false)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
 
   // Handle Auth0 logout
   const handleLogout = () => {
@@ -31,45 +70,153 @@ export function Navbar() {
   }
 
   const isDashboard = pathname?.startsWith("/dashboard")
+  
+  // Only show the navbar on non-dashboard pages, or on desktop for dashboard
+  if (isDashboard && typeof window !== "undefined" && window.innerWidth < 768) {
+    return null
+  }
 
   return (
-    <header className={cn(
-      "fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b",
-      isDashboard ? "md:flex hidden" : "flex"
-    )}>
+    <header 
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        "bg-background/95 backdrop-blur-md",
+        scrolled ? "shadow-md" : "border-b border-border/10",
+        isDashboard ? "md:flex hidden" : "flex"
+      )}
+    >
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Logo />
+          <div className="flex items-center gap-2">
+            <Logo className="h-10 w-auto" />
+            <span className="font-playfair text-lg font-semibold hidden sm:block">
+              Travellers <span className="text-primary">Beats</span>
+            </span>
+          </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-sm font-medium transition-colors hover:text-primary">
-              Home
-            </Link>
-            <Link href="/services" className="text-sm font-medium transition-colors hover:text-primary">
-              Services
-            </Link>
-            <Link href="/blog" className="text-sm font-medium transition-colors hover:text-primary">
-              Blog
-            </Link>
-            <Link href="/#aboutus" className="text-sm font-medium transition-colors hover:text-primary">
-              About Us
-            </Link>
-          </nav>
+          <NavigationMenu className="hidden md:flex">
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <Link href="/" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    <Home className="mr-2 h-4 w-4" />
+                    Home
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>
+                  <Store className="mr-2 h-4 w-4" />
+                  Services
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="w-[400px] p-4 md:w-[500px] lg:w-[600px]">
+                    <div className="grid grid-cols-2 gap-4">
+                      <Link href="/services/luts" legacyBehavior passHref>
+                        <NavigationMenuLink 
+                          className="flex flex-col gap-2 rounded-md p-3 hover:bg-accent hover:text-accent-foreground"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                              <Palette className="h-5 w-5 text-primary" />
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium">LUTs & Presets</div>
+                              <div className="text-xs text-muted-foreground">Professional color grading for your footage</div>
+                            </div>
+                          </div>
+                        </NavigationMenuLink>
+                      </Link>
+                      
+                      <Link href="/services/rentals" legacyBehavior passHref>
+                        <NavigationMenuLink 
+                          className="flex flex-col gap-2 rounded-md p-3 hover:bg-accent hover:text-accent-foreground"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                              <Camera className="h-5 w-5 text-primary" />
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium">Equipment Rentals</div>
+                              <div className="text-xs text-muted-foreground">Rent top-quality drone equipment</div>
+                            </div>
+                          </div>
+                        </NavigationMenuLink>
+                      </Link>
+                      
+                      <Link href="/services/find-photographers" legacyBehavior passHref>
+                        <NavigationMenuLink 
+                          className="flex flex-col gap-2 rounded-md p-3 hover:bg-accent hover:text-accent-foreground"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                              <MapPin className="h-5 w-5 text-primary" />
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium">Find Photographers</div>
+                              <div className="text-xs text-muted-foreground">Connect with talented drone photographers</div>
+                            </div>
+                          </div>
+                        </NavigationMenuLink>
+                      </Link>
+                      
+                      <Link href="/services/join-photographer" legacyBehavior passHref>
+                        <NavigationMenuLink 
+                          className="flex flex-col gap-2 rounded-md p-3 hover:bg-accent hover:text-accent-foreground"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                              <Users className="h-5 w-5 text-primary" />
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium">Join as Photographer</div>
+                              <div className="text-xs text-muted-foreground">Become part of our creative community</div>
+                            </div>
+                          </div>
+                        </NavigationMenuLink>
+                      </Link>
+                    </div>
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <Link href="/blog" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    <Feather className="mr-2 h-4 w-4" />
+                    Blog
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <Link href="/#aboutus" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    <HelpCircle className="mr-2 h-4 w-4" />
+                    About Us
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
 
           {/* Authentication Buttons - Desktop */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center gap-4">
             <ThemeToggle />
             {isLoading ? (
               // Loading state
-              <Button variant="ghost" disabled>
-                <span className="animate-pulse">Loading...</span>
-              </Button>
+              <div className="h-9 w-9 rounded-full bg-primary/10 animate-pulse"></div>
             ) : isAuthenticated && user ? (
               <UserMenu user={user} isPhotographer={isPhotographer} onLogout={handleLogout} />
             ) : (
-              <Button variant="default" asChild>
+              <Button variant="default" asChild size="sm" className="font-medium">
                 <Link href="/signin">Sign In</Link>
               </Button>
             )}
@@ -78,106 +225,185 @@ export function Navbar() {
           {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon" aria-label="Menu">
-                <Menu className="h-6 w-6" />
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                aria-label="Menu"
+                className="relative w-10 h-10 rounded-full bg-background/20 backdrop-blur-md"
+              >
+                <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <nav className="flex flex-col gap-6 mt-10">
-                <Link
-                  href="/"
-                  className="text-lg font-medium transition-colors hover:text-primary"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Home
-                </Link>
-                <Link
-                  href="/services"
-                  className="text-lg font-medium transition-colors hover:text-primary"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Services
-                </Link>
-                <Link
-                  href="/blog"
-                  className="text-lg font-medium transition-colors hover:text-primary"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Blog
-                </Link>
-                <Link
-                  href="/#aboutus"
-                  className="text-lg font-medium transition-colors hover:text-primary"
-                  onClick={() => setIsOpen(false)}
-                >
-                  About Us
-                </Link>
-
-                {/* Theme Toggle - Mobile */}
-                <div className="flex items-center justify-between py-2 border-t">
-                  <span className="text-sm font-medium">Toggle Theme</span>
-                  <ThemeToggle />
+            <SheetContent side="right" className="w-full max-w-md sm:max-w-lg border-l border-border/30 p-0">
+              <div className="h-full flex flex-col">
+                <div className="border-b border-border/20 py-4 px-6 flex justify-between items-center">
+                  <Logo className="h-8 w-auto" />
+                  <SheetClose asChild>
+                    <Button variant="ghost" size="icon">
+                      <X className="h-5 w-5" />
+                      <span className="sr-only">Close</span>
+                    </Button>
+                  </SheetClose>
                 </div>
+                
+                <ScrollArea className="flex-grow">
+                  <div className="p-6">
+                    <nav className="grid gap-6">
+                      <Link 
+                        href="/" 
+                        className="group flex items-center gap-3 text-lg font-medium transition-colors hover:text-primary"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/20">
+                          <Home className="h-5 w-5 text-primary" />
+                        </div>
+                        Home
+                      </Link>
 
-                {/* Authentication Buttons - Mobile */}
-                {isLoading ? (
-                  <div className="py-4 text-center animate-pulse">Loading...</div>
-                ) : isAuthenticated && user ? (
-                  <>
-                    <div className="flex items-center gap-3 py-3 border-y">
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src={user.picture || "/placeholder-user.jpg"} alt={user.name || "User"} />
-                        <AvatarFallback>
-                          {user.name
-                            ? user.name.split(" ").map((n: string) => n[0]).join("")
-                            : "U"}
-                        </AvatarFallback>
-                      </Avatar>
                       <div>
-                        <p className="font-medium">{user.name || "User"}</p>
-                        <p className="text-sm text-muted-foreground">{user.email || "user@example.com"}</p>
-                        <div className="flex items-center mt-1">
-                          <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full flex items-center gap-1">
-                            {isPhotographer ? (
-                              <>
-                                <Camera className="h-3 w-3" />
-                                Photographer
-                              </>
-                            ) : (
-                              <>
-                                <User className="h-3 w-3" />
-                                Client
-                              </>
-                            )}
-                          </span>
+                        <div className="mb-3 flex items-center gap-3 text-lg font-medium">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                            <Store className="h-5 w-5 text-primary" />
+                          </div>
+                          Services
+                        </div>
+                        <div className="grid grid-cols-1 gap-3 pl-13 ml-3 border-l border-border/50">
+                          <Link 
+                            href="/services/luts" 
+                            className="flex items-center gap-2 p-2 text-base hover:text-primary"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            <Palette className="h-4 w-4" />
+                            LUTs & Presets
+                          </Link>
+                          <Link 
+                            href="/services/rentals" 
+                            className="flex items-center gap-2 p-2 text-base hover:text-primary"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            <Camera className="h-4 w-4" />
+                            Equipment Rentals
+                          </Link>
+                          <Link 
+                            href="/services/find-photographers" 
+                            className="flex items-center gap-2 p-2 text-base hover:text-primary"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            <MapPin className="h-4 w-4" />
+                            Find Photographers
+                          </Link>
+                          <Link 
+                            href="/services/join-photographer" 
+                            className="flex items-center gap-2 p-2 text-base hover:text-primary"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            <Users className="h-4 w-4" />
+                            Join as Photographer
+                          </Link>
                         </div>
                       </div>
-                    </div>
-                    <Button asChild className="w-full mt-4">
-                      <Link href="/dashboard" onClick={() => setIsOpen(false)}>
-                        <span className="font-sans">Dashboard</span>
+
+                      <Link 
+                        href="/blog" 
+                        className="group flex items-center gap-3 text-lg font-medium transition-colors hover:text-primary"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/20">
+                          <Feather className="h-5 w-5 text-primary" />
+                        </div>
+                        Blog
                       </Link>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      onClick={() => {
-                        handleLogout()
-                        setIsOpen(false)
-                      }}
-                    >
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Log Out
-                    </Button>
-                  </>
-                ) : (
-                  <Button variant="default" asChild className="w-full mt-4">
-                    <Link href="/signin" onClick={() => setIsOpen(false)}>
-                      Sign In
-                    </Link>
-                  </Button>
-                )}
-              </nav>
+
+                      <Link 
+                        href="/#aboutus" 
+                        className="group flex items-center gap-3 text-lg font-medium transition-colors hover:text-primary"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/20">
+                          <HelpCircle className="h-5 w-5 text-primary" />
+                        </div>
+                        About Us
+                      </Link>
+                    </nav>
+                  </div>
+                </ScrollArea>
+                
+                <div className="border-t border-border/20 p-6">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">Toggle Theme</span>
+                      <ThemeToggle />
+                    </div>
+                    
+                    {isLoading ? (
+                      <div className="py-4 text-center animate-pulse">Loading...</div>
+                    ) : isAuthenticated && user ? (
+                      <>
+                        <div className="flex items-center gap-4 py-3 border-t border-border/20">
+                          <Avatar className="h-12 w-12 border border-border/20">
+                            <AvatarImage src={user.picture || "/placeholder-user.jpg"} alt={user.name || "User"} />
+                            <AvatarFallback>
+                              {user.name
+                                ? user.name.split(" ").map((n: string) => n[0]).join("")
+                                : "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium">{user.name || "User"}</p>
+                            <p className="text-sm text-muted-foreground">{user.email || "user@example.com"}</p>
+                            <div className="flex items-center mt-1">
+                              <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full flex items-center gap-1">
+                                {isPhotographer ? (
+                                  <>
+                                    <Camera className="h-3 w-3" />
+                                    Photographer
+                                  </>
+                                ) : (
+                                  <>
+                                    <User className="h-3 w-3" />
+                                    Client
+                                  </>
+                                )}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex gap-3">
+                          <Button asChild className="flex-1" variant="default">
+                            <Link href="/dashboard" onClick={() => setIsOpen(false)}>
+                              Dashboard
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            className="flex-1"
+                            onClick={() => {
+                              handleLogout()
+                              setIsOpen(false)
+                            }}
+                          >
+                            <LogOut className="mr-2 h-4 w-4" />
+                            Log Out
+                          </Button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="space-y-3">
+                        <Button variant="default" asChild className="w-full">
+                          <Link href="/signin" onClick={() => setIsOpen(false)}>
+                            Sign In
+                          </Link>
+                        </Button>
+                        <Button variant="outline" asChild className="w-full">
+                          <Link href="/signup" onClick={() => setIsOpen(false)}>
+                            Create Account
+                          </Link>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </SheetContent>
           </Sheet>
         </div>
@@ -201,10 +427,10 @@ function UserMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0 overflow-hidden ring-2 ring-primary/10 hover:ring-primary/30 transition-all">
+          <Avatar className="h-9 w-9">
             <AvatarImage src={user.picture || "/placeholder-user.jpg"} alt={user.name || "User"} />
-            <AvatarFallback>
+            <AvatarFallback className="bg-primary/5 text-primary text-xs font-semibold">
               {user.name
                 ? user.name.split(" ").map((n: string) => n[0]).join("")
                 : "U"}
@@ -233,14 +459,22 @@ function UserMenu({
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild className="font-sans">
-          <Link href="/dashboard" className="flex items-center w-full">
-            <User className="mr-2 h-4 w-4" />
-            <span>Dashboard</span>
-          </Link>
-        </DropdownMenuItem>
+        <DropdownMenuGroup>
+          <DropdownMenuItem asChild className="cursor-pointer">
+            <Link href="/dashboard" className="flex items-center w-full">
+              <User className="mr-2 h-4 w-4" />
+              <span>Dashboard</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild className="cursor-pointer">
+            <Link href="/dashboard/profile" className="flex items-center w-full">
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile</span>
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onLogout} className="font-sans">
+        <DropdownMenuItem onClick={onLogout} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>
