@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,7 +10,8 @@ import { useAuth } from "@/hooks/useAuth"
 import { Separator } from "@/components/ui/separator"
 import Image from "next/image"
 
-export default function SignInPage() {
+// Component to handle searchParams related logic
+function SignInForm() {
   const searchParams = useSearchParams();
   const initialRole = (searchParams?.get('role') || 'client') as 'client' | 'photographer';
   const hideOtherRoles = searchParams?.get('hideOtherRoles') === 'true';
@@ -216,5 +217,14 @@ export default function SignInPage() {
       </Card>
     </div>
   )
+}
+
+// Main component with Suspense
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><p>Loading...</p></div>}>
+      <SignInForm />
+    </Suspense>
+  );
 }
 
