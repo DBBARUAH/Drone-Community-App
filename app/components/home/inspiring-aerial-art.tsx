@@ -210,8 +210,6 @@ export function PremiumAerialGallery() {
   const [mounted, setMounted] = useState(false)
   const { isAuthenticated, isPhotographer } = useAuth()
   const router = useRouter()
-  const [showToast, setShowToast] = useState(false)
-  const [toastMessage, setToastMessage] = useState("")
 
   // Mark component as mounted after hydration
   useEffect(() => {
@@ -289,33 +287,20 @@ export function PremiumAerialGallery() {
   // Only use actual theme after component has mounted client-side
   const isDark = mounted && (resolvedTheme === "dark" || theme === "dark")
 
-  // Handle the submit work button click
+  // Simplify the handleSubmitWorkClick function
   const handleSubmitWorkClick = () => {
     if (isAuthenticated) {
       // If user is authenticated, redirect to the appropriate dashboard with fromSubmit parameter
       if (isPhotographer) {
         router.push("/dashboard/photographer?fromSubmit=true")
-        setToastMessage("Welcome back! You can manage your portfolio here.")
       } else {
         router.push("/dashboard/client?fromSubmit=true")
-        setToastMessage("Sign up as a photographer to submit your work!")
       }
-      setShowToast(true)
     } else {
       // If user is not authenticated, redirect to signup page
       router.push("/signup")
     }
   }
-
-  // Hide toast after 3 seconds
-  useEffect(() => {
-    if (showToast) {
-      const timer = setTimeout(() => {
-        setShowToast(false)
-      }, 3000)
-      return () => clearTimeout(timer)
-    }
-  }, [showToast])
 
   return (
     <section
@@ -617,20 +602,6 @@ export function PremiumAerialGallery() {
             </span>
           </NextUIButton>
         </div>
-
-        {/* Toast notification */}
-        {showToast && (
-          <div className={cn(
-            "fixed bottom-4 right-4 p-4 rounded-xl shadow-xl z-50 transition-all duration-300 transform",
-            isDark ? "bg-black/80 text-white border border-gold/30" : "bg-white/95 text-black border border-gold/30",
-            "animate-in fade-in-50 slide-in-from-bottom-10"
-          )}>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-gold rounded-full animate-pulse"></div>
-              <p className="text-sm font-medium">{toastMessage}</p>
-            </div>
-          </div>
-        )}
       </div>
     </section>
   )

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { 
   LogOut, Menu, User, Camera, ChevronDown, 
   Home, Feather, Star, Store, MapPin, 
@@ -43,9 +43,10 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
-  const { user, isAuthenticated, isLoading, isPhotographer, logout } = useAuth()
+  const { user, isAuthenticated, isLoading, isPhotographer, isClient, logout } = useAuth()
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
+  const router = useRouter()
 
   // Add scroll listener for transparent to solid effect
   useEffect(() => {
@@ -152,7 +153,24 @@ export function Navbar() {
                       <Link href="/services/find-photographers" legacyBehavior passHref>
                         <NavigationMenuLink 
                           className="flex flex-col gap-2 rounded-md p-3 hover:bg-accent hover:text-accent-foreground"
-                          onClick={() => setIsOpen(false)}
+                          onClick={(e) => {
+                            e.preventDefault()
+                            setIsOpen(false)
+                            if (isAuthenticated) {
+                              // If already authenticated
+                              if (isClient) {
+                                // If already a client, go to client dashboard
+                                router.push('/dashboard/client')
+                              } else if (isPhotographer) {
+                                // If photographer trying to access client features,
+                                // direct to role-specific signin page
+                                router.push('/signin?role=client&hideOtherRoles=true')
+                              }
+                            } else {
+                              // If not authenticated, go to auth page with client role preselected
+                              router.push('/signin?role=client&hideOtherRoles=true')
+                            }
+                          }}
                         >
                           <div className="flex items-center gap-2">
                             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
@@ -169,7 +187,24 @@ export function Navbar() {
                       <Link href="/services/join-photographer" legacyBehavior passHref>
                         <NavigationMenuLink 
                           className="flex flex-col gap-2 rounded-md p-3 hover:bg-accent hover:text-accent-foreground"
-                          onClick={() => setIsOpen(false)}
+                          onClick={(e) => {
+                            e.preventDefault()
+                            setIsOpen(false)
+                            if (isAuthenticated) {
+                              // If already authenticated
+                              if (isPhotographer) {
+                                // If already a photographer, go to photographer dashboard
+                                router.push('/dashboard/photographer')
+                              } else if (isClient) {
+                                // If client trying to access photographer features,
+                                // direct to role-specific signin page
+                                router.push('/signin?role=photographer&hideOtherRoles=true')
+                              }
+                            } else {
+                              // If not authenticated, go to auth page with photographer role preselected
+                              router.push('/signin?role=photographer&hideOtherRoles=true')
+                            }
+                          }}
                         >
                           <div className="flex items-center gap-2">
                             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
@@ -287,7 +322,24 @@ export function Navbar() {
                           <Link 
                             href="/services/find-photographers" 
                             className="flex items-center gap-2 p-2 text-base hover:text-primary"
-                            onClick={() => setIsOpen(false)}
+                            onClick={(e) => {
+                              e.preventDefault()
+                              setIsOpen(false)
+                              if (isAuthenticated) {
+                                // If already authenticated
+                                if (isClient) {
+                                  // If already a client, go to client dashboard
+                                  router.push('/dashboard/client')
+                                } else if (isPhotographer) {
+                                  // If photographer trying to access client features,
+                                  // direct to role-specific signin page
+                                  router.push('/signin?role=client&hideOtherRoles=true')
+                                }
+                              } else {
+                                // If not authenticated, go to auth page with client role preselected
+                                router.push('/signin?role=client&hideOtherRoles=true')
+                              }
+                            }}
                           >
                             <MapPin className="h-4 w-4" />
                             Find Photographers
@@ -295,7 +347,24 @@ export function Navbar() {
                           <Link 
                             href="/services/join-photographer" 
                             className="flex items-center gap-2 p-2 text-base hover:text-primary"
-                            onClick={() => setIsOpen(false)}
+                            onClick={(e) => {
+                              e.preventDefault()
+                              setIsOpen(false)
+                              if (isAuthenticated) {
+                                // If already authenticated
+                                if (isPhotographer) {
+                                  // If already a photographer, go to photographer dashboard
+                                  router.push('/dashboard/photographer')
+                                } else if (isClient) {
+                                  // If client trying to access photographer features,
+                                  // direct to role-specific signin page
+                                  router.push('/signin?role=photographer&hideOtherRoles=true')
+                                }
+                              } else {
+                                // If not authenticated, go to auth page with photographer role preselected
+                                router.push('/signin?role=photographer&hideOtherRoles=true')
+                              }
+                            }}
                           >
                             <Users className="h-4 w-4" />
                             Join as Photographer
