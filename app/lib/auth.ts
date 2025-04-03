@@ -1,4 +1,4 @@
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { AUTH0_NAMESPACE, AUTH0_ROLES_KEY } from './auth0';
 
 // Basic user profile interface based on Auth0 user properties
 export interface UserProfile {
@@ -19,9 +19,25 @@ export interface ExtendedUser extends UserProfile {
   role?: UserRole;
 }
 
-// Get the user's role
-export function getUserRole(): UserRole {
-  // First priority: check localStorage
+/**
+ * @deprecated Use useAuth hook from app/hooks/useAuth.ts instead
+ * This file is kept for backward compatibility but will be removed in future versions.
+ */
+
+// Get the user's role helper function - only use if you can't use the hook
+export function getUserRole(user?: any): UserRole {
+  // Check Auth0 token first if user is provided
+  if (user && user[AUTH0_ROLES_KEY]) {
+    const tokenRoles = user[AUTH0_ROLES_KEY];
+    if (Array.isArray(tokenRoles) && tokenRoles.length > 0) {
+      return tokenRoles[0] as UserRole;
+    }
+    if (typeof tokenRoles === 'string') {
+      return tokenRoles as UserRole;
+    }
+  }
+  
+  // Fallback to localStorage
   if (typeof window !== 'undefined') {
     const role = localStorage.getItem('userRole') as UserRole;
     if (role) return role;
@@ -30,6 +46,7 @@ export function getUserRole(): UserRole {
   return undefined;
 }
 
+/* Removing unused functions that cause build errors
 // Set the user's role
 export function setUserRole(role: UserRole): void {
   if (typeof window !== 'undefined') {
@@ -48,7 +65,7 @@ export function useExtendedUser() {
   // Extend the user with our additional fields
   const extendedUser: ExtendedUser | undefined = user ? {
     ...user,
-    role: getUserRole(),
+    role: getUserRole(user),
   } : undefined;
   
   return { user: extendedUser, error, isLoading };
@@ -76,4 +93,5 @@ export function logout(): void {
     // Redirect to Auth0 logout endpoint
     window.location.href = '/api/auth/logout';
   }
-} 
+}
+*/ 

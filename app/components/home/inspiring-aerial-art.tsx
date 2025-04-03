@@ -10,6 +10,9 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useTheme } from "next-themes"
+import { useAuth } from "@/hooks/useAuth"
+import { useRouter } from "next/navigation"
+import { Tooltip, Button as NextUIButton } from "@nextui-org/react"
 
 // Define the types for our gallery items
 export interface GalleryItemType {
@@ -44,7 +47,7 @@ const galleryItems: GalleryItemType[] = [
   {
     id: "3",
     title: "South Padre Island Coastline",
-    photographer: "David Chen",
+    photographer: "Travellers Beats",
     location: "South Padre Island, TX",
     category: "Landscapes",
     media: {
@@ -70,7 +73,7 @@ const galleryItems: GalleryItemType[] = [
   {
     id: "5",
     title: "Mozart Coffee Lakeside Austin",
-    photographer: "Michael Brown",
+    photographer: "Travellers Beats",
     location: "Austin, TX",
     category: "Events",
     media: {
@@ -97,7 +100,7 @@ const galleryItems: GalleryItemType[] = [
   {
     id: "9",
     title: "Longhorn Stadium Game Day",
-    photographer: "Olivia Garcia",
+    photographer: "Travellers Beats",
     location: "Austin, TX",
     category: "Events",
     media: {
@@ -111,7 +114,7 @@ const galleryItems: GalleryItemType[] = [
   {
     id: "12",
     title: "TEN Automotive Event",
-    photographer: "Daniel Taylor",
+    photographer: "Travellers Beats",
     location: "Austin, TX",
     category: "Events",
     media: {
@@ -124,7 +127,7 @@ const galleryItems: GalleryItemType[] = [
   {
     id: "14",
     title: "Austin Night Skyline",
-    photographer: "Ahmed Hassan",
+    photographer: "Travellers Beats",
     location: "Austin, TX",
     category: "Urban",
     media: {
@@ -149,8 +152,8 @@ const galleryItems: GalleryItemType[] = [
   },
   {
     id: "16",
-    title: "Austin City Promotion",
-    photographer: "Zoe Thompson",
+    title: "ATX",
+    photographer: "Travellers Beats",
     location: "Austin, TX",
     category: "Urban",
     media: {
@@ -176,7 +179,7 @@ const galleryItems: GalleryItemType[] = [
   {
     id: "19",
     title: "Quebec City Vista",
-    photographer: "Jean Tremblay",
+    photographer: "Travellers Beats",
     location: "Quebec City, Canada",
     category: "Landscapes",
     media: {
@@ -205,6 +208,10 @@ export function PremiumAerialGallery() {
   const galleryRef = useRef<HTMLDivElement>(null)
   const { theme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const { isAuthenticated, isPhotographer } = useAuth()
+  const router = useRouter()
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState("")
 
   // Mark component as mounted after hydration
   useEffect(() => {
@@ -281,6 +288,34 @@ export function PremiumAerialGallery() {
   // Use a consistent theme for server rendering to avoid hydration mismatch
   // Only use actual theme after component has mounted client-side
   const isDark = mounted && (resolvedTheme === "dark" || theme === "dark")
+
+  // Handle the submit work button click
+  const handleSubmitWorkClick = () => {
+    if (isAuthenticated) {
+      // If user is authenticated, redirect to the appropriate dashboard with fromSubmit parameter
+      if (isPhotographer) {
+        router.push("/dashboard/photographer?fromSubmit=true")
+        setToastMessage("Welcome back! You can manage your portfolio here.")
+      } else {
+        router.push("/dashboard/client?fromSubmit=true")
+        setToastMessage("Sign up as a photographer to submit your work!")
+      }
+      setShowToast(true)
+    } else {
+      // If user is not authenticated, redirect to signup page
+      router.push("/signup")
+    }
+  }
+
+  // Hide toast after 3 seconds
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false)
+      }, 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [showToast])
 
   return (
     <section
@@ -563,28 +598,39 @@ export function PremiumAerialGallery() {
 
         {/* Call to action */}
         <div
-          className="mt-20 flex flex-col sm:flex-row items-center justify-center gap-4"
+          className="mt-20 flex flex-col sm:flex-row items-center justify-center"
           style={{
             opacity: 1,
             transform: 'translateY(0)',
             transition: 'opacity 0.6s ease, transform 0.6s ease',
           }}
         >
-          <Button className="relative overflow-hidden group w-full sm:w-auto">
-            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-gold to-gold-dark opacity-90 group-hover:opacity-100 transition-opacity" />
-            <span className="relative z-10 text-black font-medium">Browse More Aerial Art</span>
-          </Button>
-
-          <Button
-            variant="outline"
+          <NextUIButton
+            variant="solid"
             className={cn(
-              "border-gold/40 backdrop-blur-md hover:bg-gold/20 w-full sm:w-auto",
-              isDark ? "bg-black/50 text-white" : "bg-white/80 text-black font-medium shadow-sm",
+              "relative overflow-hidden w-64 h-12 border-gold/40 backdrop-blur-md bg-gradient-to-r from-gold to-gold-dark",
             )}
+            onPress={handleSubmitWorkClick}
           >
-            Submit Your Work
-          </Button>
+            <span className="text-black font-medium">
+              Submit Your Work
+            </span>
+          </NextUIButton>
         </div>
+
+        {/* Toast notification */}
+        {showToast && (
+          <div className={cn(
+            "fixed bottom-4 right-4 p-4 rounded-xl shadow-xl z-50 transition-all duration-300 transform",
+            isDark ? "bg-black/80 text-white border border-gold/30" : "bg-white/95 text-black border border-gold/30",
+            "animate-in fade-in-50 slide-in-from-bottom-10"
+          )}>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-gold rounded-full animate-pulse"></div>
+              <p className="text-sm font-medium">{toastMessage}</p>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )
@@ -612,6 +658,16 @@ function GalleryCard({ item, isActive, onActivate, mousePosition, isDark }: Gall
     scale: 1
   })
   
+  // Handle card activation - separating this from other click handlers
+  const handleCardActivate = (e: React.MouseEvent) => {
+    // Only activate if clicking on the card itself, not on buttons
+    if (e.target === e.currentTarget || 
+        e.currentTarget.contains(e.target as Node) && 
+        !(e.target as HTMLElement).closest('button')) {
+      onActivate();
+    }
+  };
+
   // Handle mouse movement for 3D effect
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -708,7 +764,7 @@ function GalleryCard({ item, isActive, onActivate, mousePosition, isDark }: Gall
       className={cn("group relative overflow-hidden rounded-xl", getGridSpan(), isActive ? "z-20" : "z-10")}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={onActivate}
+      onClick={handleCardActivate}
       style={{
         opacity: 1,
         transform: 'scale(1)',
@@ -739,7 +795,7 @@ function GalleryCard({ item, isActive, onActivate, mousePosition, isDark }: Gall
                   src={item.media.thumbnail || "/placeholder.svg"}
                   alt={item.title}
                   fill
-                  className="absolute inset-0 w-full h-full object-cover z-10"
+                  className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
               )}
@@ -747,7 +803,7 @@ function GalleryCard({ item, isActive, onActivate, mousePosition, isDark }: Gall
               <video
                 ref={videoRef}
                 className={cn(
-                  "absolute inset-0 w-full h-full object-cover",
+                  "absolute inset-0 w-full h-full object-cover pointer-events-none",
                   isVideoPlaying ? "z-20" : "z-0"
                 )}
                 playsInline
@@ -758,15 +814,23 @@ function GalleryCard({ item, isActive, onActivate, mousePosition, isDark }: Gall
               {/* Play button overlay - always visible for videos */}
               <div
                 className={cn(
-                  "absolute inset-0 flex items-center justify-center z-40",
-                  isDark ? "bg-black/30" : "bg-black/30",
-                  isHovered || isActive ? "bg-black/40" : "bg-black/10", // Background changes on hover but button remains visible
+                  "absolute inset-0 flex items-center justify-center z-30",
+                  isVideoPlaying 
+                    ? "bg-transparent" 
+                    : isDark 
+                      ? "bg-black/30" 
+                      : "bg-black/30",
+                  !isVideoPlaying && (isHovered || isActive) ? "bg-black/40" : isVideoPlaying ? "bg-transparent" : "bg-black/10",
                 )}
               >
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="rounded-full bg-gold/20 backdrop-blur-sm hover:bg-gold/40 shadow-sm border-white/10"
+                  className={cn(
+                    "rounded-full bg-gold/20 backdrop-blur-sm hover:bg-gold/40 shadow-sm border-white/10",
+                    isVideoPlaying && !isHovered ? "opacity-0" : "opacity-100",
+                    "transition-opacity duration-300"
+                  )}
                   onClick={handlePlayVideo}
                 >
                   {isVideoPlaying ? <Pause className="h-4 w-4 text-white/80" /> : <Play className="h-4 w-4 text-white/80" />}
@@ -811,7 +875,7 @@ function GalleryCard({ item, isActive, onActivate, mousePosition, isDark }: Gall
         {/* External link button */}
         <motion.div
           className={cn(
-            "absolute top-3 right-3 z-20 transition-opacity duration-300",
+            "absolute top-3 right-3 z-50 transition-opacity duration-300",
             isHovered || isActive ? "opacity-100" : "opacity-0",
           )}
           initial={{ opacity: 0, scale: 0.8 }}

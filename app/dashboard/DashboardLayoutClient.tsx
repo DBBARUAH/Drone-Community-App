@@ -1,10 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import type React from "react"
 import { DashboardNav } from "@/components/dashboard/dashboard-nav"
 import { DashboardHeader } from "@/components/dashboard/dashboard-header"
+import { useAuth } from "@/hooks/useAuth"
 
 export default function DashboardLayoutClient({
   children,
@@ -12,23 +13,19 @@ export default function DashboardLayoutClient({
   children: React.ReactNode
 }) {
   const router = useRouter()
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const { isAuthenticated, isLoading, isPhotographer } = useAuth()
 
   useEffect(() => {
-    // Check if user is authenticated
-    const checkAuth = () => {
-      const savedAuth = localStorage.getItem("isAuthenticated")
-      if (savedAuth !== "true") {
+    // Check if user is authenticated and redirect if needed
+    if (!isLoading) {
+      if (!isAuthenticated) {
         router.push("/signin")
-      } else {
-        setIsAuthenticated(true)
+      } else if (isPhotographer) {
+        // If user is a photographer, redirect to photographer dashboard
+        router.push("/dashboard/photographer")
       }
-      setIsLoading(false)
     }
-
-    checkAuth()
-  }, [router])
+  }, [isLoading, isAuthenticated, isPhotographer, router])
 
   if (isLoading) {
     return (

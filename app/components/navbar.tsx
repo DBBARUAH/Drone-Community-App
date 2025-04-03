@@ -22,12 +22,12 @@ import { ThemeToggle } from "@/components/dashboard/theme-toggle"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
-  const { user, isAuthenticated, isLoading, isPhotographer } = useAuth()
+  const { user, isAuthenticated, isLoading, isPhotographer, logout } = useAuth()
   const pathname = usePathname()
 
   // Handle Auth0 logout
   const handleLogout = () => {
-    window.location.href = "/api/auth/logout"
+    logout()
   }
 
   const isDashboard = pathname?.startsWith("/dashboard")

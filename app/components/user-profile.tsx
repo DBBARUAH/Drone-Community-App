@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { useUser } from "@auth0/nextjs-auth0/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -11,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth"
 
 export function UserProfile() {
   const router = useRouter()
-  const { user, isLoading, isClient, isPhotographer } = useAuth()
+  const { user, isLoading, isClient, isPhotographer, logout } = useAuth()
   
   if (isLoading) return <div className="flex justify-center p-8">Loading...</div>
   
@@ -22,6 +21,10 @@ export function UserProfile() {
 
   // Determine role text
   const roleText = isPhotographer ? 'Photographer' : 'Client'
+  
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <Card className="w-full max-w-3xl mx-auto">
@@ -72,8 +75,8 @@ export function UserProfile() {
         <Button variant="outline" onClick={() => router.back()}>
           Back
         </Button>
-        <Button>
-          <a href="/api/auth/logout">Sign Out</a>
+        <Button onClick={handleLogout}>
+          Sign Out
         </Button>
       </CardFooter>
     </Card>

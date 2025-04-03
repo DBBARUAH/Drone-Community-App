@@ -1,7 +1,6 @@
 // pages/index.js (Home Page)
 import Head from 'next/head';
 import Hero from "@/components/home/hero";
-import CapturedStories from "@/components/home/captures-stories";
 import ContactUs from '@/components/contact-us';
 import { CommunityTestimonials } from './components/home/testimonials-section';
 import { DroneFeatureSection } from './components/home/feature-section';
