@@ -1,3 +1,5 @@
+"use client"
+
 import { TestimonialsMarquee } from "@/components/ui/testimonials-with-marquee"
 
 const testimonials = [
@@ -58,10 +60,19 @@ const testimonials = [
 
 export function CommunityTestimonials() {
   return (
-    <TestimonialsMarquee
-      title="TRUSTED BY THE COMMUNITY"
-      description="Discover how creators and businesses are leveraging aerial perspectives across real estate, automotive, and event photography."
-      testimonials={testimonials}
-    />
+    <div className="relative overflow-hidden">
+      {/* Background gradients */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-[10%] left-[20%] w-[40%] h-[50%] bg-primary/5 rounded-full blur-[120px] opacity-70 dark:opacity-30" />
+        <div className="absolute top-[30%] right-[10%] w-[30%] h-[50%] bg-primary/10 rounded-full blur-[120px] opacity-60 dark:opacity-20" />
+      </div>
+      
+      <TestimonialsMarquee
+        title="TRUSTED BY THE COMMUNITY"
+        description="Discover how creators and businesses are leveraging aerial perspectives across real estate, automotive, and event photography."
+        testimonials={testimonials}
+        className="relative z-10"
+      />
+    </div>
   )
 }

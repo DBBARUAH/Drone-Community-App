@@ -15,6 +15,7 @@ interface Feature {
   media: {
     type: "image" | "video"
     src: string
+    thumbnail?: string
     alt?: string
   }
   badge?: string
@@ -233,14 +234,44 @@ export function EnhancedFeatureSection({
                         transition={{ duration: 0.5, ease: "easeInOut" }}
                       >
                         {feature.media.type === "video" ? (
-                          <video
-                            src={feature.media.src}
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            className="w-full h-full object-cover"
-                          />
+                          <div className="relative w-full h-full">
+                            {/* Video with thumbnail as fallback */}
+                            {feature.media.thumbnail && (
+                              <Image
+                                src={feature.media.thumbnail}
+                                alt={feature.media.alt || feature.title}
+                                fill
+                                className="object-cover absolute inset-0 z-10"
+                              />
+                            )}
+                            <video
+                              src={feature.media.src}
+                              autoPlay
+                              loop
+                              muted
+                              playsInline
+                              className="w-full h-full object-cover absolute inset-0 z-20"
+                              onPlay={(e) => {
+                                // When video plays, ensure it's visible above the thumbnail
+                                e.currentTarget.style.zIndex = "20";
+                              }}
+                              onLoadedData={(e) => {
+                                // When video is loaded, make it visible
+                                e.currentTarget.style.zIndex = "20";
+                              }}
+                            />
+                            {/* Play button overlay - ensuring top z-index */}
+                            <div className="absolute inset-0 flex items-center justify-center z-40">
+                              <motion.div 
+                                initial={{ opacity: 0.7, scale: 0.9 }}
+                                animate={{ opacity: 0.8, scale: 1 }}
+                                transition={{ delay: 0.2, duration: 0.5 }}
+                                className="bg-black/20 rounded-full p-2 backdrop-blur-sm border border-white/20 shadow-sm"
+                              >
+                                <Play className="h-5 w-5 text-white/70" />
+                              </motion.div>
+                            </div>
+                          </div>
                         ) : (
                           <Image
                             src={feature.media.src || "/placeholder.svg"}

@@ -5,6 +5,9 @@ import CapturedStories from "@/components/home/captures-stories";
 import ContactUs from '@/components/contact-us';
 import { CommunityTestimonials } from './components/home/testimonials-section';
 import { DroneFeatureSection } from './components/home/feature-section';
+import { PremiumAerialGallery } from "@/components/home/inspiring-aerial-art"
+
+
 
 export default function Home() {
     return (
@@ -17,7 +20,8 @@ export default function Home() {
             {/* <Navbar /> */}
             <Hero />
             <DroneFeatureSection />
-            <CapturedStories />
+            <PremiumAerialGallery />
+            {/* <CapturedStories /> */}
             {/* <Clients />
             <AboutUs />
             <AerialVideos />

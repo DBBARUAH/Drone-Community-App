@@ -7,220 +7,14 @@
 @import url('@/styles/connect.css');
 @import url('@/styles/dashboard.css');
 
-/* Then include Tailwind directives */
-
+/* Tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Global Box-Sizing Reset */
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
-
-/* Global Font Styles */
-  body, html {
-    font-family: 'Oswald', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #000;
-    color: #fff;
-    line-height: 1.6;
-}
-
-/* Dashboard-specific override - ensure Inter font */
-.dashboard-fonts,
-.dashboard-fonts * {
-  font-family: var(--font-inter, 'Inter', system-ui, sans-serif) !important;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.dashboard-fonts button,
-.dashboard-fonts input,
-.dashboard-fonts select,
-.dashboard-fonts textarea,
-.dashboard-fonts h1,
-.dashboard-fonts h2,
-.dashboard-fonts h3,
-.dashboard-fonts h4,
-.dashboard-fonts h5,
-.dashboard-fonts h6,
-.dashboard-fonts p,
-.dashboard-fonts div,
-.dashboard-fonts span,
-.dashboard-fonts a,
-.dashboard-fonts li,
-.dashboard-fonts ul,
-.dashboard-fonts table,
-.dashboard-fonts tr,
-.dashboard-fonts td,
-.dashboard-fonts th {
-  font-family: var(--font-inter, 'Inter', system-ui, sans-serif) !important;
-}
-
-/* Unified Typography System */
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Oswald', sans-serif;
-}
-
-/* Remove default h2 styles */
-h2 {
-  margin: 0;
-  padding: 0;
-}
-
-/* Global Section Header Style */
-  .section-header {
-  @apply text-3xl md:text-4xl lg:text-5xl font-bold mb-0 text-center uppercase tracking-wider;
-  font-family: 'Oswald', sans-serif;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Add the gradient underline for all sections except captured stories */
-.section-header:not(.light)::after {
-  content: '';
-  margin-top: 1rem;
-  height: 1px;
-  width: 10rem;
-  background: linear-gradient(to right, transparent, #ffffff33, transparent);
-}
-
-/* Dark theme header (default) */
-.section-header:not(.light) {
-  color: #fff;
-}
-
-/* Light theme header */
-.section-header.light {
-  color: #333333;
-}
-
-/* Remove gradient underline for captured stories section */
-.our-clients .section-header::after {
-  display: none;
-}
-
-/* Section Descriptions - Standardized style matching blog section */
-.section-description,
-section p:not(.our-clients p):not(.contactus p):not([class*='text-white']),
-.contactus p,
-.our-clients p {
-  font-family: 'Playfair Display', serif;
-  font-size: 1rem; /* text-base */
-  line-height: 1.8;
-  margin: 1.5rem auto 2rem !important; /* gap-6 to match testimonials */
-  max-width: 42rem; /* max-w-2xl equivalent */
-  font-weight: 300; /* font-light */
-  letter-spacing: 0.025em; /* tracking-wide */
-  text-align: center;
-}
-
-/* Theme-based text colors */
-.text-theme-light {
-  color: #080808 !important;
-}
-
-.text-theme-dark {
-  color: #ccc !important;
-}
-
-/* Dark sections description color */
-.section-description,
-section p:not(.our-clients p):not(.contactus p):not([class*='text-white']),
-.contactus p {
-  @apply text-theme-dark;
-}
-
-/* Light section (captured stories) description color */
-.our-clients p {
-  @apply text-theme-light;
-}
-
-/* Feature showcase description override */
-.feature-description {
-  font-family: 'Playfair Display', serif !important;
-  font-size: 0.875rem !important; /* text-sm */
-  line-height: 1.625 !important; /* leading-relaxed */
-  text-align: left !important;
-  margin: 0.75rem 0 1rem !important;
-  max-width: none !important;
-  font-weight: 400 !important;
-  letter-spacing: 0 !important;
-  color: hsl(var(--muted-foreground)) !important;
-}
-
-/* Dark theme specific feature description */
-.dark .feature-description {
-  color: rgba(255, 255, 255, 0.9) !important;
-}
-
-/* Remove any conflicting margin overrides */
-.our-clients .container p,
-.contactus .container p {
-  margin: 1.5rem auto 2rem !important;
-}
-
-@media (min-width: 768px) {
-  .section-description,
-  section p:not(.our-clients p):not(.contactus p):not([class*='text-white']),
-  .contactus p,
-  .our-clients p {
-    font-size: 1.125rem; /* text-lg */
-  }
-}
-
-/* Responsive Typography */
-@media (max-width: 768px) {
-  .section-header {
-    @apply text-2xl md:text-3xl !important;
-  }
-
-  input::placeholder,
-  textarea::placeholder,
-  select::placeholder {
-    font-size: 11px !important;
-    opacity: 1 !important;
-  }
-}
-
-/* Existing styles... */
-p, button, select, textarea, input {
-  font-family: 'Playfair Display', serif;
-}
-
-::-webkit-scrollbar {
-  display: none;
-}
-
-/* Reusable Typography Classes */
-.font-oswald {
-  font-family: 'Oswald', sans-serif;
-}
-
-.font-playfair {
-  font-family: 'Playfair Display', serif;
-}
-
-/* Base Layer Overrides */
+/* Theme variables - consistent with Next.js theming */
 @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-/* Global placeholder styles */
-::placeholder {
-  font-family: var(--font-playfair);
-}
-
-:root {
+  :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -254,7 +48,15 @@ p, button, select, textarea, input {
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --font-inter: var(--font-inter);
+    --font-playfair: var(--font-playfair);
+    --font-oswald: var(--font-oswald);
+    
+    /* Marketing site specific variables */
+    --theme-light: 0 0% 3%;   /* #080808 */
+    --theme-dark: 0 0% 80%;   /* #cccccc */
   }
+  
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -288,19 +90,100 @@ p, button, select, textarea, input {
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-  --font-inter: var(--font-inter);
-  --font-playfair: var(--font-playfair);
-  --font-oswald: var(--font-oswald);
+    
+    /* Marketing site specific variables */
+    --theme-light: 0 0% 97%;  /* lighter in dark mode */
+    --theme-dark: 0 0% 90%;   /* lighter in dark mode */
+  }
+
+  /* Essential global styles */
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-oswald m-0 p-0 leading-relaxed;
+  }
+  
+  /* Typography base styles */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-oswald m-0 p-0;
+  }
+  
+  p, button, select, textarea, input {
+    @apply font-playfair;
+  }
+  
+  ::placeholder {
+    @apply font-playfair;
+  }
 }
 
+/* Custom utility classes */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Font utilities */
+  .font-oswald {
+    font-family: var(--font-oswald, 'Oswald', sans-serif);
+  }
+  
+  .font-playfair {
+    font-family: var(--font-playfair, 'Playfair Display', serif);
+  }
+  
+  /* Theme colors */
+  .text-theme-light {
+    color: hsl(var(--theme-light));
+  }
+  
+  .text-theme-dark {
+    color: hsl(var(--theme-dark));
+  }
+}
+
+/* Reusable component styles */
 @layer components {
+  /* Section headers */
+  .section-header {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold text-center uppercase tracking-wider font-oswald
+           flex flex-col items-center relative;
+  }
+  
+  .section-header:not(.light)::after {
+    @apply content-[''] mt-4 h-px w-40 bg-gradient-to-r from-transparent via-white/30 to-transparent;
+  }
+  
+  .section-header:not(.light) {
+    @apply text-foreground;
+  }
+  
+  .section-header.light {
+    @apply text-theme-light;
+  }
+  
+  /* Section descriptions */
+  .section-description {
+    @apply font-playfair text-base md:text-lg leading-[1.8] mx-auto my-6 max-w-2xl
+           font-light tracking-wide text-center text-theme-dark;
+  }
+  
+  /* Feature description - used in feature components */
+  .feature-description {
+    @apply font-playfair text-sm leading-relaxed text-left my-3 font-normal
+           text-muted-foreground dark:text-white/90;
+  }
+  
+  /* Page layout components */
   .page-header-container {
     @apply text-center max-w-[900px] mx-auto px-4;
   }
 
   .page-title {
     @apply text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight 
-      text-white uppercase mb-0 leading-none font-oswald;
+           text-white uppercase leading-none font-oswald;
   }
 
   .page-title-underline {
@@ -309,6 +192,64 @@ p, button, select, textarea, input {
 
   .page-description {
     @apply mt-4 text-base md:text-lg text-white/70 max-w-2xl leading-relaxed
-      font-light tracking-wide font-playfair text-center;
+           font-light tracking-wide font-playfair text-center;
+  }
+}
+
+
+/* Premium gallery effects */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes pulse-gold {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(255, 215, 0, 0);
+  }
+}
+
+.pulse-gold {
+  animation: pulse-gold 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.bg-shimmer {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0) 0%, rgba(255, 215, 0, 0.2) 50%, rgba(255, 215, 0, 0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .section-header {
+    @apply text-2xl md:text-3xl;
+  }
+
+  input::placeholder,
+  textarea::placeholder,
+  select::placeholder {
+    @apply text-xs opacity-100;
   }
 }

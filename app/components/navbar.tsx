@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useAuth } from "@/hooks/useAuth"
+import { ThemeToggle } from "@/components/dashboard/theme-toggle"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -59,6 +60,7 @@ export function Navbar() {
 
           {/* Authentication Buttons - Desktop */}
           <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle />
             {isLoading ? (
               // Loading state
               <Button variant="ghost" disabled>
@@ -110,6 +112,12 @@ export function Navbar() {
                 >
                   About Us
                 </Link>
+
+                {/* Theme Toggle - Mobile */}
+                <div className="flex items-center justify-between py-2 border-t">
+                  <span className="text-sm font-medium">Toggle Theme</span>
+                  <ThemeToggle />
+                </div>
 
                 {/* Authentication Buttons - Mobile */}
                 {isLoading ? (

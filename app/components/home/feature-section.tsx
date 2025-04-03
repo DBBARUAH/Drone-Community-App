@@ -11,6 +11,7 @@ const droneFeatures = [
     media: {
       type: "video" as const,
       src: "/videos/feature-droneshot.mp4",
+      thumbnail: "/thumbnails/feature-droneshot.jpg",
       alt: "Drone photography professionals",
     },
     badge: "Popular",
@@ -27,6 +28,7 @@ const droneFeatures = [
     media: {
       type: "video" as const,
       src: "/videos/feature-droneartist.mp4",
+      thumbnail: "/thumbnails/feature-droneartist.jpg",
       alt: "Drone artist showcasing work",
     },
     cta: {
@@ -42,6 +44,7 @@ const droneFeatures = [
     media: {
       type: "video" as const,
       src: "/videos/card1_beachshot.mp4",
+      thumbnail: "/thumbnails/card1_beachshot.jpg",
       alt: "Drone beach photography",
     },
     cta: {

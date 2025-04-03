@@ -34,8 +34,23 @@ module.exports = {
         'marquee': 'marquee var(--duration) linear infinite',
         "fade-up": "fade-up 0.5s ease-out forwards",
         "fade-down": "fade-down 0.5s ease-out forwards",
+        "float": "float 6s ease-in-out infinite",
+        "pulse": "pulse 3s ease-in-out infinite",
+        "shimmer": "shimmer 2s infinite linear",
       },
       keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        pulse: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.5' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-500px 0' },
+          '100%': { backgroundPosition: '500px 0' },
+        },
         'accordion-down': {
   				from: {
   					height: '0'
@@ -92,7 +107,11 @@ module.exports = {
         "muted-foreground": "#fafafa",  // for secondary or muted text
         border: "hsl(var(--border))",        // Added from JS config
         input: "hsl(var(--input))",          // Added from JS config
-        ring: "hsl(var(--ring))",            // Added from JS config
+        ring: "hsl(var(--ring))",  
+        gold: {
+          DEFAULT: "#FFD700", // Primary golden yellow
+          dark: "#FFC300",    // Slightly darker golden yellow
+        },          // Added from JS config
         primary: {                           // Added from JS config
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

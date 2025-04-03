@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ClientCard } from "@components/ui/client-card";
 import { MediaPlayerProvider } from "@hooks/use-media-player";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import styles from "@styles/capturedStories.module.css";
 import type { ClientData } from "@/types/client";
 
@@ -31,6 +32,20 @@ const clientData: Partial<ClientData>[] = [
 ];
 
 const CapturedStories: React.FC = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    // Check if on client-side and update mobile state
+    setIsMobile(window.innerWidth <= 768);
+    
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <MediaPlayerProvider>
       <section className="section-wrapper py-12 md:py-16">
@@ -44,17 +59,33 @@ const CapturedStories: React.FC = () => {
                 </p>
               </div>
 
-              <div className={styles["client-grid"]}>
-                {clientData.map((client) => (
-                  <ClientCard
-                    key={client.id}
-                    logoSrc={client.logoSrc!}
-                    logoAlt={client.logoAlt!}
-                    videoSrc={client.videoSrc!}
-                    overlayClassName={client.overlayClassName}
-                  />
-                ))}
-              </div>
+              {isMobile ? (
+                <ScrollArea className="w-full py-2">
+                  <div className={styles["client-grid"]}>
+                    {clientData.map((client) => (
+                      <ClientCard
+                        key={client.id}
+                        logoSrc={client.logoSrc!}
+                        logoAlt={client.logoAlt!}
+                        videoSrc={client.videoSrc!}
+                        overlayClassName={client.overlayClassName}
+                      />
+                    ))}
+                  </div>
+                </ScrollArea>
+              ) : (
+                <div className={styles["client-grid"]}>
+                  {clientData.map((client) => (
+                    <ClientCard
+                      key={client.id}
+                      logoSrc={client.logoSrc!}
+                      logoAlt={client.logoAlt!}
+                      videoSrc={client.videoSrc!}
+                      overlayClassName={client.overlayClassName}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
