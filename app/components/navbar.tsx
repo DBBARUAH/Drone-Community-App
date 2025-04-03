@@ -81,7 +81,7 @@ export function Navbar() {
     <header 
       className={cn(
         "fixed top-0 left-0 right-0 z-[100] transition-all duration-300",
-        "bg-background/98 backdrop-blur-md",
+        "bg-background/95 backdrop-blur-md",
         scrolled ? "shadow-md" : "border-b border-border/10",
         isDashboard ? "md:flex hidden" : "flex"
       )}
