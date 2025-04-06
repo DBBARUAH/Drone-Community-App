@@ -70,7 +70,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${oswald.variable} dark`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} ${oswald.variable}`} suppressHydrationWarning>
       <head>
         <style>
           {`
@@ -80,7 +80,7 @@ export default function RootLayout({
           `}
         </style>
       </head>
-      <body className="min-h-screen bg-black">
+      <body className="min-h-screen bg-background">
         <Providers>
           <Navbar />
           <main>{children}</main>

@@ -186,11 +186,11 @@
   }
 
   .page-title-underline {
-    @apply mt-4 h-px w-40 bg-gradient-to-r from-transparent via-primary/30 dark:via-white/30 to-transparent;
+    @apply mt-4 h-px w-40 bg-gradient-to-r from-transparent via-primary dark:via-white/30 to-transparent;
   }
 
   .page-description {
-    @apply mt-4 text-base md:text-lg text-muted-foreground dark:text-white/70 max-w-2xl leading-relaxed
+    @apply mt-4 text-base md:text-lg text-foreground/80 dark:text-white/70 max-w-2xl leading-relaxed
            font-light tracking-wide font-playfair text-center;
   }
 }
