@@ -12,7 +12,7 @@ interface TestimonialsMarqueeProps {
     text: string;
     href?: string;
   }>;
-  className?: string; // Add back the className prop
+  className?: string;
 }
 
 export function TestimonialsMarquee({ 
@@ -23,17 +23,18 @@ export function TestimonialsMarquee({
 }: TestimonialsMarqueeProps) {
   return (
     <section className={cn(
-      "bg-background text-foreground",
+      "bg-background text-foreground relative",
       "py-12 md:py-16",
       "px-0",
       className
     )}>
       <div className="mx-auto flex max-w-container flex-col items-center gap-10 text-center">
-        <div className="flex flex-col items-center gap-6 px-4">
-          <h2 className="section-header font-oswald">
+        <div className="flex flex-col items-center px-4">
+          <h2 className="section-header no-after">
             {title}
           </h2>
-          <p className="section-description text-theme-dark font-playfair text-base md:text-lg lg:text-[1.1rem] leading-[1.8] max-w-2xl">
+          <div className="page-title-underline"></div>
+          <p className="page-description">
             {description}
           </p>
         </div>
@@ -45,7 +46,6 @@ export function TestimonialsMarquee({
                 <div key={`wrapper-${i}`} className="p-4 rounded-lg">
                   <TestimonialCard 
                     key={`card-${i}`}
-                    className="bg-neutral-950"
                     {...testimonial}
                   />
                 </div>
@@ -56,7 +56,6 @@ export function TestimonialsMarquee({
                 <div key={`wrapper-clone-${i}`} className="p-4 rounded-lg">
                   <TestimonialCard 
                     key={`card-clone-${i}`}
-                    className="bg-neutral-950"
                     {...testimonial}
                   />
                 </div>
@@ -64,8 +63,8 @@ export function TestimonialsMarquee({
             </div>
           </div>
 
-          <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-1/3 bg-gradient-to-r from-background sm:block" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/3 bg-gradient-to-l from-background sm:block" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-1/3 bg-gradient-to-r from-background to-transparent sm:block" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/3 bg-gradient-to-l from-background to-transparent sm:block" />
         </div>
       </div>
     </section>

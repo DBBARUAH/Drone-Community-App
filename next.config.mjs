@@ -31,6 +31,8 @@ const nextConfig = {
 
     return config;
   },
+  // Configure experimental features
+  experimental: {}
 }
 
 // For development with Turbopack, use a simple configuration
