@@ -60,7 +60,7 @@ export default async function BlogPostPage(props: any) {
   const allTags = [post.label, ...post.tags];
 
   return (
-    <main className="relative min-h-screen bg-black">
+    <main className="relative min-h-screen bg-background">
       <BackButton />
       <div className="container mx-auto px-4 py-8 sm:py-12 max-w-4xl">
         <header className="mb-6 sm:mb-8">

@@ -182,15 +182,15 @@
 
   .page-title {
     @apply text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight 
-           text-white uppercase leading-none font-oswald;
+           text-foreground dark:text-white uppercase leading-none font-oswald;
   }
 
   .page-title-underline {
-    @apply mt-4 h-px w-40 bg-gradient-to-r from-transparent via-white/30 to-transparent;
+    @apply mt-4 h-px w-40 bg-gradient-to-r from-transparent via-primary/30 dark:via-white/30 to-transparent;
   }
 
   .page-description {
-    @apply mt-4 text-base md:text-lg text-white/70 max-w-2xl leading-relaxed
+    @apply mt-4 text-base md:text-lg text-muted-foreground dark:text-white/70 max-w-2xl leading-relaxed
            font-light tracking-wide font-playfair text-center;
   }
 }
