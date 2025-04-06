@@ -106,7 +106,7 @@ export function EnhancedFeatureSection({
             <Badge variant="outline" className="mb-4 px-4 py-1 text-sm font-medium border-primary/30 bg-primary/5">
               {subtitle || "Discover Our Features"}
             </Badge>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 tracking-tight">{title}</h2>
+            <h2 className="section-header no-after">{title}</h2>
           </motion.div>
         </div>
 
@@ -146,7 +146,7 @@ export function EnhancedFeatureSection({
                       <div className="flex items-center gap-2">
                         <h3
                           className={cn(
-                            "text-xl font-semibold transition-colors",
+                            "text-lg sm:text-xl font-semibold transition-colors",
                             index === activeFeature ? "text-primary" : "",
                           )}
                         >

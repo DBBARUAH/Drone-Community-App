@@ -136,12 +136,13 @@ export default function ContactUs() {
           variants={containerVariants}
           className="flex flex-col items-center text-center mb-12"
         >
-          <motion.h2 variants={itemVariants} className="section-header font-oswald mb-8">
+          <motion.h2 variants={itemVariants} className="section-header no-after">
             CONNECT WITH US
           </motion.h2>
+          <div className="page-title-underline"></div>
           <motion.p
             variants={itemVariants}
-            className="max-w-2xl text-base md:text-lg lg:text-[1.1rem] leading-[1.8] text-muted-foreground font-playfair"
+            className="page-description"
           >
             Whether you're looking to enhance your aerial photography skills or connect with professionals for aerial
             services, this is the place for you. Sign up to connect with a community of enthusiasts and professionals.
@@ -161,10 +162,10 @@ export default function ContactUs() {
               <Card className="bg-card/50 border-border overflow-hidden">
                 <CardContent className="p-8">
                   <div className="text-center mb-8">
-                    <h3 className="text-2xl md:text-3xl font-semibold text-foreground tracking-tight mb-3">
+                    <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-foreground tracking-tight mb-3">
                       Join Our Aerial Community
                     </h3>
-                    <p className="text-muted-foreground mb-8 font-playfair text-[0.95rem] leading-relaxed max-w-md mx-auto">
+                    <p className="text-muted-foreground mb-8 font-playfair text-sm md:text-[0.95rem] leading-relaxed max-w-md mx-auto">
                       Become part of a growing network of drone creators, professionals, and clients seeking exceptional aerial content.
                     </p>
                   </div>
@@ -174,7 +175,7 @@ export default function ContactUs() {
                       <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                         <CheckCircle2 className="h-4 w-4 text-primary" />
                       </div>
-                      <span className="text-foreground/90 font-playfair text-[0.95rem] leading-relaxed">
+                      <span className="text-foreground/90 font-playfair text-sm md:text-[0.95rem] leading-relaxed">
                         Get discovered by clients seeking aerial services
                       </span>
                     </div>
@@ -183,7 +184,7 @@ export default function ContactUs() {
                       <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                         <CheckCircle2 className="h-4 w-4 text-primary" />
                       </div>
-                      <span className="text-foreground/90 font-playfair text-[0.95rem] leading-relaxed">
+                      <span className="text-foreground/90 font-playfair text-sm md:text-[0.95rem] leading-relaxed">
                         Find and hire top drone professionals for your projects
                       </span>
                     </div>
@@ -192,7 +193,7 @@ export default function ContactUs() {
                       <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                         <CheckCircle2 className="h-4 w-4 text-primary" />
                       </div>
-                      <span className="text-foreground/90 font-playfair text-[0.95rem] leading-relaxed">
+                      <span className="text-foreground/90 font-playfair text-sm md:text-[0.95rem] leading-relaxed">
                         Access premium LUTs and editing resources
                       </span>
                     </div>
@@ -201,7 +202,7 @@ export default function ContactUs() {
                       <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                         <CheckCircle2 className="h-4 w-4 text-primary" />
                       </div>
-                      <span className="text-foreground/90 font-playfair text-[0.95rem] leading-relaxed">
+                      <span className="text-foreground/90 font-playfair text-sm md:text-[0.95rem] leading-relaxed">
                         Showcase your portfolio to a global audience
                       </span>
                     </div>
@@ -210,7 +211,9 @@ export default function ContactUs() {
               </Card>
 
               <div className="mt-6 text-center">
-                <h3 className="text-2xl font-semibold text-primary mb-1 tracking-tight">Follow Our Journey</h3>
+                <h3 className="text-xl md:text-2xl font-semibold text-primary mb-1 tracking-tight">
+                  Follow Our Journey
+                </h3>
                 <p className="text-muted-foreground mb-1 text-sm max-w-md mx-auto">
                   Stay updated with our latest aerial adventures
                 </p>
@@ -255,7 +258,7 @@ export default function ContactUs() {
             >
               <div className="p-8">
                 <div className="text-center mb-6">
-                  <h3 className="text-2xl font-semibold text-foreground tracking-tight mb-3">
+                  <h3 className="text-xl md:text-2xl font-semibold text-foreground tracking-tight mb-3">
                     Share Your Aerial Vision
                   </h3>
                 </div>

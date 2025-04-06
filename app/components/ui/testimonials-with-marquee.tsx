@@ -29,11 +29,12 @@ export function TestimonialsMarquee({
       className
     )}>
       <div className="mx-auto flex max-w-container flex-col items-center gap-10 text-center">
-        <div className="flex flex-col items-center gap-6 px-4">
-          <h2 className="section-header font-oswald">
+        <div className="flex flex-col items-center px-4">
+          <h2 className="section-header no-after">
             {title}
           </h2>
-          <p className="section-description text-muted-foreground font-playfair text-base md:text-lg lg:text-[1.1rem] leading-[1.8] max-w-2xl">
+          <div className="page-title-underline"></div>
+          <p className="page-description">
             {description}
           </p>
         </div>

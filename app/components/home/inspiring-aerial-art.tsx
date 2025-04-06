@@ -199,7 +199,7 @@ export function PremiumAerialGallery() {
   const [filteredItems, setFilteredItems] = useState(() => 
     galleryItems.filter(item => item.featured || item.category === "Landscapes").slice(0, 6)
   )
-  const [visibleItems, setVisibleItems] = useState(6) // Reduced from 8 to 6
+  const [visibleItems, setVisibleItems] = useState(3) // Changed initial state to 3
   const [activeItem, setActiveItem] = useState<string | null>(null)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
@@ -260,7 +260,7 @@ export function PremiumAerialGallery() {
       } else {
         setFilteredItems(galleryItems.filter((item) => item.category === selectedCategory));
       }
-      setVisibleItems(6) // Reset to show fewer items initially
+      setVisibleItems(3) // Reset to show 3 items initially after filtering
       setActiveItem(null)
       setIsLoading(false)
     }, 10);
@@ -273,15 +273,10 @@ export function PremiumAerialGallery() {
     setActiveItem(null)
   }
 
-  // Load more items with smoother transition
-  const loadMore = () => {
-    setIsLoading(true)
-    // Delayed loading to keep UI responsive
-    setTimeout(() => {
-      setVisibleItems((prev) => Math.min(prev + 3, filteredItems.length))
-      setIsLoading(false)
-    }, 100)
-  }
+  // ADDED Show All function
+  const handleShowAll = () => {
+    setVisibleItems(filteredItems.length);
+  };
 
   // Use a consistent theme for server rendering to avoid hydration mismatch
   // Only use actual theme after component has mounted client-side
@@ -395,7 +390,7 @@ export function PremiumAerialGallery() {
               <span className="bg-gradient-to-r from-gold to-gold-dark bg-clip-text text-transparent">Aerial Art</span>
             </h2>
 
-            <p className={cn("text-lg md:text-xl max-w-2xl mx-auto", isDark ? "text-white/70" : "text-gray-700")}>
+            <p className="page-description">
               Explore breathtaking drone photography and videography from our talented community of creators
             </p>
           </motion.div>
@@ -409,43 +404,94 @@ export function PremiumAerialGallery() {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <div className="flex flex-wrap items-center justify-center gap-3">
-            {/* Mobile filter button */}
-            <div className="md:hidden">
+            {/* Mobile filter button - REVISED */}
+            <div className="md:hidden flex w-full items-center justify-center gap-2 px-4">
+              {/* Show first 2-3 categories as pills */}
+              {categories.slice(0, 2).map((category) => (
+                <motion.button
+                  key={category}
+                  onClick={() => !isLoading && setSelectedCategory(category)}
+                  className={cn(
+                    "relative px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 flex-shrink-0", // Smaller padding/text
+                    selectedCategory === category
+                      ? isDark
+                        ? "text-black" // Selected pill text color
+                        : "text-black"
+                      : isDark
+                        ? "text-white/70 hover:text-white bg-black/40 border border-white/10" // Non-selected pills
+                        : "text-black/80 hover:text-black bg-white/60 border border-black/10",
+                    isLoading && "opacity-70 cursor-not-allowed"
+                  )}
+                  whileHover={{ scale: isLoading ? 1 : 1.05 }}
+                  whileTap={{ scale: isLoading ? 1 : 0.98 }}
+                >
+                  {selectedCategory === category && (
+                    <motion.div
+                      layoutId="mobileCategoryPill" // Different layoutId from desktop
+                      className="absolute inset-0 rounded-full bg-gradient-to-r from-gold to-gold-dark"
+                      initial={false}
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                  <span className="relative z-10">{category}</span>
+                </motion.button>
+              ))}
+
+              {/* Spacer to push filter button to the right if needed */}
+              {/* <div className="flex-grow"></div> */}
+
+              {/* Filter Dropdown Toggle Button */}
               <Button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
                 variant="outline"
+                size="icon" // Icon only button
                 className={cn(
-                  "border-gold/40 backdrop-blur-md hover:bg-gold/20",
-                  isDark ? "bg-black/50 text-white" : "bg-white/80 text-black font-medium shadow-sm",
+                  "rounded-full border-gold/40 backdrop-blur-md hover:bg-gold/20 w-8 h-8", // Smaller size
+                  isDark ? "bg-black/50 text-white" : "bg-white/80 text-black shadow-sm",
                 )}
                 disabled={isLoading}
+                aria-label="Open category filters"
               >
-                <Filter className={cn("h-4 w-4 mr-2", isDark ? "text-gold" : "text-gold-dark")} />
-                {selectedCategory}
+                <Filter className={cn("h-4 w-4", isDark ? "text-gold" : "text-gold-dark")} />
+              </Button>
+
+              {/* Shuffle button - ADDED FOR MOBILE */}
+              <Button
+                onClick={shuffleItems}
+                variant="outline"
+                size="icon"
+                disabled={isLoading}
+                className={cn(
+                  "rounded-full border-gold/40 backdrop-blur-md hover:bg-gold/20 w-8 h-8", // Matched size
+                  isDark ? "bg-black/50 text-white" : "bg-white/80 text-black shadow-sm",
+                  isLoading && "opacity-70 cursor-not-allowed"
+                )}
+                aria-label="Shuffle items"
+              >
+                <Shuffle className={cn("h-4 w-4", isDark ? "text-gold" : "text-gold-dark")} />
               </Button>
               
+              {/* Dropdown Menu - anchored relative to the main container */}
               {isFilterOpen && (
                 <div
                   className={cn(
-                    "absolute top-full left-0 right-0 mt-2 p-4 backdrop-blur-md rounded-xl border border-gold/20 z-50",
-                    isDark ? "bg-black/90" : "bg-white/95 shadow-lg",
+                    "absolute top-full right-4 left-4 mt-2 p-4 backdrop-blur-xl rounded-xl border z-50", // Adjusted positioning
+                    isDark 
+                      ? "bg-black/90 border-white/10" 
+                      : "bg-white/95 border-gray-200 shadow-lg",
                   )}
-                  style={{
-                    opacity: 1, 
-                    transform: 'translateY(0)', 
-                    transition: 'opacity 0.2s ease, transform 0.2s ease'
-                  }}
                 >
                   <div className="flex justify-between items-center mb-3">
-                    <h3 className={cn("text-sm font-medium", isDark ? "text-gold" : "text-black")}>Categories</h3>
+                    <h3 className={cn("text-sm font-semibold", isDark ? "text-gold" : "text-gray-800")}>Categories</h3>
                     <Button
                       variant="ghost"
                       size="icon"
                       className={cn(
-                        "h-7 w-7",
-                        isDark ? "text-white/70 hover:text-white" : "text-gray-900 hover:text-black",
+                        "h-7 w-7 rounded-full",
+                        isDark ? "text-white/70 hover:text-white hover:bg-white/10" : "text-gray-500 hover:text-gray-900 hover:bg-gray-100",
                       )}
                       onClick={() => setIsFilterOpen(false)}
+                      aria-label="Close category filters"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -461,12 +507,14 @@ export function PremiumAerialGallery() {
                         variant="ghost"
                         size="sm"
                         className={cn(
-                          "justify-start rounded-lg",
+                          "justify-start rounded-md text-xs h-9 px-3", // Changed text-sm to text-xs
                           selectedCategory === category
-                            ? "bg-gold/30 text-black hover:bg-gold/40"
+                            ? isDark
+                              ? "bg-gold/20 text-gold font-medium"
+                              : "bg-gold/30 text-black font-medium"
                             : isDark
-                              ? "hover:bg-white/10 text-white/70"
-                              : "hover:bg-gray-200 text-black/80",
+                              ? "hover:bg-white/10 text-white/80"
+                              : "hover:bg-gray-100 text-gray-700",
                         )}
                       >
                         {category}
@@ -478,7 +526,7 @@ export function PremiumAerialGallery() {
             </div>
 
             {/* Desktop filter pills */}
-            <div className="hidden md:flex flex-wrap items-center justify-center gap-2">
+            <div className="hidden md:flex items-center justify-center gap-2">
               {categories.map((category) => (
                 <motion.button
                   key={category}
@@ -508,22 +556,23 @@ export function PremiumAerialGallery() {
                   <span className="relative z-10">{category}</span>
                 </motion.button>
               ))}
+              
+              {/* Shuffle button - MOVED INSIDE */}
+              <Button
+                onClick={shuffleItems}
+                variant="outline"
+                size="icon"
+                disabled={isLoading}
+                className={cn(
+                  "rounded-full border-gold/40 backdrop-blur-md hover:bg-gold/20",
+                  isDark ? "bg-black/50 text-white" : "bg-white/80 text-black shadow-sm",
+                  isLoading && "opacity-70 cursor-not-allowed"
+                )}
+                aria-label="Shuffle items"
+              >
+                <Shuffle className={cn("h-4 w-4", isDark ? "text-gold" : "text-gold-dark")} />
+              </Button>
             </div>
-
-            {/* Shuffle button */}
-            <Button
-              onClick={shuffleItems}
-              variant="outline"
-              size="icon"
-              disabled={isLoading}
-              className={cn(
-                "rounded-full border-gold/40 backdrop-blur-md hover:bg-gold/20",
-                isDark ? "bg-black/50 text-white" : "bg-white/80 text-black shadow-sm",
-                isLoading && "opacity-70 cursor-not-allowed"
-              )}
-            >
-              <Shuffle className={cn("h-4 w-4", isDark ? "text-gold" : "text-gold-dark")} />
-            </Button>
           </div>
         </motion.div>
 
@@ -554,36 +603,22 @@ export function PremiumAerialGallery() {
             ))}
           </div>
 
-          {/* Load more button */}
+          {/* Load more button - REMOVED */}
+          {/* 
           {visibleItems < filteredItems.length && (
-            <div
-              className="flex justify-center mt-12"
-              style={{
-                opacity: 1,
-                transform: 'translateY(0)',
-                transition: 'opacity 0.6s ease, transform 0.6s ease',
-              }}
-            >
-              <Button
-                onClick={loadMore}
-                variant="outline"
-                disabled={isLoading}
-                className={cn(
-                  "group border-gold/40 backdrop-blur-md hover:bg-gold/20",
-                  isDark ? "bg-black/50 text-white" : "bg-white/80 text-black font-medium shadow-sm",
-                  isLoading && "opacity-70 cursor-not-allowed"
-                )}
-              >
-                <Plus className={cn("mr-2 h-4 w-4 group-hover:rotate-90 transition-transform duration-300", isDark ? "text-gold" : "text-gold-dark")} />
+            <div ...>
+              <Button onClick={loadMore} ...>
+                <Plus ... />
                 <span>Load More</span>
               </Button>
             </div>
           )}
+          */}
         </div>
 
-        {/* Call to action */}
+        {/* Call to action & Show All Button Area */}
         <div
-          className="mt-20 flex flex-col sm:flex-row items-center justify-center"
+          className="mt-20 flex flex-col sm:flex-row items-center justify-center gap-4" // Added gap-4
           style={{
             opacity: 1,
             transform: 'translateY(0)',
@@ -593,7 +628,7 @@ export function PremiumAerialGallery() {
           <NextUIButton
             variant="solid"
             className={cn(
-              "relative overflow-hidden w-64 h-12 border-gold/40 backdrop-blur-md bg-gradient-to-r from-gold to-gold-dark",
+              "relative overflow-hidden w-64 h-10 sm:h-12 border-gold/40 backdrop-blur-md bg-gradient-to-r from-gold to-gold-dark",
             )}
             onPress={handleSubmitWorkClick}
           >
@@ -601,6 +636,20 @@ export function PremiumAerialGallery() {
               Submit Your Work
             </span>
           </NextUIButton>
+
+          {/* Show All Button - ADDED */}
+          {visibleItems < filteredItems.length && (
+            <Button
+              onClick={handleShowAll}
+              variant="outline"
+              className={cn(
+                "w-64 sm:w-auto h-10 sm:h-12 group border-gold/40 backdrop-blur-md hover:bg-gold/20",
+                isDark ? "bg-black/50 text-white" : "bg-white/80 text-black font-medium shadow-sm",
+              )}
+            >
+              <span>Show All ({filteredItems.length})</span>
+            </Button>
+          )}
         </div>
       </div>
     </section>
@@ -873,7 +922,7 @@ function GalleryCard({ item, isActive, onActivate, mousePosition, isDark }: Gall
             isHovered || isActive ? "translate-y-0" : "translate-y-4 opacity-80",
           )}
         >
-          <h3 className="text-lg font-bold text-white mb-1 drop-shadow-md">{item.title}</h3>
+          <h3 className="text-base sm:text-lg font-bold text-white mb-1 drop-shadow-md">{item.title}</h3>
 
           <div
             className={cn(

@@ -147,11 +147,11 @@
 @layer components {
   /* Section headers */
   .section-header {
-    @apply text-3xl md:text-4xl lg:text-5xl font-bold text-center uppercase tracking-wider font-oswald
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold text-center tracking-wider font-oswald
            flex flex-col items-center relative;
   }
   
-  .section-header:not(.light)::after {
+  .section-header:not(.light):not(.no-after)::after {
     @apply content-[''] mt-4 h-px w-40 bg-gradient-to-r from-transparent via-white/30 to-transparent;
   }
   
@@ -161,18 +161,6 @@
   
   .section-header.light {
     @apply text-theme-light;
-  }
-  
-  /* Section descriptions */
-  .section-description {
-    @apply font-playfair text-base md:text-lg leading-[1.8] mx-auto my-6 max-w-2xl
-           font-light tracking-wide text-center text-theme-dark;
-  }
-  
-  /* Feature description - used in feature components */
-  .feature-description {
-    @apply font-playfair text-sm leading-relaxed text-left my-3 font-normal
-           text-muted-foreground dark:text-white/90;
   }
   
   /* Page layout components */
@@ -186,12 +174,22 @@
   }
 
   .page-title-underline {
-    @apply mt-4 h-px w-40 bg-gradient-to-r from-transparent via-primary dark:via-white/30 to-transparent;
+    @apply mt-4 h-px w-40 bg-gradient-to-r from-transparent via-foreground/60 dark:via-white/30 to-transparent;
   }
 
   .page-description {
-    @apply mt-4 text-base md:text-lg text-foreground/80 dark:text-white/70 max-w-2xl leading-relaxed
-           font-light tracking-wide font-playfair text-center;
+    @apply mt-12 text-base md:text-lg text-foreground/80 dark:text-white/70 max-w-2xl leading-relaxed
+           font-light tracking-wide font-playfair text-center mx-auto;
+  }
+
+  .card-description {
+    @apply text-sm font-playfair text-justify hyphens-auto text-foreground/90 dark:text-white/90;
+  }
+
+  /* Feature description - used in feature components */
+  .feature-description {
+    @apply font-playfair text-xs md:text-sm leading-relaxed text-left my-3 font-normal
+    text-foreground/80 dark:text-white/90;
   }
 }
 
@@ -243,7 +241,15 @@
 /* Responsive styles */
 @media (max-width: 768px) {
   .section-header {
-    @apply text-2xl md:text-3xl;
+    @apply text-4xl;
+  }
+
+  .page-description {
+    @apply text-sm;
+  }
+
+  .card-description {
+    @apply text-xs;
   }
 
   input::placeholder,

@@ -230,7 +230,7 @@ export default function Hero() {
           >
             <ShimmerButton 
               shimmerColor="rgba(255, 215, 0, 0.2)"
-              className="h-14 px-8 rounded-full text-lg font-semibold"
+              className="h-12 sm:h-14 px-6 sm:px-8 rounded-full text-sm sm:text-lg font-semibold"
               variant="primary"
               onClick={handleFindPhotographer}
             >
@@ -240,7 +240,7 @@ export default function Hero() {
             
             <ShimmerButton 
               shimmerColor="rgba(255, 255, 255, 0.1)"
-              className="h-14 px-8 rounded-full text-lg font-semibold"
+              className="h-12 sm:h-14 px-6 sm:px-8 rounded-full text-sm sm:text-lg font-semibold"
               variant="secondary"
               onClick={handleJoinAsPhotographer}
             >

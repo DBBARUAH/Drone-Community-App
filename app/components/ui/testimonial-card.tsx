@@ -75,7 +75,7 @@ export function TestimonialCard({
       </div>
 
       {/* Testimonial Text */}
-      <p className="text-card-foreground/90 text-sm leading-relaxed line-clamp-6 text-justify hyphens-auto font-playfair">
+      <p className="card-description line-clamp-6">
         {text}
       </p>
     </Card>

@@ -11,14 +11,14 @@ export function BlogList({
   posts,
 }: BlogListProps) {
   return (
-    <section className="pt-4 pb-12 md:pt-6 md:pb-16 lg:pt-8 lg:pb-20">
+    <section className="pt-4 pb-12 md:pt-6 md:pb-16 lg:pt-8 lg:pb-20 bg-background">
       <div className="container flex flex-col items-center gap-8 md:gap-12">
         <header className="page-header-container">
           <div className="flex flex-col items-center">
-            <h1 className="page-title">{heading}</h1>
+            <h1 className="page-title text-foreground dark:text-white">{heading}</h1>
             <div className="page-title-underline"></div>
           </div>
-          <p className="page-description">
+          <p className="page-description text-foreground/80 dark:text-white/70">
             {description}
           </p>
         </header>
@@ -55,7 +55,7 @@ export function BlogList({
                         {post.title}
                       </Link>
                     </h2>
-                    <p className="mt-4 text-muted-foreground dark:text-white/90 md:mt-5">
+                    <p className="card-description mt-4 md:mt-5">
                       {post.summary}
                     </p>
                     <div className="mt-6 flex items-center space-x-4 text-sm md:mt-8">
