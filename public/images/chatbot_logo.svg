@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <defs>
+    <!-- Golden Gradient -->
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700"/>
+      <stop offset="100%" style="stop-color:#FFC300"/>
+    </linearGradient>
+    
+    <!-- Glow Effect -->
+    <filter id="goldenGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <!-- Propeller Blur -->
+    <filter id="propellerBlur">
+      <feGaussianBlur stdDeviation="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Message Bubble -->
+  <path d="M12 4 L20 4 C21.1 4 22 4.9 22 6 L22 16 C22 17.1 21.1 18 20 18 L15 18 L12 21 L9 18 L4 18 C2.9 18 2 17.1 2 16 L2 6 C2 4.9 2.9 4 4 4 L12 4" 
+        fill="#1a1a1a" 
+        stroke="url(#goldGradient)" 
+        stroke-width="1.5" 
+        stroke-linecap="round" 
+        stroke-linejoin="round">
+    <animate attributeName="d" 
+             dur="3s"
+             repeatCount="indefinite"
+             values="M12 4 L20 4 C21.1 4 22 4.9 22 6 L22 16 C22 17.1 21.1 18 20 18 L15 18 L12 21 L9 18 L4 18 C2.9 18 2 17.1 2 16 L2 6 C2 4.9 2.9 4 4 4 L12 4;
+                     M12 3.5 L20 3.5 C21.1 3.5 22 4.4 22 5.5 L22 15.5 C22 16.6 21.1 17.5 20 17.5 L15 17.5 L12 20.5 L9 17.5 L4 17.5 C2.9 17.5 2 16.6 2 15.5 L2 5.5 C2 4.4 2.9 3.5 4 3.5 L12 3.5;
+                     M12 4 L20 4 C21.1 4 22 4.9 22 6 L22 16 C22 17.1 21.1 18 20 18 L15 18 L12 21 L9 18 L4 18 C2.9 18 2 17.1 2 16 L2 6 C2 4.9 2.9 4 4 4 L12 4"/>
+  </path>
+
+  <!-- Drone Body (Logo Style) -->
+  <g transform="translate(12 11)">
+    <!-- Main Body Rectangle -->
+    <rect x="-4" y="-2" width="8" height="4" 
+          fill="#FFB300" 
+          rx="1" 
+          ry="1"/>
+    
+    <!-- Camera Face - Single Circle -->
+    <circle cx="0" cy="0" r="1.5" 
+            fill="#1a1a1a" 
+            stroke="#FFD700" 
+            stroke-width="0.5">
+      <animate attributeName="r"
+               values="1.5;1.3;1.5"
+               dur="2s"
+               repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- Motor Arms and Rotating Propellers -->
+  <!-- Left Side -->
+  <g>
+    <line x1="5" y1="11" x2="8" y2="11" 
+          stroke="#FFB300" 
+          stroke-width="2" 
+          stroke-linecap="round"/>
+    <!-- Left Motor Pod -->
+    <circle cx="5" cy="11" r="1.2" 
+            fill="#FFD700"/>
+    <!-- Left Propeller -->
+    <g filter="url(#propellerBlur)">
+      <animateTransform attributeName="transform"
+                       attributeType="XML"
+                       type="rotate"
+                       from="0 5 11"
+                       to="360 5 11"
+                       dur="0.5s"
+                       repeatCount="indefinite"/>
+      <line x1="3" y1="11" x2="7" y2="11" 
+            stroke="#FFD700" 
+            stroke-width="0.8" 
+            stroke-linecap="round"/>
+      <line x1="5" y1="9" x2="5" y2="13" 
+            stroke="#FFD700" 
+            stroke-width="0.8" 
+            stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- Right Side -->
+  <g>
+    <line x1="16" y1="11" x2="19" y2="11" 
+          stroke="#FFB300" 
+          stroke-width="2" 
+          stroke-linecap="round"/>
+    <!-- Right Motor Pod -->
+    <circle cx="19" cy="11" r="1.2" 
+            fill="#FFD700"/>
+    <!-- Right Propeller -->
+    <g filter="url(#propellerBlur)">
+      <animateTransform attributeName="transform"
+                       attributeType="XML"
+                       type="rotate"
+                       from="360 19 11"
+                       to="0 19 11"
+                       dur="0.5s"
+                       repeatCount="indefinite"/>
+      <line x1="17" y1="11" x2="21" y2="11" 
+            stroke="#FFD700" 
+            stroke-width="0.8" 
+            stroke-linecap="round"/>
+      <line x1="19" y1="9" x2="19" y2="13" 
+            stroke="#FFD700" 
+            stroke-width="0.8" 
+            stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,157 @@
+/* Dashboard-specific styles */
+
+/* Ensure Inter font is applied to all dashboard components */
+.dashboard-fonts *,
+.auth-pages * {
+  font-family: var(--font-inter, 'Inter', system-ui, sans-serif) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  font-variation-settings: normal;
+}
+
+/* Dashboard typography overrides */
+.dashboard-fonts h1,
+.dashboard-fonts h2,
+.dashboard-fonts h3,
+.dashboard-fonts h4,
+.dashboard-fonts h5,
+.dashboard-fonts h6,
+.auth-pages h1,
+.auth-pages h2,
+.auth-pages h3,
+.auth-pages h4,
+.auth-pages h5,
+.auth-pages h6 {
+  font-family: var(--font-inter, 'Inter', system-ui, sans-serif) !important;
+  letter-spacing: -0.025em;
+}
+
+/* Dashboard button text */
+.dashboard-fonts button,
+.dashboard-fonts .button,
+.auth-pages button,
+.auth-pages .button {
+  font-family: var(--font-inter, 'Inter', system-ui, sans-serif) !important;
+  font-weight: 500;
+}
+
+/* Dashboard input fields */
+.dashboard-fonts input,
+.dashboard-fonts textarea,
+.dashboard-fonts select,
+.auth-pages input,
+.auth-pages textarea,
+.auth-pages select {
+  font-family: var(--font-inter, 'Inter', system-ui, sans-serif) !important;
+}
+
+/* Dashboard card text */
+.dashboard-fonts .card,
+.dashboard-fonts .card-title,
+.dashboard-fonts .card-description,
+.dashboard-fonts .card-content,
+.auth-pages .card,
+.auth-pages .card-title,
+.auth-pages .card-description,
+.auth-pages .card-content {
+  font-family: var(--font-inter, 'Inter', system-ui, sans-serif) !important;
+}
+
+/* Dashboard navigation items */
+.dashboard-fonts nav,
+.dashboard-fonts .nav-item,
+.dashboard-fonts .menu-item {
+  font-family: var(--font-inter, 'Inter', system-ui, sans-serif) !important;
+}
+
+/* Dashboard dropdown menus */
+.dashboard-fonts .dropdown-menu,
+.dashboard-fonts .dropdown-item,
+.dashboard-fonts .dropdown-content {
+  font-family: var(--font-inter, 'Inter', system-ui, sans-serif) !important;
+}
+
+/* Make sure NextUI components use Inter font */
+.dashboard-fonts [class*="nextui"],
+.auth-pages [class*="nextui"] {
+  font-family: var(--font-inter, 'Inter', system-ui, sans-serif) !important;
+}
+
+/* Ensure shadcn components use Inter font */
+.dashboard-fonts [data-radix-popper-content-wrapper] *,
+.auth-pages [data-radix-popper-content-wrapper] * {
+  font-family: var(--font-inter, 'Inter', system-ui, sans-serif) !important;
+}
+
+/* Dashboard-specific styles - ensure consistent Inter font usage */
+.dashboard {
+  font-family: var(--font-inter, system-ui, sans-serif) !important;
+}
+
+/* Explicitly set headers to use Inter */
+.dashboard h1,
+.dashboard h2,
+.dashboard h3,
+.dashboard h4,
+.dashboard h5,
+.dashboard h6 {
+  font-family: var(--font-inter, system-ui, sans-serif) !important;
+}
+
+/* Ensure text elements use Inter */
+.dashboard p,
+.dashboard span,
+.dashboard div,
+.dashboard a,
+.dashboard button {
+  font-family: var(--font-inter, system-ui, sans-serif) !important;
+}
+
+/* Override NextUI component fonts */
+.dashboard :where(.nextui-c-button),
+.dashboard :where(.nextui-c-input),
+.dashboard :where(.nextui-c-dropdown-item),
+.dashboard :where(.nextui-c-menu-item),
+.dashboard :where(.nextui-c-navbar-item) {
+  font-family: var(--font-inter, system-ui, sans-serif) !important;
+}
+
+/* Dashboard specific class for font-sans */
+.dashboard .font-sans {
+  font-family: var(--font-inter, system-ui, sans-serif) !important;
+}
+
+/* Ensure correct font features */
+.dashboard *,
+.dashboard-fonts *,
+.auth-pages * {
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  font-variation-settings: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dashboard layout styles */
+.dashboard {
+  min-height: 100vh;
+  padding-top: 4rem; /* Space for fixed header */
+}
+
+/* Ensure content doesn't get hidden under fixed elements */
+.dashboard main {
+  position: relative;
+  z-index: 1;
+}
+
+/* Prevent content from being hidden under fixed header */
+.dashboard-content {
+  padding-top: 1rem;
+}
+
+/* Ensure proper spacing for mobile navigation */
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding-bottom: 4rem; /* Space for mobile navigation */
+  }
+} 
