@@ -30,7 +30,7 @@ export function BlogList({
             return (
               <Card
                 key={post.id}
-                className="order-last sm:order-first sm:col-span-12 lg:col-span-10 lg:col-start-2 transition-all duration-300 hover:scale-[1.005] hover:shadow-xl dark:hover:shadow-indigo-500/10 bg-transparent rounded-xl overflow-hidden border border-white/10 hover:border-white/20"
+                className="order-last sm:order-first sm:col-span-12 lg:col-span-10 lg:col-start-2 transition-all duration-300 hover:scale-[1.005] hover:shadow-xl dark:hover:shadow-indigo-500/10 bg-card rounded-xl overflow-hidden border dark:border-white/10 hover:border-primary/20 dark:hover:border-white/20"
               >
                 <div className="grid gap-y-6 sm:grid-cols-10 sm:gap-x-5 sm:gap-y-0 md:items-center md:gap-x-8 lg:gap-x-12 p-4 sm:p-6">
                   <div className="sm:col-span-5">
@@ -47,7 +47,7 @@ export function BlogList({
                         ))}
                       </div>
                     </div>
-                    <h2 className="text-xl font-semibold md:text-2xl lg:text-3xl text-white">
+                    <h2 className="text-xl font-semibold md:text-2xl lg:text-3xl text-foreground dark:text-white">
                       <Link
                         href={post.url}
                         className="hover:underline decoration-1 underline-offset-4"
@@ -55,20 +55,20 @@ export function BlogList({
                         {post.title}
                       </Link>
                     </h2>
-                    <p className="mt-4 text-white/90 md:mt-5">
+                    <p className="mt-4 text-muted-foreground dark:text-white/90 md:mt-5">
                       {post.summary}
                     </p>
                     <div className="mt-6 flex items-center space-x-4 text-sm md:mt-8">
-                      <span className="text-white/80">{post.author}</span>
-                      <span className="text-white/80" aria-hidden="true">•</span>
-                      <time dateTime={post.published} className="text-white/80">
+                      <span className="text-muted-foreground dark:text-white/80">{post.author}</span>
+                      <span className="text-muted-foreground dark:text-white/80" aria-hidden="true">•</span>
+                      <time dateTime={post.published} className="text-muted-foreground dark:text-white/80">
                         {post.published}
                       </time>
                     </div>
                     <div className="mt-6 flex items-center space-x-2 md:mt-8">
                       <Link
                         href={post.url}
-                        className="inline-flex items-center font-semibold text-white hover:underline decoration-1 underline-offset-4 md:text-base group"
+                        className="inline-flex items-center font-semibold text-primary dark:text-white hover:underline decoration-1 underline-offset-4 md:text-base group"
                         aria-label={`Read more about ${post.title}`}
                       >
                         <span>Read more</span>
@@ -78,7 +78,7 @@ export function BlogList({
                   </div>
                   <div className="order-first sm:order-last sm:col-span-5">
                     <Link href={post.url} className="block overflow-hidden rounded-lg">
-                      <div className="aspect-[16/9] overflow-hidden rounded-lg border border-white/10 transition-all duration-300 hover:shadow-md">
+                      <div className="aspect-[16/9] overflow-hidden rounded-lg border dark:border-white/10 transition-all duration-300 hover:shadow-md">
                         <ResponsiveImage
                           src={post.image}
                           alt={`Featured image for ${post.title}`}
