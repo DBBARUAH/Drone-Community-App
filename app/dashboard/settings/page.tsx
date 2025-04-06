@@ -101,14 +101,14 @@ export default function SettingsPage() {
             <div className="flex gap-2 items-center">
               <p className="text-sm font-medium">Email verified:</p>
               {user?.email_verified ? (
-                <Badge variant="outline" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
+                <Badge variant="outline" className="bg-green-100 dark:bg-green-900">
                   <Check className="h-3 w-3 mr-1" />
                   Verified
                 </Badge>
               ) : (
                 <Badge
                   variant="outline"
-                  className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100"
+                  className="bg-yellow-100 dark:bg-yellow-900"
                 >
                   Not Verified
                 </Badge>

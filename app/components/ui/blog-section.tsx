@@ -37,10 +37,10 @@ export function BlogList({
                     <div className="mb-4 md:mb-6">
                       <div className="flex flex-wrap gap-2" role="list" aria-label="Post categories">
                         {allTags.map((tag) => (
-                          <Badge 
+                          <Badge
                             key={tag}
                             variant="outline"
-                            className="text-xs text-white/80 hover:text-white transition-colors"
+                            className="text-xs transition-colors"
                           >
                             {tag}
                           </Badge>

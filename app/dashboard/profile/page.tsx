@@ -97,7 +97,7 @@ export default function ProfilePage() {
             <div>
               <h2 className="text-2xl font-semibold">{user?.name}</h2>
               <div className="flex items-center mt-1">
-                <Badge variant="outline" className="bg-primary/10 text-primary">
+                <Badge variant="outline" className="bg-primary/10">
                   {isPhotographer ? (
                     <>
                       <Camera className="h-4 w-4 mr-1" />
