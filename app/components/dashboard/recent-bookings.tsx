@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@nextui-org/react"
+import { Button } from "@heroui/react"
 import { Calendar, CheckCircle, AlertCircle } from "lucide-react"
 
 interface BookingProps {

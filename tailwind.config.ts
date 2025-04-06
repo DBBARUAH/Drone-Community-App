@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
+import { heroui } from "@heroui/react";
 
 /** @type {import('tailwindcss').Config} */
 const tailwindConfig: Config = {
@@ -12,6 +13,7 @@ const tailwindConfig: Config = {
     "./globals.css",
     "./lib/**/*.{js,ts}",
     './app/blog/content/**/*.mdx',
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     container: {
@@ -192,6 +194,7 @@ const tailwindConfig: Config = {
     },
   },
   plugins: [
+    heroui(),
     tailwindcssAnimate,
     require("@tailwindcss/typography"),
   ],

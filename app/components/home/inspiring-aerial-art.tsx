@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { useTheme } from "next-themes"
 import { useAuth } from "@/hooks/useAuth"
 import { useRouter } from "next/navigation"
-import { Tooltip, Button as NextUIButton } from "@nextui-org/react"
+import { Tooltip, Button as NextUIButton } from "@heroui/react"
 
 // Define the types for our gallery items
 export interface GalleryItemType {

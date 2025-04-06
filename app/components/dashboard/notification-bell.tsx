@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Button, Badge } from "@nextui-org/react"
+import { Button, Badge } from "@heroui/react"
 import { Bell } from "lucide-react"
 
 interface NotificationBellProps {

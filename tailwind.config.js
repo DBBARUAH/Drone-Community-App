@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-const { nextui } = require("@nextui-org/react");
+const { heroui } = require("@heroui/react");
 
 module.exports = {
   darkMode: ["class"],
@@ -11,7 +11,7 @@ module.exports = {
     "./globals.css",
     "./lib/**/*.{js,ts}",
     './app/blog/content/**/*.mdx',
-    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     container: {
@@ -218,7 +218,7 @@ module.exports = {
   plugins: [
     require("tailwindcss-animate"), 
     require("@tailwindcss/typography"),
-    nextui({
+    heroui({
       addCommonColors: true,
       defaultTheme: "dashboard",
       defaultExtendTheme: "dashboard",

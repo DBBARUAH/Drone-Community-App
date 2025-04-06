@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Check, ChevronsUpDown, User, Camera } from "lucide-react"
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react"
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react"
 
 import { cn } from "@/lib/utils"
 

@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { NextUIProvider } from "@nextui-org/react"
+import { HeroUIProvider } from "@heroui/react"
 import { DashboardNav } from "@/components/dashboard/dashboard-nav"
 import { DashboardHeader } from "@/components/dashboard/dashboard-header"
 import { useAuth } from "@/hooks/useAuth"
@@ -41,7 +41,7 @@ export default function DashboardLayout({
   }, [])
 
   return (
-    <NextUIProvider>
+    <HeroUIProvider>
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         <div className="antialiased">
           <DashboardHeader />
@@ -55,7 +55,7 @@ export default function DashboardLayout({
           </div>
         </div>
       </div>
-    </NextUIProvider>
+    </HeroUIProvider>
   )
 }
 

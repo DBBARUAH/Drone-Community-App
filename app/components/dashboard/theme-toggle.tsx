@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
-import { Button } from "@nextui-org/react"
+import { Button } from "@heroui/react"
 import { Moon, Sun } from "lucide-react"
 
 export function ThemeToggle() {

@@ -2,7 +2,7 @@
 
 import { UserProvider } from '@auth0/nextjs-auth0/client'
 import { ThemeProvider } from 'next-themes'
-import { NextUIProvider } from '@nextui-org/react'
+import { HeroUIProvider } from "@heroui/react"
 import { AuthErrorBoundary } from '@/components/auth/error-boundary'
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -14,11 +14,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
         enableSystem={false}
         disableTransitionOnChange
       >
-        <NextUIProvider>
+        <HeroUIProvider>
           <AuthErrorBoundary>
             {children}
           </AuthErrorBoundary>
-        </NextUIProvider>
+        </HeroUIProvider>
       </ThemeProvider>
     </UserProvider>
   )
