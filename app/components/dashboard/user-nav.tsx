@@ -97,7 +97,7 @@ export function UserNav({ showHomeLink }: UserNavProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          {showHomeLink && (
+          {isDashboard && (
             <DropdownMenuItem asChild>
               <Link href="/" className="w-full cursor-pointer flex items-center">
                 <Home className="mr-2 h-4 w-4" />
