@@ -36,6 +36,7 @@ const tailwindConfig: Config = {
         'marquee': 'marquee var(--duration) linear infinite',
         "fade-up": "fade-up 0.5s ease-out forwards",
         "fade-down": "fade-down 0.5s ease-out forwards",
+        "spin-once": "spin-once 0.5s ease-out forwards",
       },
       keyframes: {
         'accordion-down': {
@@ -86,6 +87,10 @@ const tailwindConfig: Config = {
             opacity: "1",
             transform: "translateY(0)"
           },
+        },
+        'spin-once': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' }
         },
       },
       colors: {

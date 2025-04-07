@@ -144,14 +144,7 @@
   z-index: 1;
 }
 
-/* Prevent content from being hidden under fixed header */
-.dashboard-content {
-  padding-top: 1rem;
-}
-
 /* Ensure proper spacing for mobile navigation */
 @media (max-width: 768px) {
-  .dashboard-content {
-    padding-bottom: 4rem; /* Space for mobile navigation */
-  }
+  /* Removed .dashboard-content rule */
 } 

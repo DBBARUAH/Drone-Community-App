@@ -61,7 +61,7 @@ export function TestimonialCard({
     >
       {/* Author Info */}
       <div className="flex items-center gap-4 mb-4">
-        <Avatar className="h-12 w-12 ring-2 ring-primary/50 ring-offset-2 ring-offset-card shadow-md">
+        <Avatar className="h-12 w-12 ring-2 ring-blue-600/50 ring-offset-2 ring-offset-card shadow-md">
           <AvatarImage src={author.avatar} alt={author.name} />
         </Avatar>
         <div className="flex flex-col items-start">
