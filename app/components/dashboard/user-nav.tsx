@@ -69,7 +69,7 @@ export function UserNav({ showHomeLink }: UserNavProps) {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 font-sans" align="end" forceMount>
+      <DropdownMenuContent className="w-56 font-sans" align="end" forceMount sideOffset={5}>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
@@ -99,7 +99,7 @@ export function UserNav({ showHomeLink }: UserNavProps) {
         <DropdownMenuGroup>
           {showHomeLink && (
             <DropdownMenuItem asChild>
-              <Link href="/" className="w-full cursor-pointer">
+              <Link href="/" className="w-full cursor-pointer flex items-center">
                 <Home className="mr-2 h-4 w-4" />
                 <span>Back to Home</span>
               </Link>
@@ -107,20 +107,20 @@ export function UserNav({ showHomeLink }: UserNavProps) {
           )}
           {!isDashboard && (
             <DropdownMenuItem asChild>
-              <Link href="/dashboard" className="w-full cursor-pointer">
+              <Link href="/dashboard" className="w-full cursor-pointer flex items-center">
                 <User className="mr-2 h-4 w-4" />
                 <span>Dashboard</span>
               </Link>
             </DropdownMenuItem>
           )}
           <DropdownMenuItem asChild>
-            <Link href="/dashboard/profile" className="w-full cursor-pointer">
+            <Link href="/dashboard/profile" className="w-full cursor-pointer flex items-center">
               <User className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/dashboard/settings" className="w-full cursor-pointer">
+            <Link href="/dashboard/settings" className="w-full cursor-pointer flex items-center">
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>
             </Link>
