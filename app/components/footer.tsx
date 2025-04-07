@@ -36,7 +36,7 @@ export default function Footer() {
           <div className="flex flex-col items-center md:items-start space-y-6 w-full max-w-sm">
             <div className="text-center md:text-left w-full">
               <h3 className="text-xl font-oswald font-bold text-foreground/90 mb-3 uppercase">TRAVELLERS BEATS</h3>
-              <p className="text-sm text-foreground/70 font-playfair leading-relaxed">
+              <p className="text-xs md:text-sm text-foreground/70 font-playfair leading-relaxed">
                 Connecting drone enthusiasts across the globe through shared passion, knowledge and experiences.
               </p>
             </div>
@@ -81,31 +81,31 @@ export default function Footer() {
             <nav className="flex flex-col items-center md:items-start space-y-4 w-full">
               <Link 
                 href="/#aboutus" 
-                className="group flex items-center text-sm text-foreground/70 hover:text-primary transition-all duration-300"
+                className="group flex items-center text-foreground/70 hover:text-primary transition-all duration-300"
               >
                 <ChevronRight className="w-4 h-4 mr-2 transform group-hover:translate-x-1 transition-transform duration-300" />
-                <span className="font-playfair">About Us</span>
+                <span className="font-playfair text-xs md:text-sm">About Us</span>
               </Link>
               <Link 
                 href="/#contactus" 
-                className="group flex items-center text-sm text-foreground/70 hover:text-primary transition-all duration-300"
+                className="group flex items-center text-foreground/70 hover:text-primary transition-all duration-300"
               >
                 <ChevronRight className="w-4 h-4 mr-2 transform group-hover:translate-x-1 transition-transform duration-300" />
-                <span className="font-playfair">Contact</span>
+                <span className="font-playfair text-xs md:text-sm">Contact</span>
               </Link>
               <Link 
                 href="/blog" 
-                className="group flex items-center text-sm text-foreground/70 hover:text-primary transition-all duration-300"
+                className="group flex items-center text-foreground/70 hover:text-primary transition-all duration-300"
               >
                 <ChevronRight className="w-4 h-4 mr-2 transform group-hover:translate-x-1 transition-transform duration-300" />
-                <span className="font-playfair">Blog</span>
+                <span className="font-playfair text-xs md:text-sm">Blog</span>
               </Link>
               <Link 
                 href="/privacy" 
-                className="group flex items-center text-sm text-foreground/70 hover:text-primary transition-all duration-300"
+                className="group flex items-center text-foreground/70 hover:text-primary transition-all duration-300"
               >
                 <ChevronRight className="w-4 h-4 mr-2 transform group-hover:translate-x-1 transition-transform duration-300" />
-                <span className="font-playfair">Privacy Policy</span>
+                <span className="font-playfair text-xs md:text-sm">Privacy Policy</span>
               </Link>
             </nav>
           </div>

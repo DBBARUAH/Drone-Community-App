@@ -86,10 +86,6 @@ export function useAuth() {
   // and we're authenticated
   const isClient = rolesArray.includes('client') || 
     (!!user && rolesArray.length === 0);
-    
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Final role determination - isPhotographer:', isPhotographer, 'isClient:', isClient);
-  }
   
   // Helper functions
   const setUserRole = (role: 'client' | 'photographer' | undefined): void => {
