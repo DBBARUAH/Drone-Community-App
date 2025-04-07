@@ -90,17 +90,17 @@ export function Navbar() {
           {/* Logo */}
           <div className="flex items-center gap-2">
             <Logo className="h-10 w-auto" />
-            <span className="font-playfair text-lg font-semibold hidden sm:block">
+            <span className="font-sans text-lg font-semibold tracking-tight hidden sm:block">
               Travellers <span className="text-primary">Beats</span>
             </span>
           </div>
 
           {/* Desktop Navigation */}
           <NavigationMenu className="hidden md:flex">
-            <NavigationMenuList>
+            <NavigationMenuList className="font-sans">
               <NavigationMenuItem>
                 <Link href="/" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "tracking-tight")}>
                     <Home className="mr-2 h-4 w-4" />
                     Home
                   </NavigationMenuLink>
@@ -108,12 +108,12 @@ export function Navbar() {
               </NavigationMenuItem>
               
               <NavigationMenuItem>
-                <NavigationMenuTrigger>
+                <NavigationMenuTrigger className="tracking-tight">
                   <Store className="mr-2 h-4 w-4" />
                   Services
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="w-[400px] p-4 md:w-[500px] lg:w-[600px]">
+                  <div className="w-[400px] p-4 md:w-[500px] lg:w-[600px] font-sans">
                     <div className="grid grid-cols-2 gap-4">
                       <Link href="/services/luts" legacyBehavior passHref>
                         <NavigationMenuLink 
@@ -125,7 +125,7 @@ export function Navbar() {
                               <Palette className="h-5 w-5 text-primary" />
                             </div>
                             <div>
-                              <div className="text-sm font-medium">LUTs & Presets</div>
+                              <div className="text-sm font-medium tracking-tight">LUTs & Presets</div>
                               <div className="text-xs text-muted-foreground">Professional color grading for your footage</div>
                             </div>
                           </div>
@@ -142,7 +142,7 @@ export function Navbar() {
                               <Camera className="h-5 w-5 text-primary" />
                             </div>
                             <div>
-                              <div className="text-sm font-medium">Equipment Rentals</div>
+                              <div className="text-sm font-medium tracking-tight">Equipment Rentals</div>
                               <div className="text-xs text-muted-foreground">Rent top-quality drone equipment</div>
                             </div>
                           </div>
@@ -156,17 +156,12 @@ export function Navbar() {
                             e.preventDefault()
                             setIsOpen(false)
                             if (isAuthenticated) {
-                              // If already authenticated
                               if (isClient) {
-                                // If already a client, go to client dashboard
                                 router.push('/dashboard/client')
                               } else if (isPhotographer) {
-                                // If photographer trying to access client features,
-                                // direct to role-specific signin page
                                 router.push('/signin?role=client&hideOtherRoles=true')
                               }
                             } else {
-                              // If not authenticated, go to auth page with client role preselected
                               router.push('/signin?role=client&hideOtherRoles=true')
                             }
                           }}
@@ -176,7 +171,7 @@ export function Navbar() {
                               <MapPin className="h-5 w-5 text-primary" />
                             </div>
                             <div>
-                              <div className="text-sm font-medium">Find Photographers</div>
+                              <div className="text-sm font-medium tracking-tight">Find Photographers</div>
                               <div className="text-xs text-muted-foreground">Connect with talented drone photographers</div>
                             </div>
                           </div>
@@ -190,17 +185,12 @@ export function Navbar() {
                             e.preventDefault()
                             setIsOpen(false)
                             if (isAuthenticated) {
-                              // If already authenticated
                               if (isPhotographer) {
-                                // If already a photographer, go to photographer dashboard
                                 router.push('/dashboard/photographer')
                               } else if (isClient) {
-                                // If client trying to access photographer features,
-                                // direct to role-specific signin page
                                 router.push('/signin?role=photographer&hideOtherRoles=true')
                               }
                             } else {
-                              // If not authenticated, go to auth page with photographer role preselected
                               router.push('/signin?role=photographer&hideOtherRoles=true')
                             }
                           }}
@@ -210,7 +200,7 @@ export function Navbar() {
                               <Users className="h-5 w-5 text-primary" />
                             </div>
                             <div>
-                              <div className="text-sm font-medium">Join as Photographer</div>
+                              <div className="text-sm font-medium tracking-tight">Join as Photographer</div>
                               <div className="text-xs text-muted-foreground">Become part of our creative community</div>
                             </div>
                           </div>
@@ -223,7 +213,7 @@ export function Navbar() {
               
               <NavigationMenuItem>
                 <Link href="/blog" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "tracking-tight")}>
                     <Feather className="mr-2 h-4 w-4" />
                     Blog
                   </NavigationMenuLink>
@@ -232,7 +222,7 @@ export function Navbar() {
               
               <NavigationMenuItem>
                 <Link href="/#aboutus" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "tracking-tight")}>
                     <HelpCircle className="mr-2 h-4 w-4" />
                     About Us
                   </NavigationMenuLink>
@@ -250,9 +240,16 @@ export function Navbar() {
             ) : isAuthenticated && user ? (
               <UserMenu user={user} isPhotographer={isPhotographer} onLogout={handleLogout} />
             ) : (
-              <Button variant="default" asChild size="sm" className="font-medium">
-                <Link href="/signin">Sign In</Link>
-              </Button>
+              <div className="flex items-center gap-3">
+                <Button 
+                  variant="default" 
+                  size="sm" 
+                  className="font-sans text-sm font-medium tracking-tight"
+                  asChild
+                >
+                  <Link href="/signin">Sign In</Link>
+                </Button>
+              </div>
             )}
           </div>
 
@@ -271,7 +268,7 @@ export function Navbar() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-full max-w-md sm:max-w-lg border-l border-border/30 p-0">
-                <div className="h-full flex flex-col">
+                <div className="h-full flex flex-col font-sans">
                   <div className="border-b border-border/20 py-4 px-6 flex justify-between items-center">
                     <Logo className="h-8 w-auto" />
                     <SheetClose asChild>
@@ -287,7 +284,7 @@ export function Navbar() {
                       <nav className="grid gap-6">
                         <Link 
                           href="/" 
-                          className="group flex items-center gap-3 text-lg font-medium transition-colors hover:text-primary"
+                          className="group flex items-center gap-3 text-lg font-medium tracking-tight transition-colors hover:text-primary"
                           onClick={() => setIsOpen(false)}
                         >
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/20">
@@ -297,7 +294,7 @@ export function Navbar() {
                         </Link>
 
                         <div>
-                          <div className="mb-3 flex items-center gap-3 text-lg font-medium">
+                          <div className="mb-3 flex items-center gap-3 text-lg font-medium tracking-tight">
                             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
                               <Store className="h-5 w-5 text-primary" />
                             </div>
@@ -306,7 +303,7 @@ export function Navbar() {
                           <div className="grid grid-cols-1 gap-3 pl-13 ml-3 border-l border-border/50">
                             <Link 
                               href="/services/luts" 
-                              className="flex items-center gap-2 p-2 text-base hover:text-primary"
+                              className="flex items-center gap-2 p-2 text-base hover:text-primary tracking-tight"
                               onClick={() => setIsOpen(false)}
                             >
                               <Palette className="h-4 w-4" />
@@ -314,7 +311,7 @@ export function Navbar() {
                             </Link>
                             <Link 
                               href="/services/rentals" 
-                              className="flex items-center gap-2 p-2 text-base hover:text-primary"
+                              className="flex items-center gap-2 p-2 text-base hover:text-primary tracking-tight"
                               onClick={() => setIsOpen(false)}
                             >
                               <Camera className="h-4 w-4" />
@@ -322,22 +319,17 @@ export function Navbar() {
                             </Link>
                             <Link 
                               href="/services/find-photographers" 
-                              className="flex items-center gap-2 p-2 text-base hover:text-primary"
+                              className="flex items-center gap-2 p-2 text-base hover:text-primary tracking-tight"
                               onClick={(e) => {
                                 e.preventDefault()
                                 setIsOpen(false)
                                 if (isAuthenticated) {
-                                  // If already authenticated
                                   if (isClient) {
-                                    // If already a client, go to client dashboard
                                     router.push('/dashboard/client')
                                   } else if (isPhotographer) {
-                                    // If photographer trying to access client features,
-                                    // direct to role-specific signin page
                                     router.push('/signin?role=client&hideOtherRoles=true')
                                   }
                                 } else {
-                                  // If not authenticated, go to auth page with client role preselected
                                   router.push('/signin?role=client&hideOtherRoles=true')
                                 }
                               }}
@@ -347,22 +339,17 @@ export function Navbar() {
                             </Link>
                             <Link 
                               href="/services/join-photographer" 
-                              className="flex items-center gap-2 p-2 text-base hover:text-primary"
+                              className="flex items-center gap-2 p-2 text-base hover:text-primary tracking-tight"
                               onClick={(e) => {
                                 e.preventDefault()
                                 setIsOpen(false)
                                 if (isAuthenticated) {
-                                  // If already authenticated
                                   if (isPhotographer) {
-                                    // If already a photographer, go to photographer dashboard
                                     router.push('/dashboard/photographer')
                                   } else if (isClient) {
-                                    // If client trying to access photographer features,
-                                    // direct to role-specific signin page
                                     router.push('/signin?role=photographer&hideOtherRoles=true')
                                   }
                                 } else {
-                                  // If not authenticated, go to auth page with photographer role preselected
                                   router.push('/signin?role=photographer&hideOtherRoles=true')
                                 }
                               }}
@@ -375,7 +362,7 @@ export function Navbar() {
 
                         <Link 
                           href="/blog" 
-                          className="group flex items-center gap-3 text-lg font-medium transition-colors hover:text-primary"
+                          className="group flex items-center gap-3 text-lg font-medium tracking-tight transition-colors hover:text-primary"
                           onClick={() => setIsOpen(false)}
                         >
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/20">
@@ -386,7 +373,7 @@ export function Navbar() {
 
                         <Link 
                           href="/#aboutus" 
-                          className="group flex items-center gap-3 text-lg font-medium transition-colors hover:text-primary"
+                          className="group flex items-center gap-3 text-lg font-medium tracking-tight transition-colors hover:text-primary"
                           onClick={() => setIsOpen(false)}
                         >
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/20">
@@ -404,7 +391,7 @@ export function Navbar() {
                         <div className="py-4 text-center animate-pulse">Loading...</div>
                       ) : isAuthenticated && user ? (
                         <>
-                          <div className="flex items-center gap-4 py-3 border-t border-border/20">
+                          <div className="flex items-center gap-4 py-3">
                             <Avatar className="h-12 w-12 border border-border/20">
                               <AvatarImage src={user.picture || "/placeholder-user.jpg"} alt={user.name || "User"} />
                               <AvatarFallback>
@@ -414,7 +401,7 @@ export function Navbar() {
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <p className="font-medium">{user.name || "User"}</p>
+                              <p className="font-medium tracking-tight">{user.name || "User"}</p>
                               <p className="text-sm text-muted-foreground">{user.email || "user@example.com"}</p>
                               <div className="flex items-center mt-1">
                                 <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -434,14 +421,14 @@ export function Navbar() {
                             </div>
                           </div>
                           <div className="flex gap-3">
-                            <Button asChild className="flex-1" variant="default">
+                            <Button asChild className="flex-1 tracking-tight" variant="default">
                               <Link href="/dashboard" onClick={() => setIsOpen(false)}>
                                 Dashboard
                               </Link>
                             </Button>
                             <Button
                               variant="outline"
-                              className="flex-1"
+                              className="flex-1 tracking-tight"
                               onClick={() => {
                                 handleLogout()
                                 setIsOpen(false)
@@ -454,12 +441,12 @@ export function Navbar() {
                         </>
                       ) : (
                         <div className="space-y-3">
-                          <Button variant="default" asChild className="w-full">
+                          <Button variant="default" asChild className="w-full tracking-tight">
                             <Link href="/signin" onClick={() => setIsOpen(false)}>
                               Sign In
                             </Link>
                           </Button>
-                          <Button variant="outline" asChild className="w-full">
+                          <Button variant="outline" asChild className="w-full tracking-tight">
                             <Link href="/signup" onClick={() => setIsOpen(false)}>
                               Create Account
                             </Link>
@@ -506,19 +493,19 @@ function UserMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 font-sans" align="end" forceMount>
         <div className="flex flex-col space-y-1 p-2">
-          <p className="text-sm font-medium leading-none">{user.name || "User"}</p>
+          <p className="text-sm font-medium leading-none tracking-tight">{user.name || "User"}</p>
           <p className="text-xs leading-none text-muted-foreground">{user.email || "user@example.com"}</p>
           <div className="flex items-center mt-1">
             <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full flex items-center gap-1">
               {isPhotographer ? (
                 <>
                   <Camera className="h-3 w-3" />
-                  Photographer
+                  <span className="tracking-tight">Photographer</span>
                 </>
               ) : (
                 <>
                   <User className="h-3 w-3" />
-                  Client
+                  <span className="tracking-tight">Client</span>
                 </>
               )}
             </span>
@@ -526,13 +513,13 @@ function UserMenu({
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild className="cursor-pointer">
+          <DropdownMenuItem asChild className="cursor-pointer tracking-tight">
             <Link href="/dashboard" className="flex items-center w-full">
               <User className="mr-2 h-4 w-4" />
               <span>Dashboard</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild className="cursor-pointer">
+          <DropdownMenuItem asChild className="cursor-pointer tracking-tight">
             <Link href="/dashboard/profile" className="flex items-center w-full">
               <User className="mr-2 h-4 w-4" />
               <span>Profile</span>
@@ -540,12 +527,12 @@ function UserMenu({
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onLogout} className="cursor-pointer">
+        <DropdownMenuItem onClick={onLogout} className="cursor-pointer tracking-tight">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
-}
+} 
 
