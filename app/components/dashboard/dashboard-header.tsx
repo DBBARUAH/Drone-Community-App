@@ -49,7 +49,7 @@ export function DashboardHeader() {
           </Sheet>
           <ThemeToggle />
           <NotificationBell count={3} />
-          <UserNav showHomeLink={isDashboard} />
+          <UserNav showHomeLink={true} />
         </div>
 
         {/* Desktop Header - Right Side */}
@@ -57,7 +57,7 @@ export function DashboardHeader() {
           <DashboardSearch />
           <ThemeToggle />
           <NotificationBell count={3} />
-          <UserNav showHomeLink={isDashboard} />
+          <UserNav showHomeLink={true} />
         </div>
       </div>
     </header>
