@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils"
 
 import { Logo } from "@/components/ui/logo"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,6 +47,7 @@ export function Navbar() {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const router = useRouter()
+  const [servicesOpen, setServicesOpen] = useState(false)
 
   // Add scroll listener for transparent to solid effect
   useEffect(() => {
@@ -90,8 +91,8 @@ export function Navbar() {
           {/* Logo */}
           <div className="flex items-center gap-2">
             <Logo className="h-10 w-auto" />
-            <span className="font-sans text-lg font-semibold tracking-tight hidden sm:block">
-              Travellers <span className="text-primary">Beats</span>
+            <span className="font-oswald text-lg font-semibold tracking-tight hidden sm:block">
+              TRAVELLERS <span className="text-primary">BEATS</span>
             </span>
           </div>
 
@@ -269,7 +270,8 @@ export function Navbar() {
               </SheetTrigger>
               <SheetContent side="right" className="w-full max-w-md sm:max-w-lg border-l border-border/30 p-0">
                 <div className="h-full flex flex-col font-sans">
-                  <div className="border-b border-border/20 py-4 px-6 flex justify-between items-center">
+                  <SheetHeader className="border-b border-border/20 py-4 px-6 flex justify-between items-center">
+                    <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                     <Logo className="h-8 w-auto" />
                     <SheetClose asChild>
                       <Button variant="ghost" size="icon">
@@ -277,7 +279,7 @@ export function Navbar() {
                         <span className="sr-only">Close</span>
                       </Button>
                     </SheetClose>
-                  </div>
+                  </SheetHeader>
                   
                   <ScrollArea className="flex-grow">
                     <div className="p-6">
@@ -293,71 +295,84 @@ export function Navbar() {
                           Home
                         </Link>
 
-                        <div>
-                          <div className="mb-3 flex items-center gap-3 text-lg font-medium tracking-tight">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                        {/* Services Dropdown */}
+                        <div className="space-y-3">
+                          <button
+                            onClick={() => setServicesOpen(!servicesOpen)}
+                            className="group flex w-full items-center gap-3 text-lg font-medium tracking-tight transition-colors hover:text-primary"
+                          >
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/20">
                               <Store className="h-5 w-5 text-primary" />
                             </div>
-                            Services
-                          </div>
-                          <div className="grid grid-cols-1 gap-3 pl-13 ml-3 border-l border-border/50">
-                            <Link 
-                              href="/services/luts" 
-                              className="flex items-center gap-2 p-2 text-base hover:text-primary tracking-tight"
-                              onClick={() => setIsOpen(false)}
-                            >
-                              <Palette className="h-4 w-4" />
-                              LUTs & Presets
-                            </Link>
-                            <Link 
-                              href="/services/rentals" 
-                              className="flex items-center gap-2 p-2 text-base hover:text-primary tracking-tight"
-                              onClick={() => setIsOpen(false)}
-                            >
-                              <Camera className="h-4 w-4" />
-                              Equipment Rentals
-                            </Link>
-                            <Link 
-                              href="/services/find-photographers" 
-                              className="flex items-center gap-2 p-2 text-base hover:text-primary tracking-tight"
-                              onClick={(e) => {
-                                e.preventDefault()
-                                setIsOpen(false)
-                                if (isAuthenticated) {
-                                  if (isClient) {
-                                    router.push('/dashboard/client')
-                                  } else if (isPhotographer) {
+                            <span className="flex-1 text-left">Services</span>
+                            <ChevronDown 
+                              className={cn(
+                                "h-5 w-5 transition-transform duration-200",
+                                servicesOpen ? "rotate-180" : ""
+                              )} 
+                            />
+                          </button>
+                          
+                          {servicesOpen && (
+                            <div className="grid grid-cols-1 gap-3 pl-13 ml-3 border-l border-border/50">
+                              <Link 
+                                href="/services/luts" 
+                                className="flex items-center gap-2 p-2 text-base hover:text-primary tracking-tight"
+                                onClick={() => setIsOpen(false)}
+                              >
+                                <Palette className="h-4 w-4" />
+                                LUTs & Presets
+                              </Link>
+                              <Link 
+                                href="/services/rentals" 
+                                className="flex items-center gap-2 p-2 text-base hover:text-primary tracking-tight"
+                                onClick={() => setIsOpen(false)}
+                              >
+                                <Camera className="h-4 w-4" />
+                                Equipment Rentals
+                              </Link>
+                              <Link 
+                                href="/services/find-photographers" 
+                                className="flex items-center gap-2 p-2 text-base hover:text-primary tracking-tight"
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  setIsOpen(false)
+                                  if (isAuthenticated) {
+                                    if (isClient) {
+                                      router.push('/dashboard/client')
+                                    } else if (isPhotographer) {
+                                      router.push('/signin?role=client&hideOtherRoles=true')
+                                    }
+                                  } else {
                                     router.push('/signin?role=client&hideOtherRoles=true')
                                   }
-                                } else {
-                                  router.push('/signin?role=client&hideOtherRoles=true')
-                                }
-                              }}
-                            >
-                              <MapPin className="h-4 w-4" />
-                              Find Photographers
-                            </Link>
-                            <Link 
-                              href="/services/join-photographer" 
-                              className="flex items-center gap-2 p-2 text-base hover:text-primary tracking-tight"
-                              onClick={(e) => {
-                                e.preventDefault()
-                                setIsOpen(false)
-                                if (isAuthenticated) {
-                                  if (isPhotographer) {
-                                    router.push('/dashboard/photographer')
-                                  } else if (isClient) {
+                                }}
+                              >
+                                <MapPin className="h-4 w-4" />
+                                Find Photographers
+                              </Link>
+                              <Link 
+                                href="/services/join-photographer" 
+                                className="flex items-center gap-2 p-2 text-base hover:text-primary tracking-tight"
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  setIsOpen(false)
+                                  if (isAuthenticated) {
+                                    if (isPhotographer) {
+                                      router.push('/dashboard/photographer')
+                                    } else if (isClient) {
+                                      router.push('/signin?role=photographer&hideOtherRoles=true')
+                                    }
+                                  } else {
                                     router.push('/signin?role=photographer&hideOtherRoles=true')
                                   }
-                                } else {
-                                  router.push('/signin?role=photographer&hideOtherRoles=true')
-                                }
-                              }}
-                            >
-                              <Users className="h-4 w-4" />
-                              Join as Photographer
-                            </Link>
-                          </div>
+                                }}
+                              >
+                                <Users className="h-4 w-4" />
+                                Join as Photographer
+                              </Link>
+                            </div>
+                          )}
                         </div>
 
                         <Link 

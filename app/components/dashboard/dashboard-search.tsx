@@ -26,6 +26,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { DialogTitle } from "@/components/ui/dialog"
 
 // Define search result types
 type SearchResultType =
@@ -270,8 +271,18 @@ export function DashboardSearch({ onSelect, isMobile = false }: DashboardSearchP
         </kbd>
       </Button>
 
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Search dashboard..." value={query} onValueChange={setQuery} />
+      <CommandDialog 
+        open={open} 
+        onOpenChange={setOpen}
+      >
+        <DialogTitle className="sr-only">
+          Search Dashboard
+        </DialogTitle>
+        <CommandInput 
+          placeholder="Search dashboard..." 
+          value={query} 
+          onValueChange={setQuery}
+        />
         <CommandList>
           <CommandEmpty>
             {isLoading ? (
@@ -287,7 +298,11 @@ export function DashboardSearch({ onSelect, isMobile = false }: DashboardSearchP
           {groupedResults.map(([type, items]) => (
             <CommandGroup key={type} heading={type.charAt(0).toUpperCase() + type.slice(1)}>
               {items.map((item) => (
-                <CommandItem key={item.id} onSelect={() => handleSelect(item.url)} className="flex items-center py-2">
+                <CommandItem 
+                  key={item.id} 
+                  onSelect={() => handleSelect(item.url)} 
+                  className="flex items-center py-2"
+                >
                   <div className="flex items-center justify-center h-8 w-8 rounded-md bg-muted mr-2">
                     {searchTypeIcons[item.type]}
                   </div>

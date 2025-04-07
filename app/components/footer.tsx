@@ -29,54 +29,56 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full py-12 border-t border-border/30 transition-colors">
+    <footer className="w-full py-8 md:py-12 border-t border-border/30 transition-colors">
       <div className="container max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="flex flex-col items-center md:items-stretch md:grid md:grid-cols-2 gap-8 md:gap-12">
           {/* Brand Column */}
-          <div className="flex flex-col space-y-6">
-            <div>
-              <h3 className="text-xl font-bold text-foreground/90 mb-3">Travellers Beats</h3>
-              <p className="text-sm text-foreground/70 font-playfair max-w-md leading-relaxed">
+          <div className="flex flex-col items-center md:items-start space-y-6 w-full max-w-sm">
+            <div className="text-center md:text-left w-full">
+              <h3 className="text-xl font-oswald font-bold text-foreground/90 mb-3 uppercase">TRAVELLERS BEATS</h3>
+              <p className="text-sm text-foreground/70 font-playfair leading-relaxed">
                 Connecting drone enthusiasts across the globe through shared passion, knowledge and experiences.
               </p>
             </div>
             
             {/* Social Links */}
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center justify-center md:justify-start space-x-6 w-full">
               <a 
                 href="https://instagram.com/travellers.beats" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="p-2 rounded-full text-foreground/70 hover:text-primary hover:bg-primary/10 transition-all duration-300"
+                className="p-2.5 rounded-full text-foreground/70 hover:text-primary hover:bg-primary/10 transition-all duration-300"
                 aria-label="Instagram"
               >
-                <Instagram size={22} />
+                <Instagram size={24} />
               </a>
               <a 
                 href="https://youtube.com/@travellersbeat" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="p-2 rounded-full text-foreground/70 hover:text-primary hover:bg-primary/10 transition-all duration-300"
+                className="p-2.5 rounded-full text-foreground/70 hover:text-primary hover:bg-primary/10 transition-all duration-300"
                 aria-label="YouTube"
               >
-                <Youtube size={22} />
+                <Youtube size={24} />
               </a>
               <a 
                 href="https://www.tiktok.com/@travellers.beats" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="p-2 rounded-full text-foreground/70 hover:text-primary hover:bg-primary/10 transition-all duration-300"
+                className="p-2.5 rounded-full text-foreground/70 hover:text-primary hover:bg-primary/10 transition-all duration-300"
                 aria-label="TikTok"
               >
-                <TikTokIcon size={22} />
+                <TikTokIcon size={24} />
               </a>
             </div>
           </div>
 
           {/* Links Column */}
-          <div className="flex flex-col space-y-6">
-            <h3 className="text-xl font-bold text-foreground/90 pb-2 border-b border-border/20">Explore</h3>
-            <nav className="flex flex-col space-y-3">
+          <div className="flex flex-col items-center md:items-start space-y-6 w-full max-w-sm">
+            <h3 className="text-xl font-oswald font-bold text-foreground/90 pb-2 border-b border-border/20 uppercase w-full text-center md:text-left">
+              Explore
+            </h3>
+            <nav className="flex flex-col items-center md:items-start space-y-4 w-full">
               <Link 
                 href="/#aboutus" 
                 className="group flex items-center text-sm text-foreground/70 hover:text-primary transition-all duration-300"
@@ -110,8 +112,8 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="mt-12 pt-6 border-t border-border/10">
-          <p className="text-center text-sm text-foreground/50 font-playfair">
+        <div className="mt-8 md:mt-12 pt-6 border-t border-border/10">
+          <p className="text-center text-xs md:text-sm text-foreground/50 font-playfair">
             © {currentYear} Travellers Beats. All rights reserved.
           </p>
         </div>
