@@ -190,6 +190,11 @@ export default function Hero() {
               loop 
               playsInline
               src={videos[currentVideoIndex]}
+              onError={(e) => {
+                console.log("Video failed to load, falling back to backup video");
+                const videoElement = e.target as HTMLVideoElement;
+                videoElement.src = "/videos/homepagevideo.mp4"; // Fallback to alternative video
+              }}
             />
             {/* Reduced opacity of the overlay to make video more visible */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/15 to-black/60"></div>
