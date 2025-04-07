@@ -254,15 +254,11 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Mobile Header Items (Theme Toggle + UserMenu (if auth) + Menu Trigger) */}
+          {/* Mobile Header Items (Menu Trigger + Theme Toggle) */}
           <div className="flex items-center gap-2 md:hidden">
-            <ThemeToggle />
-            
-            {/* Show UserMenu here if authenticated on mobile */}
-            {isAuthenticated && user && (
-              <UserMenu user={user} isPhotographer={isPhotographer} onLogout={handleLogout} />
-            )}
-
+            <div className={cn(isOpen ? 'hidden' : '')}>
+              <ThemeToggle />
+            </div>
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button 
@@ -277,7 +273,7 @@ export function Navbar() {
               <SheetContent side="right" className="w-full max-w-md sm:max-w-lg border-l border-border/30 p-0">
                 <div className="h-full flex flex-col font-sans">
                   <SheetHeader className="border-b border-border/20 py-4 px-6 flex justify-between items-center">
-                    <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                    <SheetTitle className="sr-only">Navigation Menu</SheetTitle> 
                     <Logo className="h-8 w-auto" />
                   </SheetHeader>
                   
@@ -406,11 +402,53 @@ export function Navbar() {
                         <div className="py-4 text-center animate-pulse">Loading...</div>
                       ) : isAuthenticated && user ? (
                         <>
-                          <Button asChild className="w-full tracking-tight" variant="default">
-                            <Link href="/dashboard" onClick={() => setIsOpen(false)}>
-                              View Dashboard
-                            </Link>
-                          </Button>
+                          <div className="flex items-center gap-4 py-3">
+                            <Avatar className="h-12 w-12 border border-border/20">
+                              <AvatarImage src={user.picture || "/placeholder-user.jpg"} alt={user.name || "User"} />
+                              <AvatarFallback>
+                                {user.name
+                                  ? user.name.split(" ").map((n: string) => n[0]).join("")
+                                  : "U"}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-medium tracking-tight">{user.name || "User"}</p>
+                              <p className="text-sm text-muted-foreground">{user.email || "user@example.com"}</p>
+                              <div className="flex items-center mt-1">
+                                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full flex items-center gap-1">
+                                  {isPhotographer ? (
+                                    <>
+                                      <Camera className="h-3 w-3" />
+                                      Photographer
+                                    </>
+                                  ) : (
+                                    <>
+                                      <User className="h-3 w-3" />
+                                      Client
+                                    </>
+                                  )}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex gap-3">
+                            <Button asChild className="flex-1 tracking-tight" variant="default">
+                              <Link href="/dashboard" onClick={() => setIsOpen(false)}>
+                                Dashboard
+                              </Link>
+                            </Button>
+                            <Button
+                              variant="outline"
+                              className="flex-1 tracking-tight"
+                              onClick={() => {
+                                handleLogout()
+                                setIsOpen(false)
+                              }}
+                            >
+                              <LogOut className="mr-2 h-4 w-4" />
+                              Log Out
+                            </Button>
+                          </div>
                         </>
                       ) : (
                         <div className="space-y-3">
