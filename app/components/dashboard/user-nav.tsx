@@ -26,8 +26,8 @@ export function UserNav({ showHomeLink }: UserNavProps) {
   const pathname = usePathname()
   const isDashboard = pathname?.startsWith("/dashboard")
   
-  // Debug log to confirm values
-  console.log('DEBUG UserNav:', { pathname, isDashboard, location: typeof window !== 'undefined' ? window.location.pathname : 'server' })
+  // Simple debug log to confirm pathname
+  console.log('DEBUG UserNav pathname:', pathname)
   
   // Fallback for loading state
   if (isLoading) {
@@ -100,20 +100,13 @@ export function UserNav({ showHomeLink }: UserNavProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild className="!bg-emerald-600 hover:!bg-emerald-700 !text-white py-3">
+          {/* Back to Home - Always visible */}
+          <DropdownMenuItem asChild>
             <Link href="/" className="w-full cursor-pointer flex items-center">
-              <Home className="mr-2 h-5 w-5" />
-              <span className="font-bold">Back to Home</span>
+              <Home className="mr-2 h-4 w-4" />
+              <span>Back to Home</span>
             </Link>
           </DropdownMenuItem>
-          {!isDashboard && (
-            <DropdownMenuItem asChild>
-              <Link href="/dashboard" className="w-full cursor-pointer flex items-center">
-                <User className="mr-2 h-4 w-4" />
-                <span>Dashboard</span>
-              </Link>
-            </DropdownMenuItem>
-          )}
           <DropdownMenuItem asChild>
             <Link href="/dashboard/profile" className="w-full cursor-pointer flex items-center">
               <User className="mr-2 h-4 w-4" />

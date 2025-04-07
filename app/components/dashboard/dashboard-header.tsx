@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { usePathname } from "next/navigation"
-import { Search } from "lucide-react"
+import { Search, Home } from "lucide-react"
 
 import { Logo } from "@/components/ui/logo"
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,7 @@ import { ThemeToggle } from "@/components/dashboard/theme-toggle"
 import { NotificationBell } from "@/components/dashboard/notification-bell"
 import { DashboardSearch } from "@/components/dashboard/dashboard-search"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 export function DashboardHeader() {
   const pathname = usePathname()
@@ -47,6 +48,11 @@ export function DashboardHeader() {
               </div>
             </SheetContent>
           </Sheet>
+          <Button asChild variant="ghost" size="icon" className="text-foreground" aria-label="Home">
+            <Link href="/">
+              <Home className="h-4 w-4" />
+            </Link>
+          </Button>
           <ThemeToggle />
           <NotificationBell count={3} />
           <UserNav />
@@ -55,6 +61,12 @@ export function DashboardHeader() {
         {/* Desktop Header - Right Side */}
         <div className="hidden md:flex items-center gap-4 md:gap-6 font-sans">
           <DashboardSearch />
+          <Button asChild variant="outline" className="gap-2" aria-label="Back to Home">
+            <Link href="/">
+              <Home className="h-4 w-4" />
+              <span>Back to Home</span>
+            </Link>
+          </Button>
           <ThemeToggle />
           <NotificationBell count={3} />
           <UserNav />
