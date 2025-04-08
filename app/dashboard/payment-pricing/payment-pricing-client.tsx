@@ -52,6 +52,9 @@ export default function PaymentPricingClient() {
   const [isLoading, setIsLoading] = useState(false)
   const [finalAmount, setFinalAmount] = useState<number | null>(null)
   const [paymentModalOpen, setPaymentModalOpen] = useState(false)
+  const [couponError, setCouponError] = useState<string | null>(null)
+  const [couponSuccess, setCouponSuccess] = useState<string | null>(null)
+  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false)
 
   // Define Stripe appearance based on the current theme
   const appearance: Appearance = {
@@ -316,25 +319,57 @@ export default function PaymentPricingClient() {
 
   const handleApplyCoupon = async () => {
     if (!couponCode) {
-      toast.error('Please enter a coupon code')
+      setCouponError('Please enter a coupon code')
       return
     }
     if (!selectedPlan || selectedPlan === 'free') {
-      toast.info('Please select a paid plan before applying a coupon.');
-      return;
+      setCouponError('Please select a paid plan before applying a coupon')
+      return
     }
 
-    setIsApplyingCoupon(true);
-    toast.info('Applying coupon code...'); 
+    setIsApplyingCoupon(true)
+    setIsValidatingCoupon(true)
+    setCouponError(null)
+    setCouponSuccess(null)
     
     try {
-      // Re-fetch with the coupon code
-      await handleSelectPlan(selectedPlan);
+      // First validate the coupon code
+      const validateResponse = await fetch('/api/validate-coupon', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          promotionCode: couponCode.trim().toUpperCase(),
+        }),
+      })
+
+      const validateData = await validateResponse.json()
+
+      if (!validateResponse.ok) {
+        throw new Error(validateData.error || 'Failed to validate coupon')
+      }
+
+      if (validateData.valid) {
+        // Special handling for 100% discount
+        if (validateData.promotion?.discountType === 'percentage' && validateData.promotion?.discountAmount === 100) {
+          setCouponSuccess(`Full discount coupon "${couponCode}" applied successfully!`)
+          toast.success('100% discount coupon applied!')
+        } else {
+          setCouponSuccess(`Coupon "${couponCode}" is valid! ${validateData.message}`)
+        }
+        // Re-fetch with the coupon code
+        await handleSelectPlan(selectedPlan)
+      } else {
+        throw new Error(validateData.message || 'Invalid coupon code')
+      }
     } catch (error: any) {
-      // Don't clear the coupon code on error to allow the user to fix typos
-      toast.error(error.message || 'Failed to apply coupon. Please try again.');
+      setCouponError(error.message || 'Failed to apply coupon. Please try again.')
+      setCouponCode('') // Clear invalid coupon
+      toast.error(error.message || 'Failed to apply coupon')
     } finally {
-      setIsApplyingCoupon(false);
+      setIsApplyingCoupon(false)
+      setIsValidatingCoupon(false)
     }
   }
 
@@ -499,32 +534,91 @@ export default function PaymentPricingClient() {
 
                   {/* Coupon Code Section moved after payment elements */}
                   <div className="pt-6 mt-6 border-t border-border/50 space-y-4">
-                    <Label htmlFor="coupon" className="text-sm font-medium">Have a Coupon Code?</Label>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <Input 
-                        id="coupon" 
-                        placeholder="Enter coupon code" 
-                        value={couponCode}
-                        onChange={(e) => setCouponCode(e.target.value)}
-                        className="flex-grow" 
-                      />
-                      <Button 
-                        onClick={handleApplyCoupon} 
-                        disabled={isApplyingCoupon || !couponCode}
-                        variant="outline"
-                        className="flex-shrink-0" 
-                      >
-                        {isApplyingCoupon ? 'Applying...' : 'Apply'}
-                        <TicketPercent className="ml-2 h-4 w-4" />
-                      </Button>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="coupon" className="text-sm font-medium">Have a Coupon Code?</Label>
+                      {isValidatingCoupon && (
+                        <span className="text-xs text-muted-foreground animate-pulse">
+                          Validating coupon...
+                        </span>
+                      )}
                     </div>
-                    {finalAmount !== null && 
-                      plans[selectedPlan as keyof typeof plans] && 
-                      finalAmount !== plans[selectedPlan as keyof typeof plans].price[billingCycle] && (
-                      <p className="text-sm text-center text-green-500 bg-green-500/10 py-2 px-3 rounded-md">
-                        Discount applied! New total: ${formatPrice(finalAmount)}
-                      </p>
-                    )}
+                    <div className="space-y-3">
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <div className="flex-grow relative">
+                          <Input 
+                            id="coupon" 
+                            placeholder="Enter coupon code" 
+                            value={couponCode}
+                            onChange={(e) => {
+                              setCouponCode(e.target.value)
+                              setCouponError(null)
+                              setCouponSuccess(null)
+                            }}
+                            className={cn(
+                              "pr-8",
+                              couponError && "border-red-500 focus-visible:ring-red-500",
+                              couponSuccess && "border-green-500 focus-visible:ring-green-500"
+                            )}
+                            disabled={isValidatingCoupon || isApplyingCoupon}
+                          />
+                          {isValidatingCoupon && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                              <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary border-r-transparent" />
+                            </div>
+                          )}
+                        </div>
+                        <Button 
+                          onClick={handleApplyCoupon} 
+                          disabled={isApplyingCoupon || isValidatingCoupon || !couponCode}
+                          variant="outline"
+                          className="flex-shrink-0 min-w-[100px]" 
+                        >
+                          {isValidatingCoupon ? (
+                            <span className="flex items-center gap-2">
+                              <div className="animate-spin rounded-full h-4 w-4 border-2 border-current border-r-transparent" />
+                              Validating
+                            </span>
+                          ) : isApplyingCoupon ? (
+                            <span className="flex items-center gap-2">
+                              <div className="animate-spin rounded-full h-4 w-4 border-2 border-current border-r-transparent" />
+                              Applying
+                            </span>
+                          ) : (
+                            <>
+                              Apply
+                              <TicketPercent className="ml-2 h-4 w-4" />
+                            </>
+                          )}
+                        </Button>
+                      </div>
+
+                      {/* Coupon Status Messages */}
+                      {couponError && (
+                        <div className="text-sm text-red-500 bg-red-500/10 py-2 px-3 rounded-md flex items-start gap-2">
+                          <X className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                          <span>{couponError}</span>
+                        </div>
+                      )}
+                      {couponSuccess && (
+                        <div className="text-sm text-green-500 bg-green-500/10 py-2 px-3 rounded-md flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                          <span>{couponSuccess}</span>
+                        </div>
+                      )}
+                      
+                      {/* Discount Applied Message */}
+                      {finalAmount !== null && 
+                        plans[selectedPlan as keyof typeof plans] && 
+                        finalAmount !== plans[selectedPlan as keyof typeof plans].price[billingCycle] && (
+                        <div className="text-sm text-green-500 bg-green-500/10 py-2 px-3 rounded-md flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 flex-shrink-0" />
+                          <span>
+                            Discount applied! Original price: <span className="line-through">${formatPrice(plans[selectedPlan as keyof typeof plans].price[billingCycle])}</span>
+                            <br />New total: <strong>${formatPrice(finalAmount)}</strong>
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </>
               )}
