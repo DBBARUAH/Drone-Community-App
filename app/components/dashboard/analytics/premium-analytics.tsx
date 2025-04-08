@@ -93,12 +93,16 @@ export function PremiumAnalytics({ isPremium = false }: PremiumAnalyticsProps) {
 
               <div className="flex flex-col sm:flex-row gap-3 mt-2">
                 <Button asChild className="bg-gradient-to-r from-primary to-primary/80">
-                  <Link href="/dashboard/settings/subscription">
+                  <Link href="/dashboard/payment-pricing">
                     <Sparkles className="h-4 w-4 mr-2" />
                     Upgrade to Premium
                   </Link>
                 </Button>
-                <Button variant="outline">Start 1-Month Free Trial</Button>
+                <Button asChild variant="outline">
+                  <Link href="/dashboard/payment-pricing">
+                    Start 1-Month Free Trial
+                  </Link>
+                </Button>
               </div>
             </div>
           </CardContent>
@@ -142,7 +146,7 @@ export function PremiumAnalytics({ isPremium = false }: PremiumAnalyticsProps) {
               <h3 className="text-lg font-medium mb-2">Premium Content Locked</h3>
               <p className="text-sm text-muted-foreground mb-4">Upgrade to access these detailed analytics</p>
               <Button asChild size="sm">
-                <Link href="/dashboard/settings/subscription">Upgrade Now</Link>
+                <Link href="/dashboard/payment-pricing">Upgrade Now</Link>
               </Button>
             </div>
           </div>

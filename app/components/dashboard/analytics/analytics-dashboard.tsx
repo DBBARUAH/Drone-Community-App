@@ -32,7 +32,7 @@ export function AnalyticsDashboard({
 
         <div className="flex items-center gap-2">
           {isPremium ? (
-            <Badge className="bg-gradient-to-r from-amber-500 to-amber-300 text-black font-medium">
+            <Badge variant="outline" className="border-primary/30 text-primary font-medium">
               <Sparkles className="h-3 w-3 mr-1" />
               Premium
             </Badge>

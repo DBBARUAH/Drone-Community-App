@@ -36,13 +36,15 @@ export function UpgradePrompt({ title, description, features }: UpgradePromptPro
       <CardFooter>
         <div className="flex flex-col sm:flex-row gap-3 w-full">
           <Button asChild className="bg-gradient-to-r from-primary to-primary/80 w-full sm:w-auto">
-            <Link href="/dashboard/settings/subscription">
+            <Link href="/dashboard/payment-pricing">
               <Sparkles className="h-4 w-4 mr-2" />
               Upgrade to Premium
             </Link>
           </Button>
-          <Button variant="outline" className="w-full sm:w-auto">
-            Start 1-Month Free Trial
+          <Button asChild variant="outline" className="w-full sm:w-auto">
+            <Link href="/dashboard/payment-pricing">
+                Start 1-Month Free Trial
+            </Link>
           </Button>
         </div>
       </CardFooter>
