@@ -42,84 +42,63 @@ export async function POST(req: Request) {
     let appliedPromotionCodeId: string | undefined = undefined;
     let appliedCouponId: string | undefined = undefined;
     let discountDetails = {};
+    const originalAmount = amount; // Store original amount
 
     // *** VALIDATE AND APPLY STRIPE PROMOTION CODE ***
     if (promotionCode) {
       try {
-        // First try to retrieve the promotion code directly
         const promoCodes = await stripe.promotionCodes.list({
-          code: promotionCode.trim().toUpperCase(),
+          code: promotionCode,
           active: true,
           limit: 1,
-          expand: ['data.coupon']
+          expand: ['data.coupon'] // Expand the coupon details
         });
-
-        if (promoCodes.data.length === 0) {
-          // If not found by exact code, try searching case-insensitive
-          const allPromoCodes = await stripe.promotionCodes.list({
-            active: true,
-            limit: 100 // Reasonable limit to search through
-          });
-          
-          const matchingCode = allPromoCodes.data.find(
-            code => code.code.toLowerCase() === promotionCode.trim().toLowerCase()
-          );
-
-          if (matchingCode) {
-            // Retrieve full details with coupon expanded
-            const fullPromoCode = await stripe.promotionCodes.retrieve(matchingCode.id, {
-              expand: ['coupon']
-            });
-            promoCodes.data = [fullPromoCode];
-          }
-        }
 
         if (promoCodes.data.length > 0) {
           const validPromoCode = promoCodes.data[0];
           const coupon = validPromoCode.coupon;
-
-          if (!coupon.valid) {
-            return NextResponse.json(
-              { error: 'This promotion code is no longer valid.' },
-              { status: 400 }
-            );
-          }
+          let calculatedDiscount = 0; // Variable to store the calculated discount value
 
           // Calculate discounted amount
           if (coupon.percent_off) {
-            const discountAmount = Math.round(amount * (coupon.percent_off / 100));
-            amount = amount - discountAmount;
-            discountDetails = { 
-              percent_off: coupon.percent_off,
-              original_amount: amount + discountAmount,
-              discount_amount: discountAmount
-            };
+            calculatedDiscount = Math.round(amount * (coupon.percent_off / 100));
+            amount = amount - calculatedDiscount;
+            discountDetails = { percent_off: coupon.percent_off, calculated_discount: calculatedDiscount };
           } else if (coupon.amount_off) {
-            amount = Math.max(0, amount - coupon.amount_off);
-            discountDetails = { 
-              amount_off: coupon.amount_off,
-              original_amount: amount + coupon.amount_off,
-              discount_amount: coupon.amount_off
-            };
+            calculatedDiscount = coupon.amount_off;
+            amount = amount - calculatedDiscount;
+            discountDetails = { amount_off: coupon.amount_off, calculated_discount: calculatedDiscount };
           }
+          
+          // Ensure amount doesn't go below 0 AFTER discount calculation
+          amount = Math.max(0, amount); 
 
-          // Ensure minimum charge amount if necessary
-          if (amount < 0) amount = 0;
+           // Check for minimum chargeable amount (e.g., 50 cents for USD) AFTER ensuring it's not negative
+           const minimumChargeAmount = 50; // Define minimum charge amount in cents
+           if (amount > 0 && amount < minimumChargeAmount) {
+             console.warn(`Discounted amount ${amount} is below minimum charge amount ${minimumChargeAmount}.`);
+             return NextResponse.json(
+               { error: `The total amount after discount ($${(amount / 100).toFixed(2)}) is below the minimum required charge ($${(minimumChargeAmount / 100).toFixed(2)}).` },
+               { status: 400 }
+             );
+           }
 
           appliedPromotionCodeId = validPromoCode.id;
           appliedCouponId = coupon.id;
           console.log(`Applied promo code ${promotionCode} (Coupon ${coupon.id}), final amount: ${amount}`);
 
         } else {
+          // Promotion code is invalid or inactive
+          console.warn(`Invalid or inactive promotion code: ${promotionCode}`);
           return NextResponse.json(
-            { error: `Invalid promotion code: '${promotionCode}'` },
+            { error: `Invalid or inactive promotion code: '${promotionCode}'` },
             { status: 400 }
           );
         }
       } catch (error) {
         console.error("Error validating promotion code:", error);
         return NextResponse.json(
-          { error: 'Could not validate promotion code. Please try again.' },
+          { error: 'Could not validate promotion code' },
           { status: 500 }
         );
       }
@@ -136,7 +115,8 @@ export async function POST(req: Request) {
       if (appliedCouponId) { 
         metadata.appliedCouponId = appliedCouponId;
       }
-      metadata.discountDetails = JSON.stringify(discountDetails); // Store discount info
+      // Keep discount details in metadata for records
+      metadata.discountDetails = JSON.stringify({ ...discountDetails, original_amount: originalAmount }); 
     }
 
     // Create payment intent with final amount and metadata
@@ -152,7 +132,9 @@ export async function POST(req: Request) {
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
       finalAmount: amount,
+      originalAmount: originalAmount, // Return original amount
       appliedPromotionCodeId: appliedPromotionCodeId, 
+      discountDetails: appliedPromotionCodeId ? discountDetails : null // Return discount details if applied
     })
 
   } catch (error) {

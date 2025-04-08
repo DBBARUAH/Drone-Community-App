@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { CheckCircle, X, AlertTriangle, ArrowRight, Check, Info, TicketPercent } from 'lucide-react'
+import { CheckCircle, X, AlertTriangle, ArrowRight, Check, Info, TicketPercent, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
@@ -39,6 +39,12 @@ const getStripePromise = () => {
 
 const stripePromise = getStripePromise()
 
+interface DiscountDetails {
+  percent_off?: number;
+  amount_off?: number;
+  calculated_discount: number; // Value in cents
+}
+
 export default function PaymentPricingClient() {
   const router = useRouter()
   const { theme } = useTheme()
@@ -51,6 +57,8 @@ export default function PaymentPricingClient() {
   const [clientSecret, setClientSecret] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [finalAmount, setFinalAmount] = useState<number | null>(null)
+  const [originalAmount, setOriginalAmount] = useState<number | null>(null)
+  const [appliedDiscountDetails, setAppliedDiscountDetails] = useState<DiscountDetails | null>(null)
   const [paymentModalOpen, setPaymentModalOpen] = useState(false)
   const [couponError, setCouponError] = useState<string | null>(null)
   const [couponSuccess, setCouponSuccess] = useState<string | null>(null)
@@ -189,6 +197,8 @@ export default function PaymentPricingClient() {
       toast.success('Free plan selected!')
       setClientSecret('') // Clear secret if switching to free
       setFinalAmount(0)
+      setOriginalAmount(0) // Reset original amount for free plan
+      setAppliedDiscountDetails(null) // Clear discount details
       return
     }
 
@@ -197,6 +207,8 @@ export default function PaymentPricingClient() {
       setSelectedPlan(plan)
       setClientSecret('') // Clear previous secret
       setFinalAmount(null) // Clear previous final amount
+      setOriginalAmount(null) // Clear previous original amount
+      setAppliedDiscountDetails(null) // Clear previous discount details
 
       // Maximum number of retries
       const maxRetries = 3;
@@ -209,97 +221,106 @@ export default function PaymentPricingClient() {
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
+          const payload = {
+            plan: plan,
+            billingCycle,
+            promotionCode: couponCode ? couponCode.trim().toUpperCase() : undefined,
+          };
+
+          // Log the request payload for debugging
+          console.log('Payment Intent Request Payload:', payload);
+
           const response = await fetch('/api/create-payment-intent', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              plan: plan,
-              billingCycle,
-              promotionCode: couponCode ? couponCode.trim().toUpperCase() : undefined,
-            }),
+            body: JSON.stringify(payload),
             signal: controller.signal
           });
 
           clearTimeout(timeoutId);
 
+          if (!response.ok) {
+            const data = await response.json();
+            
+            // Enhanced error handling with specific messages
+            switch (response.status) {
+              case 400:
+                if (data.error?.includes('promotion code')) {
+                  setCouponCode(''); // Clear invalid coupon
+                  throw new Error('Invalid or expired promotion code. Please try a different code.');
+                } else if (data.error?.includes('plan')) {
+                  throw new Error('Invalid plan selected. Please refresh and try again.');
+                } else if (data.error?.includes('billing cycle')) {
+                  throw new Error('Invalid billing cycle. Please refresh and try again.');
+                } else {
+                  throw new Error(data.error || 'Invalid request. Please check your inputs.');
+                }
+              case 401:
+                throw new Error('Authentication required. Please log in and try again.');
+              case 429:
+                throw new Error('Too many requests. Please wait a moment and try again.');
+              case 500:
+                throw new Error('Server error. Please try again later.');
+              default:
+                throw new Error(`Payment initialization failed (${response.status}): ${data.error || 'Unknown error'}`);
+            }
+          }
+
           const data = await response.json();
           
-          if (!response.ok) {
-            if (response.status === 400) {
-              // Handle validation errors
-              if (data.error?.includes('promotion code')) {
-                setCouponCode(''); // Clear invalid coupon
-                throw new Error('Invalid or expired promotion code. Please try a different code.');
-              } else if (data.error?.includes('plan')) {
-                throw new Error('Invalid plan selected. Please refresh and try again.');
-              } else {
-                throw new Error(data.error || 'Invalid request. Please check your inputs.');
-              }
-            } else if (response.status === 429) {
-              // Rate limiting
-              throw new Error('Too many requests. Please wait a moment and try again.');
-            } else {
-              throw new Error(`Payment initialization failed (${response.status})`);
-            }
-          }
-
+          // Log the response for debugging
+          console.log('Payment Intent Response:', {
+            status: response.status,
+            data: data
+          });
+          
           setClientSecret(data.clientSecret);
           setFinalAmount(data.finalAmount);
-          
-          // Open payment modal after successful initialization
-          setPaymentModalOpen(true);
-          
-          if (data.finalAmount !== data.originalAmount) {
-            toast.success(`Coupon applied successfully! Final amount: $${(data.finalAmount / 100).toFixed(2)}`);
+          setOriginalAmount(data.originalAmount); // Store original amount
+          setAppliedDiscountDetails(data.discountDetails); // Store discount details
+          success = true; // Mark as successful to exit retry loop
+
+          // Show success message with amount
+          const formattedFinalAmount = formatPrice(data.finalAmount); // Renamed variable for clarity
+          if (data.discountDetails && data.originalAmount !== data.finalAmount) {
+            const formattedOriginalAmount = formatPrice(data.originalAmount);
+            toast.success(`Plan selected! Original: $${formattedOriginalAmount}, Discount applied, Final: $${formattedFinalAmount}`);
           } else {
-            toast.info(`Payment initialized. Amount: $${(data.finalAmount / 100).toFixed(2)}`);
+            toast.success(`Plan selected! Price: $${formattedFinalAmount}`);
           }
 
-          success = true; // Exit retry loop on success
-          
+          // Open payment modal if amount is greater than 0
+          if (data.finalAmount > 0) {
+            setPaymentModalOpen(true);
+          } else {
+            // Handle free subscription (e.g., 100% discount)
+            // Use original amount to differentiate from actual free plan
+            toast.success(`100% Discount Applied! Your subscription is activated.`);
+            handlePaymentSuccess(); 
+          }
+
         } catch (error: any) {
           attempt++;
+          console.error('Payment intent error:', error);
+          setOriginalAmount(null) // Reset on error
+          setAppliedDiscountDetails(null) // Reset on error
           
-          // Check if it's a network error or timeout
-          if (error.name === 'AbortError' || error.name === 'TypeError') {
-            if (attempt < maxRetries) {
-              toast.error(`Network error. Retrying... (Attempt ${attempt}/${maxRetries})`);
-              await new Promise(resolve => setTimeout(resolve, 1000 * attempt)); // Exponential backoff
-              continue;
-            }
-            throw new Error('Network error. Please check your connection and try again.');
+          if (attempt === maxRetries) {
+            toast.error(error.message || 'Failed to initialize payment. Please try again.');
+            throw error;
           }
           
-          // If it's not a network error, throw immediately
-          throw error;
+          // Wait before retrying
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
         }
       }
-
     } catch (error: any) {
       console.error('Payment initialization error:', error);
-      
-      // Handle different error types
-      if (error.message.includes('promotion code')) {
-        toast.error('Invalid coupon code. Please check and try again.');
-        setCouponCode(''); // Clear the invalid coupon code
-        toast.warning('Coupon code has been cleared.');
-      } else if (error.message.includes('Network error')) {
-        toast.error(error.message);
-        // Optionally reset the payment modal state
-        setPaymentModalOpen(false);
-      } else {
-        toast.error(error.message || 'Failed to initialize payment. Please try again.');
-      }
-
-      // Reset states on error
-      setSelectedPlan(null);
-      setClientSecret('');
-      setFinalAmount(null);
-      
+      toast.error(error.message || 'Failed to initialize payment. Please try again.');
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
   
@@ -425,14 +446,18 @@ export default function PaymentPricingClient() {
             <button
               onClick={() => setBillingCycle('yearly')}
               className={cn(
-                "flex-1 text-center py-2 px-4 rounded-md transition-all text-sm font-medium flex items-center justify-center gap-2",
+                // Default: Stack vertically, center items
+                "flex-1 text-center py-2 px-4 rounded-md transition-all text-sm font-medium flex flex-col items-center justify-center", 
+                // Small screens and up: Row layout with gap
+                "sm:flex-row sm:gap-2", 
                 billingCycle === 'yearly' 
                   ? "bg-primary text-primary-foreground shadow-sm" 
                   : "text-muted-foreground hover:bg-muted"
               )}
             >
               <span>Yearly</span>
-              <Badge variant="outline" className="text-xs py-0 h-5 bg-green-500/10 text-green-500 border-green-500/20">
+              {/* Adjusted badge styling for consistency */}
+              <Badge variant="outline" className="text-xs py-0 h-5 px-1.5 mt-0.5 sm:mt-0 bg-green-500/10 text-green-500 border-green-500/20">
                 Save 20%
               </Badge>
             </button>
@@ -510,14 +535,29 @@ export default function PaymentPricingClient() {
               {selectedPlan && selectedPlan !== 'free' && clientSecret && (
                 <>
                   <div className="space-y-4">
-                    <div className="flex items-baseline justify-between">
-                      <h3 className="text-sm font-medium text-muted-foreground">Selected plan</h3>
+                    <div className="flex items-start justify-between gap-4">
+                      <h3 className="text-sm font-medium text-muted-foreground pt-1">Selected plan</h3>
                       <div className="text-right">
                         <div className="text-sm font-medium">{plans[selectedPlan as keyof typeof plans].name}</div>
-                        <div className="text-2xl font-bold">
-                          ${formatPrice(finalAmount !== null ? finalAmount : plans[selectedPlan as keyof typeof plans].price[billingCycle])}
-                          <span className="text-sm text-muted-foreground">/{billingCycle === 'monthly' ? 'mo' : 'yr'}</span>
-                        </div>
+                        {appliedDiscountDetails && finalAmount !== null && originalAmount !== null && finalAmount !== originalAmount ? (
+                          <>
+                            <div className="text-sm text-muted-foreground line-through">
+                              ${formatPrice(originalAmount ?? 0)}
+                            </div>
+                            <div className="text-sm text-green-600 dark:text-green-400">
+                              - ${formatPrice(appliedDiscountDetails!.calculated_discount)} (Discount)
+                            </div>
+                            <div className="text-2xl font-bold">
+                              ${formatPrice(finalAmount!)}
+                              <span className="text-sm text-muted-foreground">/{billingCycle === 'monthly' ? 'mo' : 'yr'}</span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="text-2xl font-bold">
+                            ${formatPrice(finalAmount !== null ? finalAmount : (originalAmount ?? plans[selectedPlan as keyof typeof plans].price[billingCycle]))}
+                            <span className="text-sm text-muted-foreground">/{billingCycle === 'monthly' ? 'mo' : 'yr'}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -600,21 +640,10 @@ export default function PaymentPricingClient() {
                         </div>
                       )}
                       {couponSuccess && (
-                        <div className="text-sm text-green-500 bg-green-500/10 py-2 px-3 rounded-md flex items-start gap-2">
+                        <div className="text-sm text-green-600 bg-green-500/10 py-2 px-3 rounded-md flex items-start gap-2">
                           <CheckCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                          <span>{couponSuccess}</span>
-                        </div>
-                      )}
-                      
-                      {/* Discount Applied Message */}
-                      {finalAmount !== null && 
-                        plans[selectedPlan as keyof typeof plans] && 
-                        finalAmount !== plans[selectedPlan as keyof typeof plans].price[billingCycle] && (
-                        <div className="text-sm text-green-500 bg-green-500/10 py-2 px-3 rounded-md flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 flex-shrink-0" />
                           <span>
-                            Discount applied! Original price: <span className="line-through">${formatPrice(plans[selectedPlan as keyof typeof plans].price[billingCycle])}</span>
-                            <br />New total: <strong>${formatPrice(finalAmount)}</strong>
+                            {couponSuccess}
                           </span>
                         </div>
                       )}

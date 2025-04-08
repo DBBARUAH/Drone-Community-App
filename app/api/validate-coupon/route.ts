@@ -20,9 +20,27 @@ export async function POST(request: Request) {
     try {
       // First try to fetch by exact promotion code
       const promotions = await stripe.promotionCodes.list({
-        code: promotionCode,
+        code: promotionCode.trim().toUpperCase(),
         active: true,
+        expand: ['data.coupon']
       })
+
+      // If not found by exact match, try case-insensitive search
+      if (promotions.data.length === 0) {
+        const allPromoCodes = await stripe.promotionCodes.list({
+          active: true,
+          limit: 100,
+          expand: ['data.coupon']
+        })
+
+        const matchingCode = allPromoCodes.data.find(
+          code => code.code.toLowerCase() === promotionCode.trim().toLowerCase()
+        )
+
+        if (matchingCode) {
+          promotions.data = [matchingCode]
+        }
+      }
 
       if (promotions.data.length === 0) {
         return NextResponse.json(
@@ -53,7 +71,14 @@ export async function POST(request: Request) {
       }
 
       // Get the coupon details
-      const coupon = await stripe.coupons.retrieve(promotion.coupon.id)
+      const coupon = promotion.coupon
+
+      if (!coupon.valid) {
+        return NextResponse.json(
+          { valid: false, message: 'This coupon is no longer valid' },
+          { status: 200 }
+        )
+      }
 
       let discountMessage = ''
       if (coupon.percent_off) {
@@ -64,27 +89,27 @@ export async function POST(request: Request) {
 
       return NextResponse.json({
         valid: true,
-        message: `Valid coupon code: ${discountMessage}`,
+        message: `Coupon applied: ${discountMessage}`,
         promotion: {
           id: promotion.id,
           code: promotion.code,
-          couponId: coupon.id,
           discountType: coupon.percent_off ? 'percentage' : 'fixed',
           discountAmount: coupon.percent_off || coupon.amount_off,
         }
       })
+
     } catch (error) {
       console.error('Error validating promotion code:', error)
       return NextResponse.json(
         { valid: false, message: 'Error validating promotion code' },
-        { status: 200 }
+        { status: 500 }
       )
     }
   } catch (error) {
-    console.error('Server error:', error)
+    console.error('Error processing request:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { valid: false, message: 'Invalid request format' },
+      { status: 400 }
     )
   }
 } 
