@@ -6,7 +6,7 @@ import { getRequiredServerConfig } from '@/lib/config'
 const getStripeInstance = () => {
   const secretKey = getRequiredServerConfig('stripeSecretKey')
   return new Stripe(secretKey, {
-    apiVersion: '2025-03-31.basil',
+    apiVersion: '2025-03-31.basil',   
   })
 }
 

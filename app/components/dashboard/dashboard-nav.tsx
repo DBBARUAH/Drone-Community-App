@@ -31,16 +31,6 @@ export function DashboardNav({ className, userRole = "client" }: DashboardNavPro
       icon: MessageSquare,
     },
     {
-      title: "Analytics",
-      href: "/dashboard/analytics",
-      icon: BarChart,
-    },
-    {
-      title: "Payment & Pricing",
-      href: "/dashboard/payment-pricing",
-      icon: CreditCard,
-    },
-    {
       title: "Community",
       href: "/dashboard/community",
       icon: Users,
@@ -51,20 +41,42 @@ export function DashboardNav({ className, userRole = "client" }: DashboardNavPro
       icon: Settings,
     },
   ]
+  
+  // Add photographer-specific items
+  const photographerItems = [
+    {
+      title: "Portfolio",
+      href: "/dashboard/portfolio",
+      icon: Image,
+      exactMatch: false,
+    },
+    {
+      title: "Analytics",
+      href: "/dashboard/analytics",
+      icon: BarChart,
+      exactMatch: false,
+    },
+    {
+      title: "Payment & Pricing",
+      href: "/dashboard/payment-pricing",
+      icon: CreditCard,
+      exactMatch: false,
+    }
+  ]
 
   // Add portfolio item only for photographers
-  const navItems =
-    userRole === "photographer"
-      ? [
-          ...baseNavItems.slice(0, 2), // Insert Portfolio after Bookings
-          {
-            title: "Portfolio",
-            href: "/dashboard/portfolio",
-            icon: Image,
-          },
-          ...baseNavItems.slice(2),
-        ]
-      : baseNavItems
+  const navItems = userRole === "photographer"
+    ? [
+        baseNavItems[0], // Overview
+        baseNavItems[1], // Bookings
+        photographerItems[0], // Portfolio
+        baseNavItems[2], // Messages
+        photographerItems[1], // Analytics
+        photographerItems[2], // Payment & Pricing
+        baseNavItems[3], // Community
+        baseNavItems[4], // Settings
+      ]
+    : baseNavItems // Client navigation
 
   return (
     <nav className={cn("flex flex-col space-y-2 py-4 font-sans", className)}>

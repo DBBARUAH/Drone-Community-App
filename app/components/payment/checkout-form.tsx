@@ -1,109 +1,172 @@
 "use client"
 
-import { useState, useEffect, type FormEvent } from "react"
-import {
-  PaymentElement,
-  useStripe,
-  useElements,
-} from "@stripe/react-stripe-js"
+import { useState } from 'react'
+import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js'
 import { Button } from "@/components/ui/button"
-import { Loader2, Lock } from "lucide-react"
-import { toast } from "@/components/ui/use-toast"
+import { toast } from 'sonner'
+import { ArrowRight, Loader2, CreditCard, AlertCircle, Info } from 'lucide-react'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 interface CheckoutFormProps {
   onPaymentSuccess: () => void
+  isLoading: boolean
+  setIsLoading: (loading: boolean) => void
 }
 
-export function CheckoutForm({ onPaymentSuccess }: CheckoutFormProps) {
+export function CheckoutForm({ onPaymentSuccess, isLoading, setIsLoading }: CheckoutFormProps) {
   const stripe = useStripe()
   const elements = useElements()
+  const [errorMessage, setErrorMessage] = useState<string>()
 
-  const [message, setMessage] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-
-  useEffect(() => {
-    if (!stripe) {
-      return
-    }
-
-    const clientSecret = new URLSearchParams(window.location.search).get(
-      "payment_intent_client_secret",
-    )
-
-    if (!clientSecret) {
-      return
-    }
-
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      switch (paymentIntent?.status) {
-        case "succeeded":
-          setMessage("Payment succeeded!")
-          toast({ title: "Payment Successful!", description: "Your subscription is now active." })
-          onPaymentSuccess() // Notify parent component
-          break
-        case "processing":
-          setMessage("Your payment is processing.")
-          break
-        case "requires_payment_method":
-          setMessage("Your payment was not successful, please try again.")
-          break
-        default:
-          setMessage("Something went wrong.")
-          break
-      }
-    })
-  }, [stripe, onPaymentSuccess])
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault()
 
     if (!stripe || !elements) {
-      // Stripe.js hasn't yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
-      console.log("Stripe.js hasn't loaded yet.")
       return
     }
 
-    setIsLoading(true)
-    setMessage(null)
+    try {
+      setIsLoading(true)
+      setErrorMessage(undefined)
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        // Make sure to change this to your payment completion page
-        return_url: `${window.location.origin}/dashboard/payment-pricing?success=true`, // Add success param
-      },
-    })
+      const result = await stripe.confirmPayment({
+        elements,
+        redirect: 'if_required',
+        confirmParams: {
+          return_url: `${window.location.origin}/dashboard/payment-success`,
+        },
+      })
 
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
-    if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message || "An unexpected error occurred.")
-    } else {
-      setMessage("An unexpected error occurred.")
+      if (result.error) {
+        if (result.error.type === 'card_error' || result.error.type === 'validation_error') {
+          setErrorMessage(result.error.message)
+          toast.error(result.error.message || 'An error occurred with your card.')
+        } else {
+          setErrorMessage('An unexpected error occurred.')
+          toast.error('An unexpected error occurred during payment.')
+        }
+      } else if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
+        window.location.href = `${window.location.origin}/dashboard/payment-success?payment_intent=${result.paymentIntent.id}`;
+      } else if (result.paymentIntent) {
+        toast.info(`Payment status: ${result.paymentIntent.status}. You will be notified upon completion.`)
+      }
+    } catch (error) {
+      console.error('Payment error:', error)
+      toast.error('Payment failed. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
-
-    setIsLoading(false)
   }
 
   return (
-    <form id="payment-form" onSubmit={handleSubmit} className="space-y-4">
-      <PaymentElement id="payment-element" options={{ layout: "tabs" }} />
-      <Button disabled={isLoading || !stripe || !elements} id="submit" className="w-full">
-        <span id="button-text">
-          {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Lock className="mr-2 h-3 w-3" />}
-          {isLoading ? "Processing..." : "Pay Now"}
-        </span>
-      </Button>
-      {/* Show any error or success messages */}
-      {message && <div id="payment-message" className="text-sm text-red-500 text-center">{message}</div>}
-       <div className="flex items-center justify-center text-xs text-muted-foreground pt-2">
-          <Lock className="h-3 w-3 mr-1" />
-          Secure payment processing by Stripe
-       </div>
-    </form>
+    <div className="space-y-6">
+      <Alert>
+        <Info className="h-4 w-4" />
+        <AlertDescription>
+          This is a test mode payment. No actual charges will be made.
+        </AlertDescription>
+      </Alert>
+
+      <Accordion type="single" collapsible className="w-full bg-muted/50 rounded-lg">
+        <AccordionItem value="test-cards">
+          <AccordionTrigger className="px-4">
+            <div className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4" />
+              View Test Card Numbers
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="px-4 pb-4 space-y-4">
+            <div className="space-y-4 text-sm">
+              <div className="space-y-2">
+                <div className="font-medium">Successful Payment</div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-muted-foreground">
+                  <div>Card Number:</div>
+                  <div className="font-mono">4242 4242 4242 4242</div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="font-medium">Card Declined</div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-muted-foreground">
+                  <div>Card Number:</div>
+                  <div className="font-mono">4000 0000 0000 0002</div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="font-medium">Insufficient Funds</div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-muted-foreground">
+                  <div>Card Number:</div>
+                  <div className="font-mono">4000 0000 0000 9995</div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="font-medium">3D Secure Required</div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-muted-foreground">
+                  <div>Card Number:</div>
+                  <div className="font-mono">4000 0000 0000 3220</div>
+                </div>
+              </div>
+
+              <div className="pt-2 text-muted-foreground">
+                <AlertCircle className="h-4 w-4 inline mr-2" />
+                Use any future expiry date, any 3-digit CVC, and any postal code
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <PaymentElement 
+          options={{
+            layout: 'tabs',
+            wallets: {
+              applePay: 'auto',
+              googlePay: 'auto'
+            },
+            defaultValues: {
+              billingDetails: {
+                name: 'Test User',
+                email: 'test@example.com',
+              }
+            },
+            fields: {
+              billingDetails: {
+                address: 'auto'
+              }
+            }
+          }} 
+        />
+        {errorMessage && (
+          <div className="text-sm text-red-500">{errorMessage}</div>
+        )}
+        <Button 
+          type="submit"
+          className="w-full" 
+          size="lg"
+          disabled={!stripe || isLoading}
+        >
+          {isLoading ? (
+            <span className="flex items-center">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Processing...
+            </span>
+          ) : (
+            <span className="flex items-center">
+              Complete Payment
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </span>
+          )}
+        </Button>
+      </form>
+    </div>
   )
 } 

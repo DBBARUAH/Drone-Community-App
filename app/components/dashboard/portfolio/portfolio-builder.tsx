@@ -43,6 +43,8 @@ export function PortfolioBuilder() {
     const nextStepIndex = currentStepIndex + 1
     if (nextStepIndex < steps.length) {
       setCurrentStep(steps[nextStepIndex].id)
+      // Scroll to top after changing step
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
@@ -149,7 +151,7 @@ export function PortfolioBuilder() {
       {/* Development Mode Quick Submit */}
       <Card className="mt-6 bg-primary/5 border-primary/20 border-dashed">
         <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex items-start gap-4">
               <div className="rounded-full bg-primary/10 p-2">
                 <Sparkles className="h-5 w-5 text-primary" />
@@ -163,7 +165,7 @@ export function PortfolioBuilder() {
             </div>
             <Button
               variant="outline"
-              className="border-primary/30 hover:bg-primary/10"
+              className="border-primary/30 hover:bg-primary/10 w-full md:w-auto"
               onClick={() => {
                 // Mark portfolio as completed in localStorage
                 localStorage.setItem("portfolioCompleted", "true")

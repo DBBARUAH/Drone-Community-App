@@ -22,9 +22,16 @@ const getStripePromise = () => {
 interface StripeElementsProps {
   clientSecret: string
   onPaymentSuccess: () => void
+  isLoading: boolean
+  setIsLoading: (loading: boolean) => void
 }
 
-export function StripeElements({ clientSecret, onPaymentSuccess }: StripeElementsProps) {
+export function StripeElements({ 
+  clientSecret, 
+  onPaymentSuccess, 
+  isLoading, 
+  setIsLoading 
+}: StripeElementsProps) {
   const [isMounted, setIsMounted] = useState(false)
   const [stripePromise, setStripePromise] = useState<ReturnType<typeof loadStripe> | null>(null)
   
@@ -57,7 +64,11 @@ export function StripeElements({ clientSecret, onPaymentSuccess }: StripeElement
 
   return (
     <Elements options={options} stripe={stripePromise}>
-      <CheckoutForm onPaymentSuccess={onPaymentSuccess} />
+      <CheckoutForm 
+        onPaymentSuccess={onPaymentSuccess} 
+        isLoading={isLoading} 
+        setIsLoading={setIsLoading} 
+      />
     </Elements>
   )
 } 
