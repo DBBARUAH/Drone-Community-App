@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/blog-card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { toast } from "@/components/ui/use-toast"
 
 const formSchema = z.object({
   bio: z.string().min(10, "Please provide a bio").optional(),
@@ -312,7 +313,23 @@ export function AdditionalInfoForm({ onComplete, isLastStep = false }: Additiona
             )}
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex justify-between">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                // For development: Mark portfolio as completed
+                localStorage.setItem("portfolioCompleted", "true")
+                toast({
+                  title: "Development Mode",
+                  description: "Portfolio marked as completed for development purposes.",
+                })
+                // Redirect to photographer dashboard
+                window.location.href = "/dashboard/photographer"
+              }}
+            >
+              Dev: Mark as Complete
+            </Button>
             <Button type="submit">{isLastStep ? "Complete Profile" : "Save & Continue"}</Button>
           </div>
         </form>
@@ -320,4 +337,3 @@ export function AdditionalInfoForm({ onComplete, isLastStep = false }: Additiona
     </div>
   )
 }
-

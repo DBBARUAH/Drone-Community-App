@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { User, Award, Clock, Camera, Image, FileText, LinkIcon, CheckCircle2 } from "lucide-react"
+import { User, Award, Clock, Camera, Image, FileText, LinkIcon, CheckCircle2, Sparkles } from "lucide-react"
+import { toast } from "@/components/ui/use-toast"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/blog-card"
@@ -144,7 +145,46 @@ export function PortfolioBuilder() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Development Mode Quick Submit */}
+      <Card className="mt-6 bg-primary/5 border-primary/20 border-dashed">
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-start gap-4">
+              <div className="rounded-full bg-primary/10 p-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-lg font-medium mb-1">Development Mode</h3>
+                <p className="text-sm text-muted-foreground">
+                  For development purposes only. This button simulates completing the portfolio creation process.
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              className="border-primary/30 hover:bg-primary/10"
+              onClick={() => {
+                // Mark portfolio as completed in localStorage
+                localStorage.setItem("portfolioCompleted", "true")
+
+                // Show success toast
+                toast({
+                  title: "Portfolio Completed",
+                  description: "Portfolio marked as completed for development purposes.",
+                  duration: 3000,
+                })
+
+                // Redirect to photographer dashboard
+                router.push("/dashboard/photographer")
+              }}
+            >
+              <Sparkles className="h-4 w-4 mr-2" />
+              Dev: Mark Portfolio as Complete
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
-
