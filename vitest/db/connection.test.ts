@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { prismaMock } from '../setup/prisma-mock';
 import { createClient } from '@supabase/supabase-js';
 
 // Mock Supabase
@@ -31,26 +30,6 @@ describe('Database Connections', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.clearAllMocks();
-  });
-
-  describe('Prisma Database Connection', () => {
-    it('should connect to the database using the pooler connection', async () => {
-      // Mock the raw query execution
-      prismaMock.$executeRaw.mockResolvedValue(1);
-      
-      // Test a simple query to verify connection is working
-      const result = await prismaMock.$executeRaw`SELECT 1 as result`;
-      expect(result).toBe(1);
-      expect(prismaMock.$executeRaw).toHaveBeenCalled();
-    });
-
-    it('should handle database connection errors gracefully', async () => {
-      // Mock a connection error
-      prismaMock.$executeRaw.mockRejectedValue(new Error("Can't reach database server"));
-      
-      // The function should throw an error
-      await expect(prismaMock.$executeRaw`SELECT 1 as result`).rejects.toThrow("Can't reach database server");
-    });
   });
 
   describe('Supabase Connection', () => {

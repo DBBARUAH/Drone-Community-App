@@ -14,6 +14,6 @@ export default defineConfig({
     include: ['**/*.{test,spec}.{ts,tsx}'],
     // Exclude node_modules, dist, .next, etc.
     exclude: ['node_modules', 'dist', '.next', '.vercel', 'generated'],
-    setupFiles: ['./vitest/setup/prisma-mock.ts', './vitest/setup/next-mocks.ts'],
+    setupFiles: ['./vitest/setup/db.ts', './vitest/setup/globals.ts'],
   },
 }); 

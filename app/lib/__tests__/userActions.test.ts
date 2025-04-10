@@ -1,8 +1,23 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getUserWithProfile } from '../userActions'; // Function to test
-import { prismaMock } from '../../../vitest/setup/prisma-mock'; // Use the global mock setup
+import { prismaMock } from '../../../vitest/setup/db'; // Use the global mock setup
+import { Role } from '@prisma/client'; // Import the Role enum
+import { db as realDb } from '@/lib/db'; // Import the REAL db to mock
+import { mockReset } from 'vitest-mock-extended'; // Import mockReset
+
+// Explicitly mock the db path for this test file
+vi.mock('@/lib/db');
 
 describe('getUserWithProfile', () => {
+
+  beforeEach(() => {
+    // Reset mock implementation before each test
+    mockReset(prismaMock);
+    // Assign mock methods to the mocked realDb
+    vi.mocked(realDb).user = prismaMock.user;
+    vi.mocked(realDb).profile = prismaMock.profile; // Add other models if needed by getUserWithProfile
+  });
+
   it('should return user with profile if found', async () => {
     // Arrange: Define mock data
     const mockUserId = 'user123';
@@ -11,7 +26,7 @@ describe('getUserWithProfile', () => {
       auth0Id: 'auth|abcde',
       email: 'test@example.com',
       name: 'Test User',
-      role: 'PHOTOGRAPHER', // Use string directly
+      role: Role.PHOTOGRAPHER, // Use the enum value
       createdAt: new Date(),
       updatedAt: new Date(),
       profile: {

@@ -1,9 +1,0 @@
-
-    TRUNCATE TABLE "GalleryItem" CASCADE;
-    TRUNCATE TABLE "Category" CASCADE;
-    TRUNCATE TABLE "Certification" CASCADE;
-    TRUNCATE TABLE "Equipment" CASCADE;
-    TRUNCATE TABLE "Experience" CASCADE;
-    TRUNCATE TABLE "Profile" CASCADE;
-    TRUNCATE TABLE "User" CASCADE;
-  

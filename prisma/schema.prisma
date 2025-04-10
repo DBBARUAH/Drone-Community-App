@@ -7,6 +7,7 @@
 generator client {
   provider = "prisma-client-js"
   output   = "../node_modules/.prisma/client"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -14,6 +15,8 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
   relationMode = "prisma"
+  // Note: connection_limit and pool_timeout are not supported in schema
+  // They should be specified in the connection URL instead
 }
 
 enum Role {

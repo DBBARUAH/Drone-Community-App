@@ -80,9 +80,11 @@ export async function updateCertification(
       
       // Delete existing file if any
       if (existingCert.fileUrl) {
-        const urlParts = existingCert.fileUrl.split(`${STORAGE_BUCKET}/`);
-        if (urlParts.length > 1) {
-          const filePath = urlParts[1];
+        // More robust path extraction: find the first occurrence of bucket/
+        const bucketPathSegment = `${STORAGE_BUCKET}/`;
+        const pathStartIndex = existingCert.fileUrl.indexOf(bucketPathSegment);
+        if (pathStartIndex !== -1) {
+          const filePath = existingCert.fileUrl.substring(pathStartIndex + bucketPathSegment.length);
           await deleteFile(STORAGE_BUCKET, filePath);
         }
       }
@@ -128,9 +130,11 @@ export async function deleteCertification(certificationId: string) {
 
     // Delete file from storage if exists
     if (certification.fileUrl) {
-      const urlParts = certification.fileUrl.split(`${STORAGE_BUCKET}/`);
-      if (urlParts.length > 1) {
-        const filePath = urlParts[1];
+      // More robust path extraction: find the first occurrence of bucket/
+      const bucketPathSegment = `${STORAGE_BUCKET}/`;
+      const pathStartIndex = certification.fileUrl.indexOf(bucketPathSegment);
+      if (pathStartIndex !== -1) {
+        const filePath = certification.fileUrl.substring(pathStartIndex + bucketPathSegment.length);
         await deleteFile(STORAGE_BUCKET, filePath);
       }
     }
