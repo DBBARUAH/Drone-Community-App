@@ -1,15 +1,48 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/blog-card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Image, FileText, Users, Lightbulb } from "lucide-react"
 import { OnboardingProgress } from "@/components/dashboard/onboarding-progress"
 import { QuickActionCard } from "@/components/dashboard/quick-action-card"
 import { ResourceCard } from "@/components/dashboard/resource-card"
+import { OverviewAnalytics } from "@/components/dashboard/analytics/overview-analytics"
+import { useSearchParams } from "next/navigation"
 
 export function PhotographerDashboard() {
+  const searchParams = useSearchParams()
+  const tabParam = searchParams?.get("tab") || null
+
   const [hasBookings, setHasBookings] = useState(false)
+  const [isProfileComplete, setIsProfileComplete] = useState(false)
+  const [isPortfolioComplete, setIsPortfolioComplete] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState(tabParam || "getting-started")
+  const [isPremium, setIsPremium] = useState(false)
+
+  // Check localStorage for portfolio completion status
+  useEffect(() => {
+    const portfolioCompleted = localStorage.getItem("portfolioCompleted") === "true"
+    setIsPortfolioComplete(portfolioCompleted)
+
+    // Check developer premium access or fetch real status
+    const devPremiumAccess = localStorage.getItem("devPremiumAccess") === "true"
+    setIsPremium(devPremiumAccess)
+
+    // If portfolio is completed, set active tab to analytics
+    if (portfolioCompleted && !tabParam) {
+      setActiveTab("analytics")
+    } else if (tabParam) {
+      setActiveTab(tabParam)
+    }
+
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [tabParam])
 
   // Onboarding steps for photographers
   const photographerSteps = [
@@ -23,7 +56,7 @@ export function PhotographerDashboard() {
       id: "portfolio",
       title: "Upload portfolio items",
       description: "Showcase your best drone photography and videography work.",
-      completed: false,
+      completed: isPortfolioComplete,
     },
     {
       id: "services",
@@ -92,9 +125,10 @@ export function PhotographerDashboard() {
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="getting-started">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="getting-started">Getting Started</TabsTrigger>
+          {!isPortfolioComplete && <TabsTrigger value="getting-started">Getting Started</TabsTrigger>}
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="resources">Resources</TabsTrigger>
           {hasBookings && <TabsTrigger value="bookings">My Bookings</TabsTrigger>}
         </TabsList>
@@ -114,6 +148,62 @@ export function PhotographerDashboard() {
             </CardContent>
           </Card>
 
+          {/* Quick Actions */}
+          <div>
+            <h3 className="text-lg font-medium mb-4">Quick Actions</h3>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {quickActions.map((action) => (
+                <QuickActionCard
+                  key={action.title}
+                  title={action.title}
+                  description={action.description}
+                  icon={action.icon}
+                  actionText={action.actionText}
+                  actionLink={action.actionLink}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Tips for Success */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Lightbulb className="h-5 w-5 text-primary" />
+                <CardTitle>Tips for Success</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <h4 className="text-sm font-medium">Complete Your Profile</h4>
+                <p className="text-sm text-muted-foreground">
+                  Profiles with complete information and high-quality portfolio images receive 3x more client inquiries.
+                </p>
+              </div>
+              <div>
+                <h4 className="text-sm font-medium">Showcase Your Specialties</h4>
+                <p className="text-sm text-muted-foreground">
+                  Be specific about your areas of expertise (real estate, events, mapping, etc.) to attract the right
+                  clients.
+                </p>
+              </div>
+              <div>
+                <h4 className="text-sm font-medium">Respond Quickly</h4>
+                <p className="text-sm text-muted-foreground">
+                  Photographers who respond to inquiries within 2 hours are 50% more likely to secure bookings.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-6">
+          <OverviewAnalytics
+            isProfileComplete={isProfileComplete}
+            isPortfolioComplete={isPortfolioComplete}
+            isPremium={isPremium}
+          />
+          
           {/* Quick Actions */}
           <div>
             <h3 className="text-lg font-medium mb-4">Quick Actions</h3>

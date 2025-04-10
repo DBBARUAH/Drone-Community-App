@@ -1,10 +1,15 @@
 "use client"
 
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
-import type React from "react"
+import { useState, useEffect } from "react"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { MobileNav } from "@/components/dashboard/mobile-nav"
 import { DashboardNav } from "@/components/dashboard/dashboard-nav"
-import { DashboardHeader } from "@/components/dashboard/dashboard-header"
+import { usePathname } from "next/navigation"
+import { RoleSwitcher } from "@/components/dashboard/role-switcher"
+import { DashboardSearch } from "@/components/dashboard/dashboard-search"
+import { Button } from "@/components/ui/button"
+import { Menu } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
 
 export default function DashboardLayoutClient({
@@ -12,41 +17,52 @@ export default function DashboardLayoutClient({
 }: {
   children: React.ReactNode
 }) {
-  const router = useRouter()
-  const { isAuthenticated, isLoading, isPhotographer } = useAuth()
+  const pathname = usePathname()
+  const [isMounted, setIsMounted] = useState(false)
+  const { isPhotographer, setUserRole } = useAuth()
+  const userRole = isPhotographer ? "photographer" : "client"
 
   useEffect(() => {
-    // Check if user is authenticated and redirect if needed
-    if (!isLoading) {
-      if (!isAuthenticated) {
-        router.push("/signin")
-      } else if (isPhotographer) {
-        // If user is a photographer, redirect to photographer dashboard
-        router.push("/dashboard/photographer")
-      }
-    }
-  }, [isLoading, isAuthenticated, isPhotographer, router])
+    setIsMounted(true)
+  }, [])
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    )
+  const handleRoleChange = (role: string) => {
+    if (role === "photographer" || role === "client") {
+      setUserRole(role)
+    }
   }
 
-  if (!isAuthenticated) {
-    return null // Will redirect in the useEffect
+  if (!isMounted) {
+    return null
   }
 
   return (
     <div className="flex min-h-screen flex-col">
-      <DashboardHeader />
-      <div className="container flex-1 items-start md:grid md:grid-cols-[220px_1fr] md:gap-6 lg:grid-cols-[240px_1fr] lg:gap-10">
-        <aside className="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block">
-          <DashboardNav />
+      <header className="sticky top-0 z-40 border-b bg-background">
+        <div className="flex h-16 items-center justify-between px-4">
+          <div className="flex items-center gap-2 md:gap-4">
+            <MobileNav />
+            
+            <div className="hidden md:flex">
+              <DashboardSearch />
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="hidden md:flex">
+              <RoleSwitcher onRoleChange={handleRoleChange} />
+            </div>
+          </div>
+        </div>
+      </header>
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-[240px_1fr]">
+        <aside className="hidden h-[calc(100vh-4rem)] md:block border-r">
+          <ScrollArea className="h-full py-6 pr-6 lg:py-8">
+            <DashboardNav userRole={userRole} />
+          </ScrollArea>
         </aside>
-        <main className="flex w-full flex-col overflow-hidden pt-6">{children}</main>
+        <main className="flex flex-col p-4 md:p-8">
+          {children}
+        </main>
       </div>
     </div>
   )

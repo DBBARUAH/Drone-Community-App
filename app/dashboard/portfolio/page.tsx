@@ -1,16 +1,32 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Suspense } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/blog-card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Image, Edit, PlusCircle, Upload, CheckCircle2, Circle } from "lucide-react"
+import { Image, Edit, PlusCircle, Upload, CheckCircle2, Circle, Loader2 } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import { OnboardingProgress } from "@/components/dashboard/onboarding-progress"
+import RequirePhotographer from "@/components/auth/require-photographer"
 
 export default function PortfolioPage() {
-  const [userRole, setUserRole] = useState("client")
+  return (
+    <RequirePhotographer>
+      <Suspense fallback={
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <span className="ml-2 text-lg">Loading portfolio...</span>
+        </div>
+      }>
+        <PortfolioContent />
+      </Suspense>
+    </RequirePhotographer>
+  )
+}
+
+function PortfolioContent() {
   const [isLoading, setIsLoading] = useState(true)
   const [hasCompleteProfile, setHasCompleteProfile] = useState(false)
   const [hasPortfolioItems, setHasPortfolioItems] = useState(false)
@@ -64,12 +80,6 @@ export default function PortfolioPage() {
   ]
 
   useEffect(() => {
-    // Check user role from localStorage
-    const savedRole = localStorage.getItem("userRole")
-    if (savedRole) {
-      setUserRole(savedRole)
-    }
-    
     // Simulate API fetch delay
     setTimeout(() => {
       setIsLoading(false)
@@ -79,37 +89,6 @@ export default function PortfolioPage() {
       setHasPortfolioItems(portfolioItems.length > 0)
     }, 500)
   }, [])
-
-  // Redirect client users or show access denied
-  if (userRole === "client") {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Portfolio</h2>
-          <p className="text-muted-foreground">
-            This section is only available for photographer accounts.
-          </p>
-        </div>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <div className="rounded-full bg-muted p-3 mb-4">
-                <Image className="h-10 w-10 text-muted-foreground" />
-              </div>
-              <h3 className="text-xl font-medium mb-2">Photographer Features</h3>
-              <p className="text-muted-foreground max-w-md mb-4">
-                Switch to Photographer view to access portfolio management features and showcase your drone photography work.
-              </p>
-              <Button variant="default">
-                Switch to Photographer View
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
 
   return (
     <div className="space-y-6">

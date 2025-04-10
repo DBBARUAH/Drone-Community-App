@@ -15,15 +15,12 @@ import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 
-const formSchema = z.object({
-  equipmentSummary: z.string().min(10, "Please provide a summary of your equipment"),
-})
-
 interface EquipmentFormProps {
   onComplete: () => void
+  profileId: string
 }
 
-export function EquipmentForm({ onComplete }: EquipmentFormProps) {
+export function EquipmentForm({ onComplete, profileId }: EquipmentFormProps) {
   const [drones, setDrones] = useState<
     {
       id: string
@@ -53,15 +50,25 @@ export function EquipmentForm({ onComplete }: EquipmentFormProps) {
     }[]
   >([])
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      equipmentSummary: "",
-    },
-  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values, drones, cameras, accessories)
+  async function onSubmit() {
+    setIsSubmitting(true)
+    console.log("Submitting equipment:", { drones, cameras, accessories })
+    // TODO: Implement server action call to save equipment
+    // 1. Map drones, cameras, accessories arrays to Equipment[] data structure
+    //    Example mapping:
+    //    const equipmentData = [
+    //      ...drones.map(d => ({ name: d.model, type: 'Drone', description: `Manufacturer: ${d.manufacturer}, Features: ${d.features}` })),
+    //      ...cameras.map(c => ({ name: c.model, type: 'Camera', description: `Manufacturer: ${c.manufacturer}, Resolution: ${c.resolution}, Features: ${c.features}` })),
+    //      ...accessories.map(a => ({ name: a.name, type: a.type || 'Accessory', description: a.description })),
+    //    ];
+    // 2. Create/call server action `updateEquipment(profileId, equipmentData)`
+    // 3. Handle success/error with toasts
+    
+    // Simulate API call for now
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setIsSubmitting(false)
     onComplete()
   }
 
@@ -137,27 +144,7 @@ export function EquipmentForm({ onComplete }: EquipmentFormProps) {
         <p className="text-sm text-muted-foreground">List your drone equipment, cameras, and accessories.</p>
       </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="equipmentSummary"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Equipment Summary</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Provide a brief overview of your equipment setup"
-                    className="min-h-[100px]"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>This will be displayed at the top of your equipment section</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
+      <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="space-y-6">
           {/* Drones Section */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -386,10 +373,11 @@ export function EquipmentForm({ onComplete }: EquipmentFormProps) {
           </div>
 
           <div className="flex justify-end">
-            <Button type="submit">Save & Continue</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Saving..." : "Save & Continue"}
+            </Button>
           </div>
         </form>
-      </Form>
     </div>
   )
 }

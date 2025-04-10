@@ -15,63 +15,55 @@ import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 
-const formSchema = z.object({
-  yearsExperience: z.string().min(1, "Please select years of experience").optional(),
-  specialties: z.string().min(2, "Please list your specialties").optional(),
-  serviceArea: z.string().min(2, "Please specify your service area").optional(),
-})
-
 interface ExperienceFormProps {
   onComplete: () => void
+  profileId: string
 }
 
-export function ExperienceForm({ onComplete }: ExperienceFormProps) {
-  const [projectHighlights, setProjectHighlights] = useState<
-    {
-      id: string
-      title: string
-      client: string
-      description: string
-      year: string
-      category: string
-    }[]
-  >([])
+interface ExperienceItem {
+  id: string
+  title: string
+  company: string
+  location: string
+  startDate: string
+  endDate: string | null
+  description: string
+}
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      yearsExperience: "",
-      specialties: "",
-      serviceArea: "",
-    },
-  })
+export function ExperienceForm({ onComplete, profileId }: ExperienceFormProps) {
+  const [experiences, setExperiences] = useState<ExperienceItem[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values, projectHighlights)
+  async function onSubmit() {
+    setIsSubmitting(true)
+    console.log("Submitting experiences:", experiences)
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setIsSubmitting(false)
     onComplete()
   }
 
-  const addProject = () => {
-    setProjectHighlights([
-      ...projectHighlights,
+  const addExperience = () => {
+    setExperiences([
+      ...experiences,
       {
         id: Date.now().toString(),
         title: "",
-        client: "",
+        company: "",
+        location: "",
+        startDate: "",
+        endDate: null,
         description: "",
-        year: new Date().getFullYear().toString(),
-        category: "",
       },
     ])
   }
 
-  const removeProject = (id: string) => {
-    setProjectHighlights(projectHighlights.filter((project) => project.id !== id))
+  const removeExperience = (id: string) => {
+    setExperiences(experiences.filter((exp) => exp.id !== id))
   }
 
-  const updateProject = (id: string, field: string, value: string) => {
-    setProjectHighlights(
-      projectHighlights.map((project) => (project.id === id ? { ...project, [field]: value } : project)),
+  const updateExperience = (id: string, field: keyof ExperienceItem, value: string | null) => {
+    setExperiences(
+      experiences.map((exp) => (exp.id === id ? { ...exp, [field]: value } : exp)),
     )
   }
 
@@ -82,173 +74,107 @@ export function ExperienceForm({ onComplete }: ExperienceFormProps) {
         <p className="text-sm text-muted-foreground">Share your drone photography and videography experience.</p>
       </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="yearsExperience"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Years of Experience</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select years of experience" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="less-than-1">Less than 1 year</SelectItem>
-                      <SelectItem value="1-2">1-2 years</SelectItem>
-                      <SelectItem value="3-5">3-5 years</SelectItem>
-                      <SelectItem value="5-10">5-10 years</SelectItem>
-                      <SelectItem value="10+">10+ years</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="serviceArea"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Service Area</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., Austin and surrounding areas (50 mile radius)" {...field} />
-                  </FormControl>
-                  <FormDescription>Specify the geographic area where you provide services</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+      <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="space-y-6">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h4 className="text-md font-medium">Work Experience / Projects</h4>
+            <Button type="button" variant="outline" size="sm" onClick={addExperience}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Experience
+            </Button>
           </div>
 
-          <FormField
-            control={form.control}
-            name="specialties"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Specialties</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="e.g., Real estate photography, wedding videography, construction progress monitoring, 3D mapping"
-                    className="min-h-[100px]"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>List your areas of expertise, separated by commas</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {experiences.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No experiences added. Click the button above to add your work history or notable projects.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {experiences.map((exp, index) => (
+                <Card key={exp.id}>
+                  <CardContent className="pt-6">
+                    <div className="flex justify-between items-start mb-4">
+                      <Badge variant="outline">Experience {index + 1}</Badge>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => removeExperience(exp.id)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
 
-          {/* Project Highlights Section */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h4 className="text-md font-medium">Project Highlights</h4>
-              <Button type="button" variant="outline" size="sm" onClick={addProject}>
-                <Plus className="h-4 w-4 mr-2" />
-                Add Project
-              </Button>
-            </div>
-
-            {projectHighlights.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                No project highlights added. Click the button above to add your notable projects.
-              </p>
-            ) : (
-              <div className="space-y-4">
-                {projectHighlights.map((project, index) => (
-                  <Card key={project.id}>
-                    <CardContent className="pt-6">
-                      <div className="flex justify-between items-start mb-4">
-                        <Badge variant="outline">Project {index + 1}</Badge>
-                        <Button type="button" variant="ghost" size="sm" onClick={() => removeProject(project.id)}>
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </div>
-
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <div>
-                          <Label htmlFor={`project-title-${project.id}`}>Project Title</Label>
-                          <Input
-                            id={`project-title-${project.id}`}
-                            placeholder="e.g., Luxury Beachfront Property"
-                            value={project.title}
-                            onChange={(e) => updateProject(project.id, "title", e.target.value)}
-                          />
-                        </div>
-
-                        <div>
-                          <Label htmlFor={`project-client-${project.id}`}>Client/Company</Label>
-                          <Input
-                            id={`project-client-${project.id}`}
-                            placeholder="e.g., Coastal Realty Group"
-                            value={project.client}
-                            onChange={(e) => updateProject(project.id, "client", e.target.value)}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid gap-4 sm:grid-cols-2 mt-4">
-                        <div>
-                          <Label htmlFor={`project-year-${project.id}`}>Year</Label>
-                          <Input
-                            id={`project-year-${project.id}`}
-                            type="number"
-                            placeholder="2023"
-                            value={project.year}
-                            onChange={(e) => updateProject(project.id, "year", e.target.value)}
-                          />
-                        </div>
-
-                        <div>
-                          <Label htmlFor={`project-category-${project.id}`}>Category</Label>
-                          <Select
-                            value={project.category}
-                            onValueChange={(value) => updateProject(project.id, "category", value)}
-                          >
-                            <SelectTrigger id={`project-category-${project.id}`}>
-                              <SelectValue placeholder="Select category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="real-estate">Real Estate</SelectItem>
-                              <SelectItem value="wedding">Wedding/Events</SelectItem>
-                              <SelectItem value="commercial">Commercial</SelectItem>
-                              <SelectItem value="construction">Construction</SelectItem>
-                              <SelectItem value="mapping">Mapping/Surveying</SelectItem>
-                              <SelectItem value="travel">Travel/Tourism</SelectItem>
-                              <SelectItem value="other">Other</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      <div className="mt-4">
-                        <Label htmlFor={`project-description-${project.id}`}>Project Description</Label>
-                        <Textarea
-                          id={`project-description-${project.id}`}
-                          placeholder="Briefly describe the project, your role, and the outcome"
-                          className="min-h-[80px]"
-                          value={project.description}
-                          onChange={(e) => updateProject(project.id, "description", e.target.value)}
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <Label htmlFor={`exp-title-${exp.id}`}>Title / Role</Label>
+                        <Input
+                          id={`exp-title-${exp.id}`}
+                          placeholder="e.g., Lead Drone Pilot, Project Photographer"
+                          value={exp.title}
+                          onChange={(e) => updateExperience(exp.id, "title", e.target.value)}
                         />
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
+                      <div>
+                        <Label htmlFor={`exp-company-${exp.id}`}>Company / Client</Label>
+                        <Input
+                          id={`exp-company-${exp.id}`}
+                          placeholder="e.g., Skyshot Productions, Coastal Realty"
+                          value={exp.company}
+                          onChange={(e) => updateExperience(exp.id, "company", e.target.value)}
+                        />
+                      </div>
+                    </div>
 
-          <div className="flex justify-end">
-            <Button type="submit">Save & Continue</Button>
-          </div>
-        </form>
-      </Form>
+                    <div className="mt-4">
+                      <Label htmlFor={`exp-location-${exp.id}`}>Location</Label>
+                      <Input
+                        id={`exp-location-${exp.id}`}
+                        placeholder="e.g., Austin, TX, Remote"
+                        value={exp.location}
+                        onChange={(e) => updateExperience(exp.id, "location", e.target.value)}
+                      />
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2 mt-4">
+                      <div>
+                        <Label htmlFor={`exp-startDate-${exp.id}`}>Start Date</Label>
+                        <Input
+                          id={`exp-startDate-${exp.id}`}
+                          type="date"
+                          value={exp.startDate}
+                          onChange={(e) => updateExperience(exp.id, "startDate", e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`exp-endDate-${exp.id}`}>End Date (Optional)</Label>
+                        <Input
+                          id={`exp-endDate-${exp.id}`}
+                          type="date"
+                          value={exp.endDate ?? ''}
+                          onChange={(e) => updateExperience(exp.id, "endDate", e.target.value || null)}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mt-4">
+                      <Label htmlFor={`exp-description-${exp.id}`}>Description</Label>
+                      <Textarea
+                        id={`exp-description-${exp.id}`}
+                        placeholder="Describe your responsibilities, achievements, or the project details"
+                        className="min-h-[80px]"
+                        value={exp.description}
+                        onChange={(e) => updateExperience(exp.id, "description", e.target.value)}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Saving..." : "Save & Continue"}
+          </Button>
+        </div>
+      </form>
     </div>
   )
 }
