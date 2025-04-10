@@ -201,7 +201,10 @@ export function PortfolioBuilder() {
             </TabsContent>
 
             <TabsContent value="certifications">
-              <CertificationsForm onComplete={() => handleStepComplete("certifications")} />
+              <CertificationsForm 
+                onComplete={() => handleStepComplete("certifications")} 
+                profileId={profileId} 
+              />
             </TabsContent>
 
             <TabsContent value="experience">
@@ -213,11 +216,18 @@ export function PortfolioBuilder() {
             </TabsContent>
 
             <TabsContent value="portfolio-gallery">
-              <PortfolioGalleryForm onComplete={() => handleStepComplete("portfolio-gallery")} />
+              <PortfolioGalleryForm 
+                onComplete={() => handleStepComplete("portfolio-gallery")} 
+                profileId={profileId}
+              />
             </TabsContent>
 
             <TabsContent value="additional-info">
-              <AdditionalInfoForm onComplete={handleSubmit} isLastStep={true} />
+              <AdditionalInfoForm 
+                onComplete={handleSubmit} 
+                isLastStep={true} 
+                profileId={profileId}
+              />
             </TabsContent>
           </Tabs>
         </CardContent>

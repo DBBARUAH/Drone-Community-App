@@ -28,9 +28,10 @@ const formSchema = z.object({
 
 interface CertificationsFormProps {
   onComplete: () => void
+  profileId: string
 }
 
-export function CertificationsForm({ onComplete }: CertificationsFormProps) {
+export function CertificationsForm({ onComplete, profileId }: CertificationsFormProps) {
   const [additionalCerts, setAdditionalCerts] = useState<
     {
       id: string

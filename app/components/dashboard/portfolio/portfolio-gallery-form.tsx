@@ -23,9 +23,10 @@ const formSchema = z.object({
 
 interface PortfolioGalleryFormProps {
   onComplete: () => void
+  profileId: string
 }
 
-export function PortfolioGalleryForm({ onComplete }: PortfolioGalleryFormProps) {
+export function PortfolioGalleryForm({ onComplete, profileId }: PortfolioGalleryFormProps) {
   const [categories, setCategories] = useState<
     {
       id: string

@@ -29,16 +29,20 @@ export type AdditionalInfoFormData = {
  * @param auth0Id The Auth0 ID of the user (sub from Auth0 user object)
  */
 export async function createProfile(auth0Id: string) {
+  console.log('Starting createProfile with auth0Id:', auth0Id);
   try {
     // First, check if we already have a User with this Auth0 ID
     let user = await db.user.findUnique({
       where: { auth0Id },
     });
+    
+    console.log('Existing user found?', !!user);
 
     // If no user exists with this Auth0 ID, create one
     if (!user) {
       // This is a new user from Auth0, we need to create a User record first
       try {
+        console.log('Creating new user with auth0Id:', auth0Id);
         // We don't have email and name here, but we'll handle that later
         // The important part is to create a User with the auth0Id
         user = await db.user.create({
@@ -53,32 +57,60 @@ export async function createProfile(auth0Id: string) {
         console.log('Created new user:', user);
       } catch (error) {
         console.error('Failed to create user:', error);
-        return { error: 'Failed to create user' };
+        // More detailed error logging
+        if (error instanceof Error) {
+          console.error('Error name:', error.name);
+          console.error('Error message:', error.message);
+          console.error('Error stack:', error.stack);
+        }
+        return { error: `Failed to create user: ${error instanceof Error ? error.message : 'Unknown error'}` };
       }
     }
 
     // Now that we have a user, check if a profile already exists
+    console.log('Checking for existing profile for userId:', user.id);
     const existingProfile = await db.profile.findUnique({
       where: { userId: user.id },
     });
 
+    console.log('Existing profile found?', !!existingProfile);
     if (existingProfile) {
+      console.log('Returning existing profile:', existingProfile.id);
       return { profile: existingProfile };
     }
 
     // Create new profile with default empty values
-    const profile = await db.profile.create({
-      data: {
-        userId: user.id,
-        specializations: [],
-        languages: [],
-      },
-    });
-
-    return { profile };
+    console.log('Creating new profile for userId:', user.id);
+    try {
+      const profile = await db.profile.create({
+        data: {
+          userId: user.id,
+          specializations: [],
+          languages: [],
+        },
+      });
+      
+      console.log('Created new profile:', profile.id);
+      return { profile };
+    } catch (profileError) {
+      console.error('Failed to create profile:', profileError);
+      // More detailed profile error logging
+      if (profileError instanceof Error) {
+        console.error('Profile error name:', profileError.name);
+        console.error('Profile error message:', profileError.message);
+        console.error('Profile error stack:', profileError.stack);
+      }
+      return { error: `Failed to create profile: ${profileError instanceof Error ? profileError.message : 'Unknown error'}` };
+    }
   } catch (error) {
-    console.error('Failed to create profile:', error);
-    return { error: 'Failed to create profile' };
+    console.error('Failed in createProfile:', error);
+    // More detailed error logging for the entire function
+    if (error instanceof Error) {
+      console.error('Error name:', error.name);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
+    return { error: `Failed to create profile: ${error instanceof Error ? error.message : 'Unknown error'}` };
   }
 }
 

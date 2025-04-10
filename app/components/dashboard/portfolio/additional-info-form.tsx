@@ -25,9 +25,10 @@ const formSchema = z.object({
 interface AdditionalInfoFormProps {
   onComplete: () => void
   isLastStep?: boolean
+  profileId: string
 }
 
-export function AdditionalInfoForm({ onComplete, isLastStep = false }: AdditionalInfoFormProps) {
+export function AdditionalInfoForm({ onComplete, isLastStep = false, profileId }: AdditionalInfoFormProps) {
   const [socialLinks, setSocialLinks] = useState<
     {
       id: string
