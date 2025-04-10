@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  relationMode = "prisma"
+}
+
+enum Role {
+  PHOTOGRAPHER
+  CLIENT
+}
+
+model User {
+  id        String   @id @default(cuid())
+  auth0Id   String   @unique // Important link to Auth0 user
+  email     String   @unique
+  name      String?
+  role      Role     @default(CLIENT) // Default new users to CLIENT?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relation to Profile (Now active)
+  profile Profile?
+}
+
+model Profile {
+  id             String   @id @default(cuid())
+  userId         String   @unique // Foreign key linking to User
+  user           User     @relation(fields: [userId], references: [id])
+
+  // Basic profile fields
+  title          String?  // Professional title/role
+  location       String?
+  website        String?
+  bio            String?
+  contactEmail   String?  // Separate contact email? Or use User's email?
+  phone          String?
+  
+  // Additional info fields
+  businessName   String?  // Business name
+  specializations String[] 
+  serviceArea     String?
+  languages       String[] 
+  insuranceDetails String?
+
+  // Add relation to categories
+  categories     Category[]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations to other profile sections (Now active)
+  experiences    Experience[]
+  equipment      Equipment[]
+  certifications Certification[]
+  galleryItems   GalleryItem[]
+}
+
+model Experience {
+  id          String    @id @default(cuid())
+  profileId   String    // Renamed from portfolioId
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade) // Renamed from portfolio
+
+  title       String
+  company     String?
+  location    String?
+  startDate   DateTime
+  endDate     DateTime? // Optional if ongoing
+  description String?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Equipment {
+  id          String    @id @default(cuid())
+  profileId   String    // Renamed from portfolioId
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade) // Renamed from portfolio
+
+  name        String
+  type        String?   // e.g., Drone, Camera, Lens, Software
+  description String?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Certification {
+  id             String    @id @default(cuid())
+  profileId      String    // Renamed from portfolioId
+  profile        Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade) // Renamed from portfolio
+
+  name           String
+  issuingBody    String?
+  certificationId String?   // Optional ID/Number
+  issueDate      DateTime?
+  expiryDate     DateTime? // Optional
+  credentialUrl  String?   // Link to online credential
+  fileUrl        String?   // Link to uploaded file (e.g., in Supabase Storage)
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  profileId   String    // Each user manages their own categories
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  
+  galleryItems GalleryItem[] // Relation to items in this category
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@unique([profileId, name]) // Ensure category names are unique per user
+}
+
+model GalleryItem {
+  id          String    @id @default(cuid())
+  profileId   String    
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  title       String?
+  description String?
+  imageUrl    String?   
+  videoUrl    String?   
+  type        String    // e.g., IMAGE, VIDEO
+  
+  // Change category field to a relation
+  categoryId  String?   // Foreign key for the Category relation
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull) // Link to Category, set null if category deleted
+  
+  location    String?   
+  featured    Boolean   @default(false) 
+  views       Int       @default(0) 
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}

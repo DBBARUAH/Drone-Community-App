@@ -7,6 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Upload } from "lucide-react"
+import { toast } from "@/components/ui/use-toast"
+import { updateBasicProfile, BasicProfileFormData } from "@/actions/profile"
 
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -23,10 +25,12 @@ const formSchema = z.object({
 
 interface BasicProfileFormProps {
   onComplete: () => void
+  profileId: string
 }
 
-export function BasicProfileForm({ onComplete }: BasicProfileFormProps) {
+export function BasicProfileForm({ onComplete, profileId }: BasicProfileFormProps) {
   const [profileImage, setProfileImage] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,9 +43,50 @@ export function BasicProfileForm({ onComplete }: BasicProfileFormProps) {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
-    onComplete()
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      setIsSubmitting(true)
+      
+      // Map form values to the shape expected by updateBasicProfile
+      const profileData: BasicProfileFormData = {
+        title: values.title,
+        location: values.location,
+        contactEmail: values.email,
+        phone: values.phone,
+        // website and bio are not in this form, pass undefined or current values if needed
+        website: undefined, // Or fetch current value if necessary
+        bio: undefined,     // Or fetch current value if necessary
+      }
+      
+      // Handle fullName separately (e.g., update User model)
+      // const userName = values.fullName;
+      // await updateUser({ userId: /* get user id */, name: userName });
+      
+      const result = await updateBasicProfile(profileId, profileData)
+      
+      if (result.success) {
+        toast({
+          title: "Profile updated",
+          description: "Your basic profile information has been saved successfully.",
+        })
+        onComplete()
+      } else {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to update profile. Please try again.",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error("Failed to update profile:", error)
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -163,7 +208,9 @@ export function BasicProfileForm({ onComplete }: BasicProfileFormProps) {
               />
 
               <div className="flex justify-end">
-                <Button type="submit">Save & Continue</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Saving..." : "Save & Continue"}
+                </Button>
               </div>
             </form>
           </Form>
